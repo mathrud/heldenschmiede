@@ -2,7 +2,7 @@
 
 **Charaktergenerator und Spieltisch für *Der Eine Ring*, 2. Edition – auf Deutsch, kostenlos, offline.**
 
-👉 **App öffnen:** https://DEIN-NAME.github.io/heldenschmiede/
+👉 **App öffnen:** https://mathrud.github.io/heldenschmiede/
 
 Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, Mac, Windows und Linux wie eine App installieren. Danach funktioniert sie auch ohne Internet.
 
