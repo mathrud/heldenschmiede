@@ -1,0 +1,32 @@
+{
+ "name": "Heldenschmiede – Der Eine Ring",
+ "short_name": "Heldenschmiede",
+ "description": "Charaktergenerator und Spieltisch für Der Eine Ring 2e (inoffiziell)",
+ "lang": "de",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#2a241c",
+ "theme_color": "#2a241c",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512-maskable.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
