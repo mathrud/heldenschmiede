@@ -11,7 +11,7 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 
 **Generator**
 - Schritt für Schritt nach dem deutschen Grundregelwerk – oder ein Klick, und der ganze Held ist ausgewürfelt
-- Kulturen aus dem Grundregelwerk sowie Hochelben aus Bruchtal und Zwerge aus Nogrod und Belegost
+- Kulturen aus dem Grundregelwerk (inkl. Hobbits aus Bree) sowie Hochelben aus Bruchtal und Zwerge aus Nogrod und Belegost
 - Spielmodi: Standard, One-Shot (SG 18) und Streicher-Modus (Solo) inkl. Gönner und erstem Auftrag
 - Charakterbogen als PDF – laufende Werte bleiben frei für den Bleistift; Seite 2 erklärt Gaben, Merkmale, Belohnungen und Vorteile
 - Spieler-Übersicht, Spielleiter-Übersicht und Streicher-Blatt als PDF

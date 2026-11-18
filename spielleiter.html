@@ -44,6 +44,7 @@ const EMB_P = {
   hochelben:'<circle cx="32" cy="30" r="21" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M32 13l3.5 10.5L46 21l-7.5 8L46 37l-10.5-2.5L32 45l-3.5-10.5L18 37l7.5-8L18 21l10.5 2.5z" fill="currentColor"/><path d="M12 58h40" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
   hobbits:'<circle cx="32" cy="34" r="20" fill="none" stroke="currentColor" stroke-width="3.2"/><circle cx="32" cy="34" r="13" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="32" cy="34" r="3.4" fill="currentColor"/><path d="M32 14v6M32 48v6M12 34h6M46 34h6" stroke="currentColor" stroke-width="2"/><path d="M8 58h48" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
   bree:'<path d="M16 18h26v34a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M42 24h6a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6h-6" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M14 18c2-7 8-9 12-6 3-5 11-4 13 1 4-1 6 2 5 5" fill="currentColor"/><path d="M23 28v20M29 28v20M35 28v20" stroke="currentColor" stroke-width="1.6"/>',
+  breehobbits:'<path d="M8 56V36a16 16 0 0 1 32 0v20z" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M14 56V37a10 10 0 0 1 20 0v19" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="29" cy="45" r="2.2" fill="currentColor"/><path d="M42 30h10v20a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3z" fill="currentColor"/><path d="M52 34h3a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M41 30c1-4 4-5 6-3 2-3 6-2 6 1" fill="currentColor"/><path d="M4 58h56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
   waldlaeufer:'<path d="M32 4l4 18 18-6-14 12 14 12-18-6-4 18-4-18-18 6 14-12L10 16l18 6z" fill="currentColor"/><circle cx="32" cy="28" r="5" fill="var(--emb-bg,#fbf6ea)"/>',
   zwerge:'<path d="M10 26h36c0 6-4 9-10 10l-2 8h8v6H22v-6h8l-2-8c-8-1-14-4-18-10z" fill="currentColor"/><path d="M46 26c4 0 8-2 10-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M40 8l-10 10" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><path d="M36 4l8 8-4 4-8-8z" fill="currentColor"/>',
   nogrod:'<path d="M4 54L22 22l9 14 7-10 22 28z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M22 22l-5 9h10z" fill="currentColor"/><path d="M38 26l-4 6h8z" fill="currentColor"/><path d="M28 54V44h8v10" fill="currentColor"/><circle cx="48" cy="12" r="4" fill="currentColor"/>',
@@ -449,7 +450,8 @@ const CHEAT_CONTENT = [
   {p:"TAPFERKEIT und WEISHEIT beginnen bei 1, der erste Kauf ist also Stufe 2 (8 Punkte). Punkte dürfen angespart werden. Kampffähigkeiten können nie Bevorzugt sein.",i:true}
 ];
 
-async function buildFlowSheet(PDFLib, fontkit, F, CONTENT, SUBTITLE, DOCTITLE){
+async function buildFlowSheet(PDFLib, fontkit, F, CONTENT, SUBTITLE, DOCTITLE, OPT){
+  OPT=OPT||{};
   const {PDFDocument, rgb} = PDFLib;
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
@@ -458,8 +460,8 @@ async function buildFlowSheet(PDFLib, fontkit, F, CONTENT, SUBTITLE, DOCTITLE){
   const fGI = await doc.embedFont(F.italic, {subset:true});
   const fC  = await doc.embedFont(F.cinzel, {subset:true});
   const fCB = await doc.embedFont(F.title, {subset:true});
-  const W=842, H=595, RED=rgb(0.72,0.20,0.15), RED2=rgb(0.86,0.55,0.50), INK=rgb(0.16,0.12,0.09), GREY=rgb(0.42,0.36,0.30), TINT=rgb(0.985,0.95,0.94);
-  const M=30, TOP=78, BOT=H-30, GAP=18, NC=3, CW=(W-2*M-(NC-1)*GAP)/NC;
+  const PORT=!!OPT.portrait, W=PORT?595:842, H=PORT?842:595, RED=rgb(0.72,0.20,0.15), RED2=rgb(0.86,0.55,0.50), INK=rgb(0.16,0.12,0.09), GREY=rgb(0.42,0.36,0.30), TINT=rgb(0.985,0.95,0.94);
+  const M=30, TOP=78, BOT=H-30, GAP=18, NC=PORT?2:3, CW=(W-2*M-(NC-1)*GAP)/NC;
   let pg=null, col=0, y=TOP, pageNo=0, title="";
   const Y=v=>H-v;
   const dia=(p,cx,cy,r,o={})=>p.drawSvgPath(`M ${cx} ${cy-r} L ${cx+r} ${cy} L ${cx} ${cy+r} L ${cx-r} ${cy} Z`,{x:0,y:H,borderColor:o.border===null?undefined:RED,borderWidth:o.border===null?0:(o.w||0.9),color:o.fill});
@@ -470,8 +472,9 @@ async function buildFlowSheet(PDFLib, fontkit, F, CONTENT, SUBTITLE, DOCTITLE){
     [[10,10],[W-10,10],[10,H-10],[W-10,H-10]].forEach(([x,yy])=>dia(pg,x,yy,5,{fill:rgb(1,1,1),w:1.2}));
     pg.drawText("DER EINE RING",{x:M,y:Y(42),size:17,font:fCB,color:RED});
     pg.drawText(SUBTITLE,{x:M,y:Y(55),size:7.5,font:fC,color:RED});
-    const tt=title.toUpperCase(), tw=fCB.widthOfTextAtSize(tt,13);
-    pg.drawText(tt,{x:W/2-tw/2,y:Y(47),size:13,font:fCB,color:INK});
+    const tt=title.toUpperCase();
+    if(PORT){ let ts=13; while(ts>8&&fCB.widthOfTextAtSize(tt,ts)>W-2*M-175) ts-=0.5; const tw=fCB.widthOfTextAtSize(tt,ts); pg.drawText(tt,{x:W-M-tw,y:Y(42),size:ts,font:fCB,color:INK}); }
+    else { const tw=fCB.widthOfTextAtSize(tt,13); pg.drawText(tt,{x:W/2-tw/2,y:Y(47),size:13,font:fCB,color:INK}); }
     const pn="Seite "+pageNo, pw=fGI.widthOfTextAtSize(pn,8);
     pg.drawText(pn,{x:W-M-pw,y:Y(55),size:8,font:fGI,color:GREY});
     pg.drawLine({start:{x:M,y:Y(64)},end:{x:W-M,y:Y(64)},thickness:0.7,color:RED}); dia(pg,W/2,64,3,{fill:RED,border:null});
@@ -550,7 +553,7 @@ async function buildFlowSheet(PDFLib, fontkit, F, CONTENT, SUBTITLE, DOCTITLE){
   doc.setTitle(DOCTITLE);
   return await doc.save();
 }
-function buildCheatSheet(PDFLib, fontkit, F){ return buildFlowSheet(PDFLib, fontkit, F, CHEAT_CONTENT, "SPIELER-ÜBERSICHT", "Der Eine Ring – Spieler-Übersicht"); }
+function buildCheatSheet(PDFLib, fontkit, F, OPT){ return buildFlowSheet(PDFLib, fontkit, F, CHEAT_CONTENT, "SPIELER-ÜBERSICHT", "Der Eine Ring – Spieler-Übersicht", OPT); }
 if(typeof module!=="undefined") module.exports = {buildCheatSheet, buildFlowSheet};
 
 /* Heldenschmiede – Spielleiter-Übersicht. Nach dem Grundregelwerk (Kap. 3, 6, 7, 8), in eigenen Worten. */
@@ -662,7 +665,7 @@ const GM_CONTENT = [
   {p:"Erreicht der Blick die Schwelle, ist die Gemeinschaft **enthüllt**: eine **Enthüllung** passiert, die sich aus der Lage ergeben muss (keine Orks aus dem Nichts) und nach dunklen Kräften riecht. Danach Blick zurück auf den Startwert."},
   {b:["**1 Aus der Pfanne …** alle Fertigkeitswürfe der Lage −1W.","**2 Láthspell:** Beratungsziel eine Stufe schwerer.","**3 Versuche mich nicht!** ein Held +3 Schatten (Gier).","**4 Lügen und Drohungen:** ein Verbündeter wird zum Feind.","**5 Schweren Herzens:** alle Helden gelten als Erschöpft.","**6 Ein Wille, der Schnelligkeit verleiht:** Gefangene entkommen, Verfolger holen auf.","**7 Geleitet von böser Absicht:** eine umgehbare Gefahr lauert nun auf.","**8 Rücksichtsloser Hass:** nächste Gegner erhalten Abscheu gegen ein Volk der Gruppe.","**9 Tödlicher Kampf:** nächster Gegner startet mit +1 Erfolgswürfel Hass/Entschl.","**10 Wir kommen, um zu töten:** nächster Gegner erhält Tödliche Wunde."]}
 ];
-function buildGMSheet(PDFLib, fontkit, F){ return buildFlowSheet(PDFLib, fontkit, F, GM_CONTENT, "SPIELLEITER-ÜBERSICHT", "Der Eine Ring – Spielleiter-Übersicht"); }
+function buildGMSheet(PDFLib, fontkit, F, OPT){ return buildFlowSheet(PDFLib, fontkit, F, GM_CONTENT, "SPIELLEITER-ÜBERSICHT", "Der Eine Ring – Spielleiter-Übersicht", OPT); }
 if(typeof module!=="undefined") module.exports = {buildGMSheet, GM_CONTENT};
 
 /* Heldenschmiede – Extra-Blatt Streicher-Modus (Solo-Regeln), in eigenen Worten zusammengefasst.
@@ -1049,6 +1052,21 @@ const CULTURES = {
     age:[18,40], ageHint:"Aufbruch in der Jugend; Rückkehr meist vor dem vierzigsten Jahr.",
     noWeapons:[], noShields:[]
   },
+  breehobbits:{
+    name:"Hobbits aus Bree", std:"Gewöhnlich", src:"Regelwerk S. 181",
+    gift:"Breeblut", giftText:"Jeder Held aus Bree in der Gemeinschaft erhöht den Gemeinschaftswert um 1.",
+    extra:["Halblinge","Nur folgende Waffen: Axt, Bogen, Dolch, Keule, Knüppel, Kurzschwert, Kurzspeer, Speer. Kein Großer Schild. Kulturelle Vorteile (ab WEISHEIT 2) nur aus: Bree-Pony, Mut der Verzweiflung, Kleines Volk, Seltsam wie Neuigkeiten aus Bree, Die Kunst des Rauchens, Zäh wie alte Baumwurzeln."],
+    attrs:[[2,5,7],[3,4,7],[3,5,6],[4,4,6],[4,5,5],[2,6,6]],
+    der:{aus:18,hof:10,par:12},
+    skills:{Athletik:1,Beeindrucken:0,Handwerk:2,Jagen:1,Musizieren:1,Wahrnehmung:1,Auftreten:3,Ermutigen:2,Heilen:0,Kriegskunst:0,Reisen:1,Verständnis:2,Erkunden:1,Heimlichkeit:1,Rätseln:2,Überreden:2,Untersuchen:1,Wissen:0},
+    favOpts:["Rätseln","Verständnis"],
+    combat:["Äxte","Speere"],
+    traits:["Ehrlich","Geduldig","Gerissen","Großzügig","Höflich","Rustikal","Treu","Wissbegierig"],
+    m:null, f:null,
+    fam:["Beifuß","Dachsbau","Hang","Langhöhl","Sandheber","Stoller","Unterberg"],
+    age:[25,60], ageHint:"Wie alle Hobbits meist erst nach der Volljährigkeit mit 33 unterwegs – Abenteuerlust ist im Breeland aber weniger anrüchig als im Auenland.",
+    allowWeapons:["Axt","Bogen","Dolch","Keule","Knüppel","Kurzschwert","Kurzspeer","Speer"], noShields:["Großer Schild"]
+  },
   waldlaeufer:{
     name:"Waldläufer des Nordens", attrPlus:"Könige der Menschen", std:"Bescheiden",
     gift:"Könige der Menschen", giftText:"Füge einem Attribut deiner Wahl 1 Punkt hinzu.",
@@ -1142,7 +1160,7 @@ const CULTURES = {
     noWeapons:[], noShields:[]
   }
 };
-CULTURES.nogrod.m=CULTURES.zwerge.m; CULTURES.nogrod.f=CULTURES.zwerge.f;
+CULTURES.nogrod.m=CULTURES.zwerge.m; CULTURES.nogrod.f=CULTURES.zwerge.f; CULTURES.breehobbits.m=CULTURES.hobbits.m; CULTURES.breehobbits.f=CULTURES.hobbits.f;
 
 const CALLINGS = {
   befehlshaber:{name:"Befehlshaber",skills:["Ermutigen","Kriegskunst","Überreden"],feature:"Führung",shadow:"Versuchung der Macht",desc:"Will andere in dunkler Stunde anführen – aus Vertrauen, nicht aus Gehorsam."},
@@ -1630,7 +1648,7 @@ function rollName(){
   else if(c.patronym){ const father=pick(c.m); n+=", "+(S.gender==="m"?"Sohn":"Tochter")+" von "+father; }
   S.name=n;
   const [lo,hi]=c.age; let ag;
-  if(S.culture==="hobbits") ag=Math.random()<.75?33+rnd(18):24+rnd(9);
+  if(S.culture==="hobbits"||S.culture==="breehobbits") ag=Math.random()<.75?33+rnd(18):24+rnd(9);
   else if(S.culture==="waldlaeufer") ag=Math.random()<.7?18+rnd(10):28+rnd(20);
   else ag=lo+Math.round(Math.pow(Math.random(),1.4)*(hi-lo));
   S.age=ag;
@@ -1785,7 +1803,7 @@ erfahrung(){
 ausruestung(){
   const c=C(); if(!c) return head("Ausrüstung","")+needCulture()+navBtns();
   let h=head("Anfängliche Ausrüstung","Eine Waffe für jede Kampffähigkeit, die du beherrschst, dazu Rüstung, Helm und Schild nach Wunsch und Lebensstandard.","rg");
-  h+=`<div class="note">Lebensstandard <b>${c.std}</b>: Schatzwert ${SCHATZ[c.std]}, ${ITEMS_N[c.std]} Nützliche(r) Gegenstand/Gegenstände. ${c.extra&&(S.culture==="hobbits"||isDwarf())?"<br><b>"+c.extra[0]+":</b> "+c.extra[1]:""}</div>`;
+  h+=`<div class="note">Lebensstandard <b>${c.std}</b>: Schatzwert ${SCHATZ[c.std]}, ${ITEMS_N[c.std]} Nützliche(r) Gegenstand/Gegenstände. ${c.extra&&(S.culture==="hobbits"||S.culture==="breehobbits"||isDwarf())?"<br><b>"+c.extra[0]+":</b> "+c.extra[1]:""}</div>`;
   h+=`<h3>Waffen</h3><div class="row">`;
   PROFS.forEach(p=>{ if(combatVal(p)<=0) return;
     const opts=WEAPONS.filter(w=>w.p===p&&weaponAllowed(w));
@@ -2534,6 +2552,7 @@ const JOBS={
 const ORIG={
   bree:{l:"Bree-Land (Menschen)",cu:"bree",jobs:"dorf"},
   hobbits:{l:"Auenland (Hobbits)",cu:"hobbits",jobs:"hobbit"},
+  breehobbits:{l:"Bree-Land (Hobbits)",cu:"breehobbits",jobs:"dorf"},
   tharbad:{l:"Tharbad und Südlande",cu:"bree",jobs:"stadt",hint:"Namen nach Bree-Art – das Grundregelwerk hat für Tharbad keine eigene Liste."},
   gesindel:{l:"Gesindel und Banditen",cu:["bree","bardinger"],jobs:"gesindel",nick:true},
   waldlaeufer:{l:"Waldläufer des Nordens",cu:"waldlaeufer",jobs:"dunedain"},
