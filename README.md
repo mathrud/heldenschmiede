@@ -25,7 +25,14 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
 - Held per QR-Code oder Link an den Spielleiter geben
 
-**Spielleiter-App** (`spielleiter.html`, im Aufbau)
+**Karte von Mittelerde** (in beiden Apps)
+- Fan-Karte mit Hexfeldern und Gebieten, stufenlos zoombar, auch offline
+- Reiseweg planen: Start und Ziel antippen, der Weg wird über passierbares Gelände berechnet – mit Hexfeldern je Gebiet
+- Eigene Markierungen mit Notizen: Gemeinschaft, Zufluchten, Orte, Personen, Gefahren
+- Spieler: Im Streicher-Modus wandert der Weg direkt in die Reise
+- Spielleiter: Landmarken, Figuren, Abenteuer und Begegnungen auf die Karte setzen und von dort öffnen; Gefährliche Stellen mit Gefahrenstufe markieren; die Reise läuft auf der Karte mit – die Fahne zieht weiter, das Gebiet für den Ereigniswurf stellt sich selbst ein, an Gefährlichen Stellen hält die Gemeinschaft an; bereiste Wege bleiben eingezeichnet
+
+**Spielleiter-App** (`spielleiter.html`)
 - Gemeinschaft im Blick: Ausdauer, Hoffnung, Schatten, Erschöpfung, Wunden, Parade aller Helden
 - Fertigkeit nachschlagen: Wer kann was, mit welchem Schwierigkeitsgrad?
 - Begegnungen aus den Widersachern des Grundregelwerks zusammenstellen und speichern
@@ -51,11 +58,13 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 
 Alle Helden und Spielstände bleiben auf deinem Gerät, nichts wird hochgeladen. Zum Gerätewechsel im Spielmodus **„Held sichern“** und auf dem anderen Gerät **„Held laden“**.
 
-In der Spielleiter-App sichert **„Sichern“** (oben rechts) alles in eine Datei: Gruppe, Abenteuer, Figuren, Begegnungen und laufende Szenen. **„Laden“** holt eine Sicherung zurück, auch auf einem anderen Gerät. Der Browserspeicher allein ist nicht sicher – regelmäßig sichern!
+In der Spielleiter-App sichert **„Sichern“** (oben rechts) alles in eine Datei: Gruppe, Abenteuer, Figuren, Begegnungen, laufende Szenen und alles auf der Karte. **„Laden“** holt eine Sicherung zurück, auch auf einem anderen Gerät. Der Browserspeicher allein ist nicht sicher – regelmäßig sichern!
 
 ## Hinweis
 
 Die Heldenschmiede ist ein **inoffizielles, kostenloses Fanprojekt** und steht in keiner Verbindung zu Free League Publishing oder Middle-earth Enterprises. *The One Ring™*, *The Lord of the Rings™* sowie alle zugehörigen Namen und Begriffe sind Marken bzw. Eigentum ihrer jeweiligen Rechteinhaber. Regeln werden nur knapp zusammengefasst – zum Spielen braucht ihr die offiziellen Bücher.
+
+**Karte:** Tayla Sommer · Übersetzung: Philip Doba „Klopare“. Die Karte im Ordner `karte/` gehört ihren Urhebern und fällt nicht unter die MIT-Lizenz.
 
 ## Lizenz
 

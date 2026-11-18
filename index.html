@@ -3823,6 +3823,278 @@ window.HS_DICE={chron,openChron,exportChron,foes,SC,PH,openPhase,prog,setPlay,DT
 if(PLAY){ step=STEPS.length-1; if(window.innerWidth>=1180) DT.open=true; render(); } else enhance();
 })();
 </script>
+<script>/* Heldenschmiede III – Karte mit Markierungen und Reiseweg */
+(function(){
+"use strict";
+const CFG=window.HS_MAP_CFG||{};
+const MW=2048, MH=1493, BASE="karte/";
+/* Hexraster, aus dem Kartenbild vermessen (Koordinaten der Übersicht) */
+const GW=16.576, GH=14.3267, GX=13.3333, GY=9.9167, GR=GH*2/3, GROWS=105, GCOLS=125;
+const GRID="000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005111111111111111111111111111111111111152244444444444444444444444444444444444444444444444444444444444444444444444444440000000411111111111111111111111111111111111155444444444444444444444444444444444444444444444444444444444444444444444444444444000000000111111111111111111111111111111111111524444444444444444444444444444444444444444444444444444444444444444444444444444444000000011111111111111111111111111111151111112244444444444444444444444444444444444444444444444444444444444444444444444444444400000000011111111111111111111111115544451555552254444444444444444444444444444444444444444444444444444444444444444444444444444400000001111111111111111111111555442245114444445444444444444444444444444444444444444444444444444444444444444444444444444444440000000001111111111111111111555444222251122444444444444444444444444444444444444444444444444444444444444444444444444444444444440000000111111111111111111554442222444555224444444444444444444444444444444444444444444444444444444444444444444444444444444444000000000111111111111111155444422444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444000000011111111111111115544222444444444444444444444444444222244444444444444444444444444444444444444444444444444444444444444400000000011111111111111155454444444444444444444444444444442222224444444444444444444444444444444444444444444444444444444444444400000001111111111111115545442244445444444555444444444544444422244444444444444222244444444444444444444444444444444444444444440000000001111111111111111225552444445444444555454454444554444442444444444222222444444444444444444444444444444444444444444444440000000111111111111111122535224444555554445555444555555544444442442222222222222444444444444444444445444444444444444444444444000000000111111111111115523355224554555544444555555555555444444442245555555444444444444444444444444555444444444444444444444444000000011111111111115533333552444555555444455554444555544442444422455554444444455544444444444444555554444444444444444444444400000000011111111111533333333522455555554444444444444455555442244222455554444455555544444444445555555555544444444444444444444400000001111111111152333333222244555555444444444444445555554444444224555444445553333333322255555522255555544444444444444444440000000001111111111122333323442245555554444444444444555555544444444244555444445533333333332255222225555555444444444444444444440000000111111111115233322334524455555544554444444445555554444444442455244444444433333333333555555555555544444444444444444444000000000111111111115333333335224555555444444555544444555444444444422452344444444423333335555555555555555444444444444444444444000000011111111111533333333555445555555543555555444445544444444442255355444442224233555555555555555555554444444444444444444400000000011111111111553332335522443355553333355554444445555444444444255334444444444255555555555555555555544444444444444444444400000001111111111111533353333222333353333333555544444555554444444444553344444444445555555555555555555554444444444444444444440000000001111111111111553311333533333333333333555544444555555444444244555544444444455555555555555555555554444444444444444444440000000111111111111111131111555533333333333344455555555555444444422445554444444444555555555555555555555444444444442224444444000000000111111111111111151555555334333333333344444444555555444444224455524444444445555555555555555555554444444444444222444444000000011111111111111111511553332443333333333444444444555554444422445553244444444555555555555555555555544444444444442222444400000000011111111111111113333333324455555333333444444445554455444224444453344444445555555555555555555555554444444444442224444400000001111111111111111133333332445555553333354554555555444544442444444333444444455555555555333555555555544444444444222224440000000001111111111111111133333524445555555555555555555554555544422445445324444444555555555553333333555555544444444444422244440000000111111111111111113333352544444444455555555555555545554442244555552244443335555555555533333333355554444444444422222444000000000111111111111111113333552544444445555555555555555555544442444555533444433355555555555333333333335554444444444442222444000000011111111111111111333335522444555555555555555554555554444424455555334444433555555555553333333333335544444444444422224400000000011111111111111111133335525444555455555555555544455444444554455553344444444555555555553333333333335544444444442222444400000001111111111111111111355555554445545555555555554444544445544455555544444444455555555555555555335511114444444444222222440000000001111111111111111111155555554444445555555555554445554445444335555444444444455555555555555555331111114444444222222222440000000111111111111111111111555555544444555555555555555555444222523355544444444455555555555555554443111111144444444442222444000000000111111111111111111111551554444444555555555555555554442244523555544444445555555555555555444441111111144444444442222444000000011111111111111111111111111441444445555555555555555444224555555555544445555555555555555544424111111144444554444222244400000000011111111111111111111111111114444455555555555555544442244555555555555555555555555555555544244111111444445544442222222400000004100000000000000001111111111144445555555555555554444224445555555555555555555555555555554422241144154444554444444222440000000002500000000000000001111111111445445554455555555544442224444555555555555555555555555555554422455444544445544444222224440000000220000000000000000111111111154154555444555555554444422444445555555555555555555555555555544224444444444554444442222444000000000220000000000000000111111111151145554444555554554444224444445555555555555555555555555555442224444444444554444442222444000000022000000000000000011111111111114455544455555445444422444444555555555555555555555555555544442444444444455444444422244400000000022000000000000000011111111111114455544445544445444522444445555555555555555555555555555554444445554444554444444224444400000002200000000000000001111111111111144554444444444454454224555555555555555555555555555555555544455555555455544444442244440000000002200000000000000001111111111111111114444444444544544444555555555555555555555555555555555555555555545554444444442244440000000220000000000000000111111111111111111544444444445544444455555555555555555555555555555555555555555554555444444444225544000000000220000000000000000111111111111111115444444444444555555555555555555555555544455555555555555555555555544444444444225444000000022000000000000000011111111111111111544444444444444455533555555555555555544444555555555545555544555544444444444444444400000000022000000000000000011111111111111111444444444444444452233355555555555555444444455555555545554444444444444444444444444400000002200000000000000001111111111111111114444444444444444222333355555555555544444444555555554454422424444444444455224444440000000002200000000000000001111111111111111155444444444444442222253335555555555444242244444444444444222224444444444444444444440000000220000000000000000111111111111111111344444444444444252222533555555555544424422222222222222222244444444444444444444444000000000220000000000000000111111111111111111444444444222222552552333333355555444424444222222222222444444444444444444444444444000000022000000000000000011111111111111111114444442222442233322552233333555554442544444444444422244444444444444444455544444400000000022000000000000000011111111111111111144442444442423333333322222233333335545444444444444224444444444444444522222222244400000002200000000000000001111111111111111111442244455552233333332233222223333334224444444444442444444444444444454445222222440000000002200000000000000001111111111111111114442445555555355553323332222222233334244444444444244444444444444444444552222224440000000220000000000000000111111111111111111144244555555555555533233333222222333344244444444424444444444444444444444222222444000000000220000000000000000111111111111111111542245555555555555533333333222233334422444444442244444444444444444444422222224444000000022000000000000000011111111111111111155424555555555555555533333333333333444224444444444444444444444444444444444444444400000000022000000000000000011111111111111111142244555555555555555555553333333333444224424444444444444444444444444444444444444400000002200000000000000001111111111111111114424444555555551555555522333333333354422222224444444444444444444444444444444444440000000002200000000000000001111111111111111144444445555511111115355523333333333544222444444444444444444422444444444444444444440000000220000000000000000111111111111111144444444555111111111333352333333333334442244444444444411144442224444444444444444444000000000220000000000000000111111111111111444515244555511111111532233333333333344422244444444441111144442244444444444444444444000000022000000000000000011111111111111144555155551555111111153333333333333344444224444444441111114442224444444444444444444400000000022000000000000000011111111111111155111111111111111111153333233222234444444224444444444444444422244444444444444444444400000002200000000000000001111111111111111111111111111111111115553322133555544444442444444444444444442224444444444444444444440000000002200000000000000000000000000000000000000011111111111111153555155555555544422444444444444444222444444454444444444444440000000220000000000000000000000000000000000000001111111111111111555515555555555442242244444422222224445544455444444444444444000000000220000000000000000000000000000000000000001111111511111111111155555555555442255555522222244444455554544444444444444444000000022000000000000000000000000000000000000000111111151111111111115555555555554444444444244444444555554544444444444444444400000000022000000000000000000000000000000000000000111111111111111111115555555555554444444444445555554555554444444444444444444400000002200000000000000000000000000000000000000011111111111111111111155555555555555554455544555555445444444444444444444444440000000002200000000000000000000000000000000000000011111111111111111111555555555555555555555555555544444444444444444444444444440000000220000000000000000000000000000000000000001111111111111111111115555555555555555555555554544444444444444444444444444444000000000220000000000000000000000000000000000000001111111111111111111155555555555555555555555554444444444444444444444444444444000000022000000000000000000000000000000000000000111111111111111111115555555555555555555555555444444444444000000000000000004400000000022000000000000000000000000000000000000000111111111111111111115555555555555555555555454444444444444000000000000000004400000002200000000000000000000000000000000000000011111111111111111111444455555555555555555444444444444444400000000000000000440000000002200000000000000000000000000000000000000011111111111111111144444444555555555555555544444444444444400000000000000000440000000220000000000000000000000000000000000000001111111111111111114444444445555555555555454444444444444440000000000000000044000000000220000000000000000000000000000000000000001111111111111115444444444455555555555555454444444444444440000000000000000044000000022000000000000000000000000000000000000000111111111111555544444444445545444445554444444444444444444000000000000000004400000000022000000000000000000000000000000000000000111111115554444444444444444444444444444444444444444444444000000000000000004400000002200000000000000000000000000000000000000011111111115444444444444444444444444444444444444444444444400000000000000000440000000002200000000000000000000000000000000000000011111111122455444444444444444444444444444444444444444444400000000000000000440000000220000000000000000000000000000000000000001111111112242222444444444444444444444444444444444444444440000000000000000044000000000220000000000000000000000000000000000000001111111122422225544444444444444444444444444444444444444440000000000000000044000000022000000000000000000000000000000000000000511111115222444444444444444444444444444444444444444444444000000000000000004400000000025555555555555555555555555555555555555555111111112244444444444444444444444444444444444444444444444000000000000000004400000004111111111111111111111111111111111111111111111111524444444444444444444444444444444444444444444444400000000000000000440000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+const TERR={0:["außerhalb",false],1:["Meer",false],2:["Unwegsames Gelände",false],3:["Grenzland",true],4:["Dunkles Land",true],5:["Wildes Land",true]};
+const terr=(r,c)=>(r<0||c<0||r>=GROWS||c>=GCOLS)?0:+GRID[r*GCOLS+c];
+function hexCenter(r,c){ return [GX+(r%2?GW/2:0)+c*GW, GY+r*GH]; }
+function hexAt(x,y){ let best=null,bd=1e9; const r0=Math.round((y-GY)/GH); for(let r=r0-1;r<=r0+1;r++){ const c=Math.round((x-GX-(r%2?GW/2:0))/GW); const [cx,cy]=hexCenter(r,c); const d=(cx-x)**2+(cy-y)**2; if(d<bd){bd=d;best=[r,c];} } return best; }
+function nbs(r,c){ const d=r%2===0?[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]]:[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]]; return d.map(([a,b])=>[r+a,c+b]).filter(([a,b])=>a>=0&&b>=0&&a<GROWS&&b<GCOLS); }
+function cube(r,c){ const x=c-(r-(r&1))/2, z=r; return [x,-x-z,z]; }
+function hdist(a,b){ const p=cube(a[0],a[1]), q=cube(b[0],b[1]); return Math.max(Math.abs(p[0]-q[0]),Math.abs(p[1]-q[1]),Math.abs(p[2]-q[2])); }
+function findPath(a,b,avoidDark){
+  const key=(r,c)=>r*GCOLS+c, goal=key(b[0],b[1]);
+  if(!TERR[terr(b[0],b[1])][1]) return null;
+  const g=new Map([[key(a[0],a[1]),0]]), from=new Map(), open=[[hdist(a,b),0,a[0],a[1]]], closed=new Set();
+  while(open.length){ let bi=0; for(let i=1;i<open.length;i++) if(open[i][0]<open[bi][0]) bi=i; const [f,gc,r,c]=open.splice(bi,1)[0]; const k=key(r,c); if(closed.has(k)) continue; closed.add(k);
+    if(k===goal){ const path=[[r,c]]; let cur=k; while(from.has(cur)){ cur=from.get(cur); path.unshift([Math.floor(cur/GCOLS),cur%GCOLS]); } return path; }
+    for(const [nr,nc] of nbs(r,c)){ const t=terr(nr,nc); if(!TERR[t][1]) continue; const nk=key(nr,nc); if(closed.has(nk)) continue;
+      const cost=gc+(avoidDark&&t===4?3:1)+(t===4?0.01:0); if(cost<(g.get(nk)??1e9)){ g.set(nk,cost); from.set(nk,k); open.push([cost+hdist([nr,nc],b),cost,nr,nc]); } } }
+  return null;
+}
+const TYPES=Object.assign({wir:["🚩","Gemeinschaft","Wo ihr gerade seid"],zuflucht:["🏠","Zuflucht",""],ort:["📍","Ort",""]},CFG.types||{person:["👤","Person",""]},{gefahr:["⚠️","Gefahr",""],notiz:["📜","Notiz",""]});
+const CSS=`
+#hsMap{position:fixed;inset:0;z-index:400;background:#1d1913;display:flex;flex-direction:column;touch-action:none;user-select:none;-webkit-user-select:none}
+#hsMap .mtop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:max(8px,env(safe-area-inset-top)) 10px 8px;background:linear-gradient(180deg,#3a3127,#2a241c);border-bottom:2px solid var(--gold);color:var(--paper)}
+#hsMap .mtop b{font-family:Cinzel,serif;font-size:17px;letter-spacing:.05em;margin-right:6px}
+#hsMap .mtop button{border:1px solid #ffffff55;background:transparent;color:var(--paper);border-radius:8px;padding:5px 11px;font:14px "EB Garamond",serif;cursor:pointer}
+#hsMap .mtop button.on{background:var(--gold);color:#2a241c;border-color:var(--gold)}
+#hsMap .mtop .x{margin-left:auto;font-size:20px;padding:2px 12px}
+#hsMap .mview{position:relative;flex:1;overflow:hidden;cursor:grab}
+#hsMap .mview.mark,#hsMap .mview.route,#hsMap .mview.danger,#hsMap .mview.place{cursor:crosshair}
+#hsMap .mlayer{position:absolute;left:0;top:0;width:${MW}px;height:${MH}px;transform-origin:0 0}
+#hsMap .mlayer img{position:absolute;display:block;pointer-events:none;-webkit-user-drag:none}
+#hsMap .mpins{position:absolute;inset:0;pointer-events:none}
+#hsMap .pin{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;text-align:center;filter:drop-shadow(0 2px 2px #000a)}
+#hsMap .pin .e{font-size:26px;line-height:1}
+#hsMap .pin .l{font:600 12px "EB Garamond",serif;color:#fff;background:#000a;border-radius:6px;padding:0 5px;white-space:nowrap;margin-top:1px}
+#hsMap svg.mroute{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#hsMap .mhint{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#000c;color:#fff;border-radius:10px;padding:6px 12px;font-size:14px;max-width:92%;text-align:center;pointer-events:none}
+#hsMap .mcredit{position:absolute;right:6px;bottom:max(4px,env(safe-area-inset-bottom));color:#e8dcc0;font-size:11px;background:#0008;padding:1px 6px;border-radius:5px;pointer-events:none}
+#hsMap .mzoom{position:absolute;right:10px;bottom:32px;display:flex;flex-direction:column;gap:6px}
+#hsMap .mzoom button{width:40px;height:40px;border-radius:50%;border:1px solid var(--gold);background:#2a241ce6;color:var(--paper);font:20px Cinzel,serif;cursor:pointer}
+#hsMap .mbar{position:absolute;left:10px;right:60px;bottom:max(10px,env(safe-area-inset-bottom));background:var(--paper);border-radius:12px;padding:8px 10px;box-shadow:0 4px 16px #0008;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px}
+#hsMap .mbar button{border:1px solid var(--red);background:var(--red);color:#fff;border-radius:8px;padding:5px 10px;font:600 13px Cinzel,serif;cursor:pointer}
+#hsMap .mbar button.g{background:transparent;color:var(--red)}
+#hsMap .mpanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,94%);max-height:80%;overflow:auto;background:var(--paper);border-radius:14px;padding:14px;box-shadow:0 8px 30px #000a}
+#hsMap .mpanel h3{font-family:Cinzel,serif;color:var(--red);margin:0 0 8px}
+#hsMap .mpanel .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+#hsMap .mpanel .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 10px;cursor:pointer;font-size:14px}
+#hsMap .mpanel .chip.on{background:#4b4237;color:#f3e7c8;border-color:#4b4237}
+#hsMap .mpanel input,#hsMap .mpanel textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:7px;padding:6px 8px;font:15px "EB Garamond",serif;margin:4px 0}
+#hsMap .mpanel textarea{min-height:80px}
+#hsMap .mpanel .row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#hsMap .mpanel button{border:1px solid var(--red);background:var(--red);color:#fff;border-radius:8px;padding:6px 12px;font:600 13px Cinzel,serif;cursor:pointer}
+#hsMap .mpanel button.g{background:transparent;color:var(--red)}
+#hsMap .mpanel .li{display:flex;gap:8px;align-items:center;border-bottom:1px dotted var(--line);padding:6px 0;cursor:pointer}
+#hsMap .mpanel .li small{color:var(--muted)}
+#hsMap .mlegend{position:absolute;left:10px;top:10px;background:#000c;color:#fff;border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.6}
+#hsMap .mlegend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+`;
+const st=document.createElement("style"); st.textContent=CSS; document.head.appendChild(st);
+
+/* ---------- Daten ---------- */
+const LS="hs3-karte";
+let D=(CFG.load?CFG.load():(()=>{ try{ return JSON.parse(localStorage.getItem(LS)||"null"); }catch(e){ return null; } })())||{pins:[],route:[],view:null};
+D.pins=D.pins||[]; D.route=D.route||[]; D.danger=D.danger||{}; D.trails=D.trails||[];
+if(D.route&&D.route.length&&!Array.isArray(D.route[0])) D.route=[];
+if(D.auto===undefined) D.auto=true;
+function saveD(){ if(CFG.save){ CFG.save(D); return; } try{ localStorage.setItem(LS,JSON.stringify(D)); }catch(e){} }
+const uid=()=>Math.random().toString(36).slice(2,9);
+const E=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const note=m=>{ if(typeof toast==="function") toast(m); };
+
+/* ---------- Ansicht ---------- */
+let root=null, view, layer, pinsEl, svg, hintEl, barEl, panelEl, tiles=[], mode="pan";
+let s=1, tx=0, ty=0;
+function fitScale(){ const r=view.getBoundingClientRect(); return Math.min(r.width/MW,r.height/MH); }
+function clampView(){ const r=view.getBoundingClientRect(); const minS=fitScale()*0.9, maxS=fitScale()*20; s=Math.max(minS,Math.min(maxS,s));
+  const w=MW*s,h=MH*s; tx=w<r.width?(r.width-w)/2:Math.min(0,Math.max(r.width-w,tx)); ty=h<r.height?(r.height-h)/2:Math.min(0,Math.max(r.height-h,ty)); }
+function apply(){ clampView(); layer.style.transform=`translate(${tx}px,${ty}px) scale(${s})`; loadTiles(); drawPins(); drawRoute(); D.view={s:s/fitScale(),cx:(view.clientWidth/2-tx)/s,cy:(view.clientHeight/2-ty)/s}; saveDebounced(); }
+let sdT=null; function saveDebounced(){ clearTimeout(sdT); sdT=setTimeout(saveD,400); }
+function zoomAt(f,px,py){ const ns=s*f; const wx=(px-tx)/s, wy=(py-ty)/s; s=ns; tx=px-wx*s; ty=py-wy*s; apply(); }
+function centerOn(x,y,rel){ const r=view.getBoundingClientRect(); if(rel) s=fitScale()*rel; tx=r.width/2-x*s; ty=r.height/2-y*s; apply(); }
+const LEVELS=[{l:1,n:3,thr:0.9},{l:2,n:4,thr:3.0}];
+function loadTiles(){
+  const q=s*(window.devicePixelRatio||1), r=view.getBoundingClientRect();
+  LEVELS.forEach(L=>{ if(q<L.thr) return; const tw=MW/L.n, th=MH/L.n;
+    for(let row=0;row<L.n;row++) for(let c=0;c<L.n;c++){ const key=L.l+"-"+row+c; if(tiles.includes(key)) continue;
+      const x0=c*tw*s+tx, y0=row*th*s+ty; if(x0>r.width||y0>r.height||x0+tw*s<0||y0+th*s<0) continue;
+      tiles.push(key); const im=new Image(); im.decoding="async"; im.src=BASE+"karte-"+key+".jpg"; im.style.cssText=`left:${c*tw}px;top:${row*th}px;width:${tw+0.5}px;height:${th+0.5}px;opacity:0;transition:opacity .3s;z-index:${L.l}`; im.onload=()=>im.style.opacity=1; layer.appendChild(im); } });
+}
+function screenPos(p){ return [tx+p.x*s, ty+p.y*s]; }
+function drawPins(){
+  pinsEl.innerHTML=D.pins.map(p=>{ const [x,y]=screenPos(p); const t=TYPES[p.t]||TYPES.ort; return `<div class="pin" data-pin="${p.id}" style="left:${x}px;top:${y}px"><div class="e">${t[0]}</div>${p.n?`<div class="l">${E(p.n)}</div>`:""}</div>`; }).join("");
+  pinsEl.querySelectorAll("[data-pin]").forEach(el=>{ el.onpointerdown=e=>e.stopPropagation(); el.onclick=e=>{ e.stopPropagation(); openPin(D.pins.find(p=>p.id===el.dataset.pin)); }; });
+}
+function hexPts(r,c){ const [cx,cy]=hexCenter(r,c); return [-90,-30,30,90,150,210].map(a=>{ const t=a*Math.PI/180; return (tx+(cx+GR*Math.cos(t))*s)+","+(ty+(cy+GR*Math.sin(t))*s); }).join(" "); }
+function drawRoute(){
+  let h="";
+  const zoomed=s/fitScale()>2.2;
+  D.trails.forEach(t=>{ const pts=t.route.map(([r,c])=>{ const [x,y]=hexCenter(r,c); return (tx+x*s)+","+(ty+y*s); }); h+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#3b2a18" stroke-width="3" stroke-dasharray="6 5" opacity=".75"/>`; });
+  Object.entries(D.danger).forEach(([k,v])=>{ if(!v) return; const [r,c]=k.split(",").map(Number); const [x,y]=hexCenter(r,c); h+=`<polygon points="${hexPts(r,c)}" fill="#c0473a33" stroke="#c0473a" stroke-width="2.5"/>`+(zoomed?`<text x="${tx+x*s}" y="${ty+y*s+5}" text-anchor="middle" fill="#fff" stroke="#7a1f15" stroke-width="3" paint-order="stroke" font-size="${Math.min(16,7+s*2)}" font-family="Cinzel,serif">${v}</text>`:""); });
+  if(selHex){ h+=`<polygon points="${hexPts(selHex[0],selHex[1])}" fill="#ffffff33" stroke="#fff" stroke-width="2"/>`; }
+  if(D.route.length){
+    const big=s/fitScale()>2.2;
+    D.route.forEach(([r,c],i)=>{ const ok=TERR[terr(r,c)][1]; h+=`<polygon points="${hexPts(r,c)}" fill="${i===0?"#2f6b3acc":ok?"#c0473a88":"#00000099"}" stroke="${i===0?"#2f6b3a":"#7a1f15"}" stroke-width="${big?2:1}"/>`; });
+    const pts=D.route.map(([r,c])=>{ const [x,y]=hexCenter(r,c); return (tx+x*s)+","+(ty+y*s); });
+    h+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 5" opacity=".9"/>`;
+    if(big) D.route.forEach(([r,c],i)=>{ if(!i) return; const [x,y]=hexCenter(r,c); h+=`<text x="${tx+x*s}" y="${ty+y*s+4}" text-anchor="middle" fill="#fff" stroke="#000" stroke-width="3" paint-order="stroke" font-size="${Math.min(14,6+s*2)}" font-family="Cinzel,serif">${i}</text>`; });
+    const [ex,ey]=hexCenter(...D.route[D.route.length-1]); if(D.route.length>1) h+=`<circle cx="${tx+ex*s}" cy="${ty+ey*s}" r="7" fill="#c0473a" stroke="#fff" stroke-width="2"/>`;
+  }
+  svg.innerHTML=h;
+}
+let selHex=null;
+function setMode(m){ mode=mode===m?"pan":m; view.className="mview "+(mode==="pan"?"":mode); root.querySelectorAll("[data-mm]").forEach(b=>b.classList.toggle("on",b.dataset.mm===mode)); bar(); hint(); }
+function hint(){ hintEl.style.display=mode==="pan"?"none":""; hintEl.textContent=mode==="place"?`Tippe auf die Stelle für „${placeOpts?placeOpts.n:""}“.`:mode==="danger"?"Tippe ein Hexfeld an, um seine Gefahrenstufe festzulegen.":mode==="mark"?"Tippe auf die Karte, um eine Markierung zu setzen.":mode==="route"?(D.route.length?(D.auto?"Tippe das Ziel an – der Weg wird berechnet. Weitere Tipps verlängern ihn.":"Tippe das nächste Hexfeld an. Ein Tipp auf das letzte nimmt es zurück."):"Tippe zuerst das Startfeld an. Es zählt nicht mit."):""; }
+function isSolo(){ try{ return typeof solo==="function"&&solo(); }catch(e){ return false; } }
+function routeStats(){ const st={3:0,4:0,5:0,x:0,d:0}; D.route.slice(1).forEach(([r,c])=>{ const t=terr(r,c); if(TERR[t][1]) st[t]++; else st.x++; if(D.danger[r+","+c]) st.d++; }); return st; }
+function bar(){
+  if(mode==="route"||(D.route.length&&mode==="pan")){ const n=Math.max(0,D.route.length-1), st=routeStats();
+    barEl.style.display=""; barEl.innerHTML=`<span><b>${n}</b> Hexfeld${n===1?"":"er"}${n?` <small style="color:var(--muted)">(${[st[3]?st[3]+" Grenzland":"",st[5]?st[5]+" Wildes Land":"",st[4]?st[4]+" Dunkles Land":""].filter(Boolean).join(", ")}${st.x?`, <b style="color:var(--red)">${st.x} unpassierbar</b>`:""}${st.d?`, <b style="color:var(--red)">${st.d} Gefährliche Stelle${st.d>1?"n":""}</b>`:""})</small>`:""}</span>
+    ${mode==="route"?`<button class="${D.auto?"":"g"}" data-r="auto">${D.auto?"Automatisch":"Feld für Feld"}</button>${D.auto?`<button class="${D.avoid?"":"g"}" data-r="avoid">Dunkles Land meiden</button>`:""}<button class="g" data-r="undo">↶</button>`:""}<button class="g" data-r="clear">Löschen</button>${n?(CFG.useRoute?`<button data-r="use">Für die Reise übernehmen</button>`:CFG.noButtons?`<small style="color:var(--muted);flex-basis:100%">Für eine Reise mit Ereignissen: im Reiter Reise „Weg auf der Karte planen“.</small>`:isSolo()?`<button data-r="use">In Reise übernehmen</button><small style="color:var(--muted);flex-basis:100%">Übernahme in die Reise gibt es nur im Streicher-Modus.</small>`:`<small style="color:var(--muted);flex-basis:100%">In die Reise übernehmen lässt sich der Weg nur im Streicher-Modus. In der Gruppe nennst du die Zahl deinem Spielleiter.</small>`):""}${mode==="route"?`<button data-r="done">Fertig</button>`:""}`;
+    barEl.querySelectorAll("[data-r]").forEach(b=>{ b.onpointerdown=e=>e.stopPropagation(); b.onclick=e=>{ e.stopPropagation(); const k=b.dataset.r;
+      if(k==="undo"){ const L=D.segs&&D.segs.length?D.segs.pop():1; D.route.splice(Math.max(0,D.route.length-L)); }
+      if(k==="clear"){ D.route=[]; D.segs=[]; }
+      if(k==="done") setMode("route");
+      if(k==="auto") D.auto=!D.auto;
+      if(k==="avoid") D.avoid=!D.avoid;
+      if(k==="use") useRoute();
+      saveD(); drawRoute(); bar(); hint(); }; });
+  } else barEl.style.display="none";
+}
+function routeTap(h){
+  D.segs=D.segs||[];
+  if(!D.route.length){ if(!TERR[terr(h[0],h[1])][1]){ note("Dort geht es nicht los: "+TERR[terr(h[0],h[1])][0]); return; } D.route=[h]; D.segs=[1]; return; }
+  const last=D.route[D.route.length-1];
+  if(last[0]===h[0]&&last[1]===h[1]){ const L=D.segs.pop()||1; D.route.splice(Math.max(0,D.route.length-L)); return; }
+  if(D.auto){ const p=findPath(last,h,D.avoid); if(!p){ note("Kein Weg gefunden – Ziel liegt im Meer, im unwegsamen Gelände oder ist abgeschnitten."); return; } const add=p.slice(1); D.route.push(...add); D.segs.push(add.length); }
+  else { D.route.push(h); D.segs.push(1); if(!TERR[terr(h[0],h[1])][1]) note("Achtung: "+TERR[terr(h[0],h[1])][0]); }
+}
+function useRoute(){
+  const n=Math.max(0,D.route.length-1);
+  if(CFG.useRoute){ CFG.useRoute(n,D.route.slice()); close(); return; }
+  try{ const H=window.HS_DICE; if(H&&H.SC&&typeof solo==="function"&&solo()){ const ss=H.SC(); ss.sc.hex=n; ss.sc.hexLeft=n; localStorage.setItem("hs2-session-"+(S.name||"held"),JSON.stringify(ss)); note(n+" Hexfelder in die Reise übernommen"); return; } }catch(e){}
+  note(`Reiseweg: ${n} Hexfelder – sag es deinem Spielleiter`);
+}
+/* ---------- Markierungen ---------- */
+function panel(html){ panelEl.innerHTML=html; panelEl.style.display=""; panelEl.onpointerdown=e=>e.stopPropagation(); }
+function closePanel(){ panelEl.style.display="none"; panelEl.innerHTML=""; }
+function editPin(p,isNew){
+  let t=p.t||"ort";
+  panel(`<h3>${isNew?"Neue Markierung":"Markierung bearbeiten"}</h3>
+  <div class="chips">${Object.keys(TYPES).map(k=>`<span class="chip ${t===k?"on":""}" data-t="${k}">${TYPES[k][0]} ${TYPES[k][1]}</span>`).join("")}</div>
+  <input id="pN" placeholder="Name, z. B. Tänzelndes Pony" value="${E(p.n||"")}">
+  <div id="pLink"></div>
+  <textarea id="pT" placeholder="Notizen: Was ist hier passiert? Wer lebt hier? Was wollt ihr nicht vergessen?">${E(p.note||"")}</textarea>
+  <div class="row"><button data-b="save">Speichern</button><button class="g" data-b="cancel">Abbrechen</button>${isNew?"":`<button class="g" data-b="del">Löschen</button>`}</div>
+  <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">„Gemeinschaft“ gibt es nur einmal – neu gesetzt, wandert die Fahne mit.</p>`);
+  const fillLink=()=>{ const box=panelEl.querySelector("#pLink"); const L=CFG.links&&CFG.links[t]?CFG.links[t]():null;
+    box.innerHTML=L?`<select id="pRef" style="width:100%;border:1px solid var(--line);background:var(--card);border-radius:7px;padding:6px;font:15px 'EB Garamond',serif;margin:4px 0"><option value="">Verknüpfen mit …</option>${L.map(o=>`<option value="${E(o.id)}" ${p.ref===o.id?"selected":""}>${E(o.label)}</option>`).join("")}</select>`:"";
+    const sel=box.querySelector("#pRef"); if(sel) sel.onchange=()=>{ const n=panelEl.querySelector("#pN"); const o=L.find(z=>z.id===sel.value); if(o&&!n.value.trim()) n.value=o.label.split(" – ")[0]; }; };
+  fillLink();
+  panelEl.querySelectorAll("[data-t]").forEach(c=>c.onclick=()=>{ t=c.dataset.t; panelEl.querySelectorAll("[data-t]").forEach(x=>x.classList.toggle("on",x===c)); fillLink(); });
+  panelEl.querySelector('[data-b="cancel"]').onclick=closePanel;
+  const del=panelEl.querySelector('[data-b="del"]'); if(del) del.onclick=()=>{ if(!del.dataset.arm){ del.dataset.arm=1; del.textContent="Wirklich?"; return; } D.pins=D.pins.filter(x=>x.id!==p.id); saveD(); closePanel(); drawPins(); };
+  panelEl.querySelector('[data-b="save"]').onclick=()=>{ p.t=t; const rs=panelEl.querySelector("#pRef"); p.ref=rs?rs.value||null:null; p.n=panelEl.querySelector("#pN").value.trim(); p.note=panelEl.querySelector("#pT").value.trim(); p.d=Date.now();
+    if(t==="wir") D.pins=D.pins.filter(x=>x.t!=="wir"||x.id===p.id);
+    if(isNew) D.pins.push(p); saveD(); closePanel(); drawPins();
+    if(isNew&&mode==="mark") setMode("mark");
+    if(t==="wir"&&p.n&&window.HS_DICE&&HS_DICE.chron){ try{ HS_DICE.chron("notiz","Die Gemeinschaft ist jetzt hier: "+p.n); }catch(e){} } };
+  setTimeout(()=>{ const n=panelEl.querySelector("#pN"); if(n&&isNew) n.focus(); },50);
+}
+function openPin(p){ if(!p) return;
+  const t=TYPES[p.t]||TYPES.ort;
+  panel(`<h3>${t[0]} ${E(p.n||t[1])}</h3><div style="color:var(--muted);font-size:13px;margin-bottom:6px">${t[1]}${p.d?" · zuletzt geändert "+new Date(p.d).toLocaleDateString("de-DE"):""}</div>
+  ${p.note?`<div style="white-space:pre-wrap;font-size:15.5px">${E(p.note)}</div>`:`<div style="color:var(--muted)">Noch keine Notizen.</div>`}
+  <div class="row">${p.ref&&CFG.openRef?`<button data-b="ref">Eintrag öffnen</button>`:""}<button data-b="edit">Bearbeiten</button>${window.HS_DICE&&HS_DICE.chron?`<button class="g" data-b="chron">In die Chronik</button>`:""}<button class="g" data-b="close">Schließen</button></div>`);
+  panelEl.querySelector('[data-b="edit"]').onclick=()=>editPin(p,false);
+  const rb=panelEl.querySelector('[data-b="ref"]'); if(rb) rb.onclick=()=>{ close(); CFG.openRef(p.t,p.ref); };
+  panelEl.querySelector('[data-b="close"]').onclick=closePanel;
+  const ch=panelEl.querySelector('[data-b="chron"]'); if(ch) ch.onclick=()=>{ try{ HS_DICE.chron("notiz",(p.n||t[1])+(p.note?": "+p.note:"")); note("In der Chronik vermerkt"); }catch(e){} closePanel(); };
+}
+function openList(){
+  const L=D.pins.slice().sort((a,b)=>(a.t==="wir"?-1:0)-(b.t==="wir"?-1:0)||(a.n||"").localeCompare(b.n||""));
+  panel(`<h3>Markierungen</h3>${L.length?L.map(p=>`<div class="li" data-go="${p.id}"><span style="font-size:20px">${(TYPES[p.t]||TYPES.ort)[0]}</span><span><b>${E(p.n||(TYPES[p.t]||TYPES.ort)[1])}</b><br><small>${E((p.note||"").slice(0,70))}${(p.note||"").length>70?" …":""}</small></span></div>`).join(""):`<p style="color:var(--muted)">Noch keine Markierungen. Tippe oben auf „Markieren“ und dann auf die Karte.</p>`}
+  <div class="row"><button class="g" data-b="exp">Markierungen sichern</button><button class="g" data-b="imp">Laden</button><button data-b="close">Schließen</button></div>
+  <input type="file" accept=".json,application/json" style="display:none">`);
+  panelEl.querySelectorAll("[data-go]").forEach(el=>el.onclick=()=>{ const p=D.pins.find(x=>x.id===el.dataset.go); closePanel(); centerOn(p.x,p.y,Math.max(4,s/fitScale())); setTimeout(()=>openPin(p),250); });
+  panelEl.querySelector('[data-b="close"]').onclick=closePanel;
+  panelEl.querySelector('[data-b="exp"]').onclick=()=>{ if(typeof offer==="function") offer("Karte_Markierungen.json",JSON.stringify({app:"heldenschmiede-karte",v:1,pins:D.pins,route:D.route},null,1)); };
+  const fi=panelEl.querySelector("input[type=file]"); panelEl.querySelector('[data-b="imp"]').onclick=()=>fi.click();
+  fi.onchange=async()=>{ try{ const d=JSON.parse(await fi.files[0].text()); if(d.app!=="heldenschmiede-karte") throw 0; D.pins=d.pins||[]; D.route=d.route||[]; saveD(); closePanel(); drawPins(); drawRoute(); bar(); note("Markierungen geladen"); }catch(e){ note("Das ist keine Markierungs-Datei"); } };
+}
+function legend(){ const L=root.querySelector(".mlegend"); if(L){ L.remove(); return; }
+  const d=document.createElement("div"); d.className="mlegend"; d.innerHTML=`<div><i style="background:#9b3a2a"></i>Dunkles Land</div><div><i style="background:#5b7a33"></i>Grenzland</div><div><i style="background:#d9b48a"></i>Wildes Land</div><div><i style="background:#5a4c44"></i>Unwegsames Gelände</div><div><i style="background:transparent;border:2px solid #c0473a"></i>Gefährliche Stelle (Zahl = Gefahrenstufe)</div><div style="opacity:.8;margin-top:4px;max-width:230px;line-height:1.35">Tippe ein Feld an, um sein Gebiet zu sehen. Die Gebiete hat die App aus den Farben der Karte gelesen.</div>`; view.appendChild(d); }
+
+let placeOpts=null;
+function dangerPanel(h){ const k=h[0]+","+h[1], cur=D.danger[k]||0;
+  panel(`<h3>Gefährliche Stelle</h3><p style="margin:0 0 6px;color:var(--muted);font-size:14px">Gelände: ${TERR[terr(h[0],h[1])][0]}. Die Gefahrenstufe gibt an, wie vielen Ereignissen sich die Gemeinschaft stellen muss, bevor sie das Gebiet verlassen kann.</p>
+  <div class="chips">${[0,1,2,3,4,5,6].map(n=>`<span class="chip ${cur===n?"on":""}" data-dl="${n}">${n?"Stufe "+n:"keine"}</span>`).join("")}</div><div class="row"><button class="g" data-b="close">Schließen</button></div>`);
+  panelEl.querySelectorAll("[data-dl]").forEach(c=>c.onclick=()=>{ const n=+c.dataset.dl; if(n) D.danger[k]=n; else delete D.danger[k]; saveD(); closePanel(); drawRoute(); bar(); });
+  panelEl.querySelector('[data-b="close"]').onclick=closePanel; }
+function close(){ if(root){ root.style.display="none"; if(panelEl) closePanel(); placeOpts=null; if(mode!=="pan") setMode(mode); saveD(); } if(CFG.onClose) CFG.onClose(); }
+function openWith(o){ o=o||{}; open(); if(o.mode&&mode!==o.mode) setMode(o.mode); if(o.place){ placeOpts=o.place; if(mode!=="place") setMode("place"); hint(); }
+  if(o.center){ const [x,y]=Array.isArray(o.center)?hexCenter(o.center[0],o.center[1]):[o.center.x,o.center.y]; requestAnimationFrame(()=>centerOn(x,y,Math.max(3,s/fitScale()))); }
+  if(o.route){ D.route=o.route.slice(); D.segs=[D.route.length]; saveD(); requestAnimationFrame(()=>{ drawRoute(); bar(); }); } }
+function showRef(t,ref){ const p=D.pins.find(q=>q.t===t&&q.ref===ref); if(!p){ return false; } openWith({center:{x:p.x,y:p.y}}); setTimeout(()=>openPin(p),300); return true; }
+function setFlag(h,name){ const [x,y]=hexCenter(h[0],h[1]); D.pins=D.pins.filter(p=>p.t!=="wir"); D.pins.push({id:uid(),x,y,t:"wir",n:name||"Gemeinschaft",note:"",d:Date.now()}); saveD(); if(root&&root.style.display!=="none") drawPins(); }
+function addTrail(route,label){ if(route&&route.length>1){ D.trails.push({route:route.slice(),label:label||"",d:Date.now()}); saveD(); } }
+/* ---------- Gesten ---------- */
+function bindGestures(){
+  const P=new Map(); let start=null, moved=false, pinch=null;
+  view.addEventListener("pointerdown",e=>{ if(e.target.closest(".mbar,.mzoom,.mpanel,.pin")) return; view.setPointerCapture(e.pointerId); P.set(e.pointerId,{x:e.clientX,y:e.clientY}); moved=false;
+    if(P.size===1) start={x:e.clientX,y:e.clientY,tx,ty};
+    if(P.size===2){ const [a,b]=[...P.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s,tx,ty,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2}; } });
+  view.addEventListener("pointermove",e=>{ if(!P.has(e.pointerId)) return; P.set(e.pointerId,{x:e.clientX,y:e.clientY}); const r=view.getBoundingClientRect();
+    if(P.size===2&&pinch){ const [a,b]=[...P.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); const f=d/pinch.d; const cx=(a.x+b.x)/2-r.left, cy=(a.y+b.y)/2-r.top; const wx=(pinch.cx-r.left-pinch.tx)/pinch.s, wy=(pinch.cy-r.top-pinch.ty)/pinch.s; s=pinch.s*f; tx=cx-wx*s; ty=cy-wy*s; moved=true; apply(); }
+    else if(P.size===1&&start){ const dx=e.clientX-start.x, dy=e.clientY-start.y; if(Math.abs(dx)+Math.abs(dy)>6) moved=true; if(moved){ tx=start.tx+dx; ty=start.ty+dy; apply(); } } });
+  const up=e=>{ if(!P.has(e.pointerId)) return; P.delete(e.pointerId); if(P.size<2) pinch=null;
+    if(P.size===0){ if(!moved) tap(e); start=null; } else if(P.size===1){ const v=[...P.values()][0]; start={x:v.x,y:v.y,tx,ty}; } };
+  view.addEventListener("pointerup",up); view.addEventListener("pointercancel",e=>{ P.delete(e.pointerId); pinch=null; start=null; });
+  view.addEventListener("wheel",e=>{ e.preventDefault(); const r=view.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY*0.0018),e.clientX-r.left,e.clientY-r.top); },{passive:false});
+  let lastTap=0, selT=null;
+  function tap(e){ const r=view.getBoundingClientRect(); const x=(e.clientX-r.left-tx)/s, y=(e.clientY-r.top-ty)/s; if(x<0||y<0||x>MW||y>MH) return;
+    if(panelEl.style.display!=="none"){ closePanel(); return; }
+    if(mode==="mark"){ editPin({id:uid(),x,y,t:"ort"},true); return; }
+    if(mode==="place"&&placeOpts){ const o=placeOpts; placeOpts=null; D.pins=D.pins.filter(q=>!(q.t===o.t&&q.ref===o.ref)); D.pins.push({id:uid(),x,y,t:o.t,ref:o.ref,n:o.n,note:"",d:Date.now()}); saveD(); drawPins(); setMode("place"); if(window.toast) toast(o.n+" ist auf der Karte"); return; }
+    if(mode==="danger"){ const h=hexAt(x,y); if(h) dangerPanel(h); return; }
+    if(mode==="route"){ const h=hexAt(x,y); if(h){ routeTap(h); saveD(); drawRoute(); bar(); hint(); } return; }
+    const h=hexAt(x,y); if(h){ selHex=h; drawRoute(); const t=terr(h[0],h[1]); if(t) note("Feld: "+TERR[t][0]); clearTimeout(selT); selT=setTimeout(()=>{ selHex=null; drawRoute(); },2500); }
+    const now=Date.now(); if(now-lastTap<320){ zoomAt(2,e.clientX-r.left,e.clientY-r.top); lastTap=0; } else lastTap=now; }
+}
+/* ---------- Öffnen ---------- */
+function open(){
+  if(root){ root.style.display="flex"; apply(); return; }
+  root=document.createElement("div"); root.id="hsMap";
+  root.innerHTML=`<div class="mtop"><b>Karte</b><button data-mm="mark">Markieren</button><button data-mm="route">Reiseweg</button>${CFG.danger?`<button data-mm="danger">Gefahr</button>`:""}<button data-mb="list">Liste</button><button data-mb="legend">Legende</button><button class="x" data-mb="close" aria-label="Schließen">×</button></div>
+  <div class="mview"><div class="mlayer"><img src="${BASE}karte-0.jpg" alt="Karte von Mittelerde" style="left:0;top:0;width:${MW}px;height:${MH}px"></div><svg class="mroute"></svg><div class="mpins"></div><div class="mhint" style="display:none"></div>
+  <div class="mzoom"><button data-z="in">+</button><button data-z="out">−</button><button data-z="wir" title="Zur Gemeinschaft">🚩</button></div>
+  <div class="mbar" style="display:none"></div><div class="mpanel" style="display:none"></div>
+  <div class="mcredit">Karte: Tayla Sommer · Übersetzung: Philip Doba „Klopare“</div></div>`;
+  document.body.appendChild(root);
+  view=root.querySelector(".mview"); layer=root.querySelector(".mlayer"); pinsEl=root.querySelector(".mpins"); svg=root.querySelector("svg.mroute"); hintEl=root.querySelector(".mhint"); barEl=root.querySelector(".mbar"); panelEl=root.querySelector(".mpanel");
+  root.querySelectorAll("[data-mm]").forEach(b=>b.onclick=()=>setMode(b.dataset.mm));
+  root.querySelector('[data-mb="close"]').onclick=close;
+  root.querySelector('[data-mb="list"]').onclick=openList;
+  root.querySelector('[data-mb="legend"]').onclick=legend;
+  root.querySelectorAll("[data-z]").forEach(b=>{ b.onpointerdown=e=>e.stopPropagation(); b.onclick=()=>{ const r=view.getBoundingClientRect(); if(b.dataset.z==="in") zoomAt(1.6,r.width/2,r.height/2); if(b.dataset.z==="out") zoomAt(1/1.6,r.width/2,r.height/2); if(b.dataset.z==="wir"){ const w=D.pins.find(p=>p.t==="wir"); if(w) centerOn(w.x,w.y,Math.max(3,s/fitScale())); else note("Noch keine Fahne gesetzt – „Markieren“ → Gemeinschaft"); } }; });
+  bindGestures();
+  window.addEventListener("resize",()=>{ if(root.style.display!=="none") apply(); });
+  requestAnimationFrame(()=>{ if(D.view&&D.view.s) centerOn(D.view.cx,D.view.cy,D.view.s); else { s=fitScale(); apply(); } bar(); });
+}
+/* ---------- Einstieg ---------- */
+function ensureButton(){
+  const bar=document.getElementById("scBar");
+  if(bar&&!bar.querySelector("[data-karte]")){ const b=document.createElement("button"); b.dataset.karte="1"; b.textContent="Karte"; b.onclick=open; bar.appendChild(b); }
+  const h1=document.querySelector("header.top h1");
+  if(h1&&!document.getElementById("hsMapBtn")){ const b=document.createElement("button"); b.id="hsMapBtn"; b.className="hs-load"; b.textContent="Karte"; b.title="Karte von Mittelerde"; b.onclick=open; h1.appendChild(b); }
+  const hb=document.getElementById("hsMapBtn"); if(hb) hb.style.display=document.body.classList.contains("play")?"none":"inline-block";
+}
+if(!CFG.noButtons){
+new MutationObserver(ensureButton).observe(document.body,{childList:true,subtree:false});
+if(typeof render==="function"){ const orig=render; render=function(){ orig.apply(this,arguments); try{ ensureButton(); }catch(e){} }; }
+ensureButton(); }
+if(CFG.noButtons&&window.HS_GM) setTimeout(()=>HS_GM.render(),0);
+window.HS_MAP={open,openWith,close,showRef,setFlag,addTrail,hexCenter,dangerAt:(r,c)=>D.danger[r+","+c]||0,reload:()=>{ if(CFG.load){ const d=CFG.load(); if(d){ D=d; D.pins=D.pins||[]; D.route=D.route||[]; D.danger=D.danger||{}; D.trails=D.trails||[]; } } },get data(){return D;},view:()=>({s,tx,ty,rect:view.getBoundingClientRect()}),hexAt,terr,findPath,TERR};
+})();
+</script>
 <script>if("serviceWorker" in navigator&&location.protocol.startsWith("http")){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
 </body>
 </html>
