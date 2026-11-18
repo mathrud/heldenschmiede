@@ -3632,8 +3632,8 @@ function sceneBar(){
   if(!PLAY){ if(b) b.remove(); return; }
   if(!b){ b=document.createElement("div"); b.id="scBar"; document.querySelector("header.top").after(b); }
   const sc=SC().sc.scene;
-  b.innerHTML=SCENES.map(x=>`<button data-sc="${x[0]}" class="${sc===x[0]?"on":""}">${x[1]}</button>`).join("")+`<span class="sep"></span><button data-sc="phase">Gefährtenphase</button><button data-sc="chron">Chronik</button>`;
-  b.querySelectorAll("[data-sc]").forEach(x=>x.onclick=()=>{ const id=x.dataset.sc; if(id==="phase"){openPhase();return;} if(id==="chron"){openChron();return;} if(id===SC().sc.scene){DT.tab=id==="spiel"?"wurf":"szene";DT.open=true;paint();return;} setScene(id); });
+  b.innerHTML=SCENES.map(x=>`<button data-sc="${x[0]}" class="${sc===x[0]?"on":""}">${x[1]}</button>`).join("")+`<span class="sep"></span><button data-sc="phase">Gefährtenphase</button><button data-sc="chron">Chronik</button>`+(window.HS_MAP?`<button data-sc="karte" data-karte="1">Karte</button>`:"");
+  b.querySelectorAll("[data-sc]").forEach(x=>x.onclick=()=>{ const id=x.dataset.sc; if(id==="phase"){openPhase();return;} if(id==="chron"){openChron();return;} if(id==="karte"){HS_MAP.open();return;} if(id===SC().sc.scene){DT.tab=id==="spiel"?"wurf":"szene";DT.open=true;paint();return;} setScene(id); });
 }
 function sceneTool(cfg,tag){ cfg=newMods(cfg); cfg.tag=tag; if(SC().sc.scene==="beratung"&&cfg.kind==="skill") cfg.bonus=SC().sc.aud; DT.cfg=cfg; DT.last=null; paint(); }
 
