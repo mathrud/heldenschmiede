@@ -2651,6 +2651,7 @@ function qrSVG(text){
 window.HS_SHARE={pack,unpack,snap,qrSVG};
 })();
 </script>
+<script>window.HS_STRIDER_FLOW=1;</script>
 <script>/* Heldenschmiede II – Würfeltisch. Wird nach dem Hauptskript geladen und klinkt sich in render() ein. */
 (function(){
 const DCSS = `
@@ -2842,7 +2843,7 @@ const FLAWS={
   "Wandertrieb":["Träge","Vergesslich","Gleichgültig","Feige"]};
 
 /* ---------- Zustand ---------- */
-const DT={open:false,tab:"wurf",cfg:null,last:null,log:[],enemyPar:4,injury:14,shadowIn:1,answerP:2,question:"",oracle:null,travel:false};
+const DT={open:false,tab:"wurf",cfg:null,last:null,log:[],enemyPar:0,injury:14,shadowIn:1,answerP:2,question:"",oracle:null,travel:false};
 let MEM={};
 function key(){return "hs2-session-"+(S.name||"held");}
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return MEM[k]||null;}}
@@ -3838,6 +3839,249 @@ function enhance(){
 const _render=render;
 render=function(){ if(PLAY) step=STEPS.length-1; _render.apply(this,arguments); try{enhance();}catch(e){console.error(e);} };
 window.HS_DICE={chron,openChron,exportChron,foes,SC,PH,openPhase,prog,setPlay,DT,doRoll,openWith,skillCfg,attackCfg,protCfg,shadowCfg,sess};
+
+/* Heldenschmiede – Streicher-Abläufe (Testversion, nur Version III)
+   Reise, Kampf und Beratung im Streicher-Modus als geführte Schritte wie in der Spielleiter-App.
+   Setzt auf dice.js auf und ersetzt dort nur die Szenen-Darstellung, wenn solo() aktiv ist. */
+(function(){
+"use strict";
+if(typeof paintScene!=="function") return;
+const st=document.createElement("style");
+st.textContent=`.sf{margin:2px 0 8px}
+.sf-s{border:1px solid var(--line);border-radius:10px;margin:6px 0;background:#fff}
+.sf-s.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;background:#fffdf7}
+.sf-s.todo{opacity:.55}
+.sf-s.done{cursor:pointer}
+.sf-h{display:flex;align-items:center;gap:8px;padding:7px 10px;font:700 14px Cinzel,serif;color:var(--ink)}
+.sf-h small{font:13px "EB Garamond",serif;color:var(--muted);margin-left:auto;text-align:right}
+.sf-h .n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--paper);border:1px solid var(--gold);font:700 12px Cinzel,serif;flex:none}
+.sf-s.on .sf-h .n{background:var(--gold);color:#2a241c}
+.sf-s.done .sf-h .n{background:#e8dcc0}
+.sf-b{padding:0 10px 10px}
+.sf-bar{height:8px;border-radius:5px;background:#eadfca;overflow:hidden;margin:4px 0}
+.sf-bar span{display:block;height:100%;background:var(--gold)}
+.sf-go{background:var(--red)!important;color:#fff!important;border-color:var(--red)!important}
+.sf-warn{border-left:3px solid var(--red);padding:4px 8px;margin:6px 0;background:#fbefe9;font-size:14px}`;
+document.head.appendChild(st);
+
+const ON=()=>window.HS_STRIDER_FLOW&&solo();
+const REG={3:"Grenzland",5:"Wildes Land",4:"Dunkles Land"};
+const MAP=()=>!!window.HS_MAP;
+const chip=(a,l,on,cls)=>`<span class="dt-chip ${on?"on":""} ${cls||""}" data-fa="${a}">${l}</span>`;
+const btn=(a,l,go)=>`<button class="dt-btn ${go?"sf-go":""}" data-fa="${a}">${l}</button>`;
+function flow(key,steps,cur,body,sum){
+  return `<div class="sf">`+steps.map((t,i)=>{
+    if(i===cur) return `<div class="sf-s on"><div class="sf-h"><span class="n">${i+1}</span>${t}</div><div class="sf-b">${body(i)}</div></div>`;
+    const done=i<cur;
+    return `<div class="sf-s ${done?"done":"todo"}" ${done?`data-fl="${key}:${i}"`:""}><div class="sf-h"><span class="n">${done?"✓":i+1}</span>${t}${done&&sum?`<small>${sum(i)||""}</small>`:""}</div></div>`;
+  }).join("")+`</div>`;
+}
+function rollBox(){ if(!(DT.cfg&&DT.cfg.tag)) return ""; let h=`<hr class="dt-hr">`; if(DT.taskHint&&["task","travelEnd"].includes(DT.cfg.tag)) h+=`<p class="dt-hint">${DT.taskHint}</p>`; return h+paintRoll(true); }
+function hexAt(c,i){ return c.route&&c.route[Math.min(i,c.route.length-1)]; }
+function regionFromMap(s,c){ const h=hexAt(c,c.pos||0); if(!h||!MAP()) return; const r=REG[HS_MAP.terr(h[0],h[1])]; if(r) s.hunt=r; }
+function flagTo(c,last){ const h=hexAt(c,c.pos||0); if(h&&MAP()) HS_MAP.setFlag(h,last&&c.to?c.to:"Gemeinschaft"); }
+
+/* ---------------- Reise ---------------- */
+const TST=["Weg und Vorbereitung","Unterwegs","Ankunft"];
+function tSum(c,s){ return i=>i===0?`${c.hex} Hexfelder · ${c.season==="warm"?"Frühling/Sommer":"Herbst/Winter"}`:i===1?`${(c.tev||0)} Ereignis${c.tev===1?"":"se"}`:""; }
+function travel(s,c){
+  const step=c.tstep||0;
+  return flow("t",TST,step,i=>{
+    let h="";
+    if(i===0){
+      h+=`<div class="dt-row"><span class="k">Ziel</span><input class="dt-in" id="sfTo" style="max-width:200px" placeholder="z. B. Bruchtal" value="${esc(c.to||"")}"></div>`;
+      if(MAP()) h+=`<div class="dt-row">${btn("tmap",c.route&&c.route.length>1?"Weg auf der Karte ändern":"Weg auf der Karte planen")}${c.route&&c.route.length>1?`<span class="dt-hint" style="margin:0">Weg mit <b>${c.route.length-1}</b> Feldern${(()=>{const d=c.route.slice(1).filter(h=>HS_MAP.dangerAt(h[0],h[1])).length; return d?`, <b style="color:var(--red)">${d} Gefährliche Stelle${d>1?"n":""}</b>`:"";})()}</span>`:""}</div>`;
+      h+=`<div class="dt-row"><span class="k">Strecke</span>${stepper("hex",c.hex)}<span class="dt-hint" style="margin:0">Hexfelder ohne Startfeld</span></div>`;
+      h+=`<div class="dt-row"><span class="k">Jahreszeit</span><span class="dt-chip ${c.season==="warm"?"on":""}" data-sseas="warm">Frühling/Sommer</span><span class="dt-chip ${c.season==="kalt"?"on":""}" data-sseas="kalt">Herbst/Winter</span></div>`;
+      h+=`<div class="dt-row"><span class="k">Gebiet</span>${Object.keys(HUNT).map(k=>chip("thunt:"+k,k,s.hunt===k)).join("")}</div>`;
+      h+=`<p class="dt-hint">Das Gebiet bestimmt den Ereigniswurf (Grenzland bevorzugt, Dunkles Land benachteiligt) und die Jagdschwelle für Saurons Blick.${c.route&&MAP()?" Mit Weg auf der Karte stellt es sich unterwegs selbst ein.":""} Dein Held ist allein unterwegs und übernimmt alle Reiseaufgaben selbst.</p>`;
+      h+=c.hex?btn("tstart","Aufbrechen",true):`<p class="dt-hint"><b>Erst die Strecke festlegen.</b></p>`;
+      return h;
+    }
+    if(i===1){
+      const left=Math.max(0,c.hex-(c.pos||0));
+      h+=`<div class="sf-bar"><span style="width:${100*(c.pos||0)/Math.max(1,c.hex)}%"></span></div><div class="dt-row" style="justify-content:space-between"><span>Feld <b>${c.pos||0}</b> von ${c.hex}${MAP()&&c.route?" · "+esc(s.hunt):""}</span>${MAP()&&c.route?btn("tshow","Karte"):""}</div>`;
+      h+=`<div class="dt-row"><span class="k">Erschöpfung</span>${stepper("s_fat",s.fatigue)}<span class="dt-hint" style="margin:0">seit Aufbruch +${Math.max(0,s.fatigue-(c.startFat||0))}</span></div>`;
+      if(c.evPend){
+        if(c.dz) h+=`<div class="sf-warn"><b>Gefährliche Stelle (Stufe ${c.dzLvl}).</b> Dein Held hält an und stellt sich ${c.dzLvl} Ereignis${c.dzLvl>1?"sen":""}, bevor er weiterziehen kann – noch ${c.dz}.</div>`;
+        if(!c.ev){ h+=`<div class="fx-box"><div class="fx-t">Reiseereignis auf Feld ${c.pos}</div><p class="dt-hint" style="margin:0 0 4px">Heldenwürfel im ${esc(s.hunt)} – ${s.hunt==="Grenzland"?"bevorzugt":s.hunt==="Dunkles Land"?"benachteiligt":"normal"}.</p><span class="dt-chip sf-go" data-sev="1">Ereignis auswürfeln</span></div>`; }
+        else { const e=SOLO_EV[c.ev.i];
+          h+=`<div class="fx-box"><div class="fx-t">${e.n}</div><div class="dt-hint" style="margin:0 0 4px">${e.t} · Erschöpfung ${e.fat||"–"} · Ereignis-Detail Zeile <b>${c.ev.d}</b> (Streicher-Modus S. 17–19)</div>`;
+          if(c.ev.done) h+=`<div class="dt-note">${c.ev.done}</div>`+btn("tnext",c.dz>1?"Nächstes Ereignis an dieser Stelle":(c.pos>=c.hex?"Weiter zur Ankunft":"Weiterreisen"),true);
+          else h+=`<div class="dt-row"><span class="k">Wurf mit</span>${["Erkunden","Wahrnehmung","Jagen"].map(x=>`<span class="dt-chip" data-sevsk="${x}">${x}</span>`).join("")}</div><div class="dt-row">${[["Straße",1],["normal",0],["schwieriges Gelände",-1]].map(x=>`<span class="dt-chip ${c.road===x[1]?"on":""}" data-sroad="${x[1]}">${x[0]}</span>`).join("")}</div><p class="dt-hint">Wie du dem Ereignis begegnest, erzählst du selbst – die Fertigkeit wählst du passend dazu.</p>`;
+          h+=`</div>`; }
+      } else {
+        h+=`<div class="fx-box"><div class="fx-t">Marschprobe</div><p class="dt-hint" style="margin:0 0 4px">REISEN würfeln. Misslungen: Ereignis nach ${c.season==="warm"?"2 Feldern":"1 Feld"}. Gelungen: nach 3 Feldern, +1 je Erfolgssymbol. Reicht das bis zum Ziel (noch ${left}), endet die Reise ohne weiteres Ereignis.</p>`;
+        if(DT.march==null) h+=`<span class="dt-chip sf-go" data-smarch="1">Marschprobe (REISEN)</span>`;
+        else h+=btn("tadv",DT.march>=left?"Ziel erreicht":`Weiter: ${DT.march} Feld${DT.march===1?"":"er"} bis zum Ereignis`,true);
+        h+=`</div>`;
+      }
+      h+=rollBox();
+      return h;
+    }
+    const vit=MOUNT[C().std][1]||0;
+    h+=`<p class="dt-hint">Am Ziel zeigt sich die Reiseerschöpfung (jetzt <b>${s.fatigue}</b>). ${vit?`Dein Reittier zieht ${vit} ab (Vitalität). `:""}Danach würfelst du REISEN: gelungen −1, und −1 je Erfolgssymbol. Der Rest zählt zur Belastung; jede Ausgedehnte Rast in einer sicheren Zuflucht senkt ihn um 1.</p>`;
+    if(!(DT.cfg&&DT.cfg.tag==="travelEnd")) h+=`<button class="dt-btn sf-go" data-send="reise">Ankunft: ${vit?"Reittier & ":""}REISEN-Wurf</button>`;
+    h+=rollBox();
+    return h;
+  },tSum(c,s));
+}
+function tAdvance(s,c){
+  const d=DT.march, from=c.pos||0, left=c.hex-from;
+  if(c.route&&MAP()){ for(let k=from+1;k<=Math.min(c.hex,from+d)&&k<c.route.length;k++){ const lv=HS_MAP.dangerAt(c.route[k][0],c.route[k][1]); if(lv){ c.pos=k; c.dz=lv; c.dzLvl=lv; c.evPend=true; c.ev=null; DT.march=null; regionFromMap(s,c); flagTo(c); chron("reise","Gefährliche Stelle (Stufe "+lv+") auf Feld "+k); return; } } }
+  if(d>=left){ c.pos=c.hex; c.evPend=false; c.tstep=2; chron("reise","Marschprobe reicht bis zum Ziel"); }
+  else { c.pos=from+d; c.evPend=true; c.ev=null; }
+  c.hexLeft=c.hex-c.pos; DT.march=null; regionFromMap(s,c); flagTo(c,c.pos>=c.hex);
+}
+
+/* ---------------- Kampf ---------------- */
+const KST=["Gegner und Überraschung","Auftaktsalven","Nahkampfrunden","Kampfende"];
+const RANGED=/Bogen|Speer|Wurf/i;
+function foeResBox(c){ if(!DT.foeRes) return ""; const fr=DT.foeRes; let h=`<div class="dt-res"><div class="dt-note">${fr.txt}</div>`;
+  if(fr.ok){ h+=`<div class="dt-verdict no">Getroffen: −${fr.applied} Ausdauer</div>`; if(fr.pierce) h+=`<div class="dt-note"><b>Durchbohrender Treffer!</b> SCHUTZ-Wurf gegen Verletzung ${fr.inj}:</div><button class="dt-btn" data-fprw="${fr.inj}">SCHUTZ-Wurf würfeln</button>`; }
+  else h+=`<div class="dt-verdict ok">Abgewehrt</div>`; return h+`</div>`; }
+function fight(s,c){
+  const step=c.kstep||0, ups=c.foes.map((f,i)=>({f,i})).filter(o=>foeUp(o.f));
+  return flow("k",KST,step,i=>{
+    let h="";
+    if(i===0){
+      if(!c.foes.length) h+=`<p class="dt-hint">Wer stellt sich deinem Helden entgegen? Wähle die Gegner aus den Widersachern des Grundregelwerks.</p>`;
+      c.foes.forEach((f,k)=>{ h+=`<div class="dt-row" style="margin:3px 0"><b>${esc(f.n)}</b><span class="dt-hint" style="margin:0">Ausdauer ${f.aus} · Parade +${f.par} · Macht ${f.macht}</span>${chip("kdel:"+k,"×")}</div>`; });
+      const L=foes(); h+=`<div class="dt-row"><select class="dt-sel" id="foeSel" style="max-width:250px">${L.map((f,k)=>`<option value="${k}">${f.cat}: ${f.n}</option>`).join("")}</select><button class="dt-btn" style="margin:0" data-fadd="1">+ Gegner</button></div>`;
+      h+=`<div class="fx-box"><div class="fx-t">Überraschung?</div><p class="dt-hint" style="margin:0 0 4px">Wird dein Held aus dem Hinterhalt angegriffen, würfelt er WAHRNEHMUNG – misslingt das, setzt er Auftaktsalve und erste Runde aus. Will er selbst auflauern, braucht er HEIMLICHKEIT.</p><div class="dt-row"><span class="dt-chip" data-sroll="Wahrnehmung">WAHRNEHMUNG</span><span class="dt-chip" data-sroll="Heimlichkeit">HEIMLICHKEIT</span></div></div>`;
+      h+=rollBox();
+      h+=c.foes.length?btn("kgo:1","Kampf beginnt",true):"";
+      return h;
+    }
+    if(i===1){
+      const g=gear(), rw=g.weapons.map((w,k)=>({w,k})).filter(o=>RANGED.test(o.w.n));
+      h+=`<p class="dt-hint">Wer eine Fernkampfwaffe hat, schießt mindestens einmal, bevor es zum Nahkampf kommt – bei großem Abstand auch öfter. Mit Schild verdoppelt dein Held dabei den Paradebonus des Schildes.</p>`;
+      h+=`<div class="dt-row"><span class="k">Dein Held</span>${rw.length?rw.map(o=>`<span class="dt-chip" data-satk="${o.k}">schießt: ${esc(o.w.n)}</span>`).join(""):'<span class="dt-hint" style="margin:0">keine Fernkampfwaffe</span>'}</div>`;
+      if(c.foes.length>1||!c.foes[c.target]) h+=`<div class="dt-row"><span class="k">Ziel</span>${c.foes.map((f,k)=>foeUp(f)?`<span class="dt-chip ${c.target===k?"on":""}" data-ftg="${k}">${esc(f.n)}</span>`:"").join("")}</div>`;
+      const shooters=ups.filter(o=>o.f.ws.some(w=>RANGED.test(w.n)));
+      h+=`<div class="dt-row"><span class="k">Gegner</span>${shooters.length?shooters.map(({f,i:k})=>f.ws.map((w,wi)=>RANGED.test(w.n)?`<span class="dt-chip" data-fatk="${k}|${wi}">${esc(f.n)}: ${esc(w.n)}</span>`:"").join("")).join(""):'<span class="dt-hint" style="margin:0">keine Gegner mit Fernkampfwaffen</span>'}</div>`;
+      h+=foeResBox(c);
+      h+=rollBox();
+      h+=btn("kgo:2","Weiter zum Nahkampf",true);
+      return h;
+    }
+    if(i===2){
+      let x=paintSoloFight(c).replace(`<button class="dt-btn" data-send="kampf">Kampf beenden</button>`,"");
+      x=x.replace(/<div class="dt-row"><select class="dt-sel" id="foeSel"[\s\S]*?data-fadd="1">\+ Gegner<\/button><\/div>/,"");
+      h+=x;
+      if(!ups.length&&c.foes.length) h+=`<div class="sf-warn">Kein Gegner ist mehr kampffähig.</div>`;
+      h+=btn("kgo:3",!ups.length&&c.foes.length?"Zum Kampfende":"Kampf ist vorbei (Flucht, Aufgabe …)",!ups.length&&c.foes.length);
+      return h;
+    }
+    const lost=c.startAus!=null?Math.max(0,c.startAus-s.aus):0, slain=c.slain||[];
+    h+=`<div class="dt-state"><span>Ausdauer verloren: <b>${lost}</b></span>${s.wounded?'<span class="bad">Verwundet</span>':""}<span>Runden: ${c.round}</span></div>`;
+    if(slain.length) h+=`<p>Besiegt: ${slain.map(esc).join(", ")}</p>`;
+    const tips=[];
+    if(s.wounded) tips.push("Verwundet: Schwere der Wunde im Reiter Zustand würfeln, dann Erstversorgung mit HEILEN.");
+    if(c.foes.some(f=>!foeUp(f)&&f.he>0)) tips.push("Getötete Gegner mit Entschlossenheit? Prüfe, ob das eine Untat war – hast du angegriffen, gab es einen anderen Weg?");
+    tips.push("Gegner mit Ausdauer 0 können noch leben – willst du sie verhören oder laufen lassen?");
+    h+=`<ul class="dt-hint" style="padding-left:18px">${tips.map(t=>`<li>${t}</li>`).join("")}</ul>`;
+    h+=`<button class="dt-btn sf-go" data-send="kampf">Kampf abschließen</button>`;
+    return h;
+  },i=>i===0?c.foes.map(f=>f.n).join(", "):i===2?`${c.round} Runde${c.round>1?"n":""}`:"");
+}
+
+/* ---------------- Beratung ---------------- */
+const BST=["Anliegen und Widerstand","Vorstellung","Interaktion","Ausgang"];
+const OUT={erfolg:["Erfolg","Das Anliegen ist erreicht – die Gegenseite hilft wie erhofft."],haken:["Zu wenige Erfolge","Aufgeben – oder ein Erfolg mit Haken: Die Gegenseite hilft, verlangt aber etwas dafür oder hilft nur halb."],verh:["Verhängnis","Die Beratung endet im Unheil: Dein Held gilt nun als Bedrohung oder hat sich Feinde gemacht."]};
+function council(s,c){
+  const step=c.bstep||0;
+  return flow("b",BST,step,i=>{
+    let h="";
+    if(i===0){
+      h+=`<div class="dt-row"><span class="k">Anliegen</span><input class="dt-in" id="sfGoal" style="max-width:220px" placeholder="Was soll erreicht werden?" value="${esc(c.goal||"")}"></div>`;
+      h+=`<div class="dt-row"><span class="k">Widerstand</span>${[["vernünftig",3],["kühn",6],["unerhört",9]].map(x=>`<span class="dt-chip ${c.res===x[1]?"on":""}" data-sres="${x[1]}">${x[0]} (${x[1]})</span>`).join("")}</div>`;
+      h+=`<p class="dt-hint">3: Die Gegenseite verliert nichts oder bekommt Gleichwertiges. 6: Es nützt dir mehr als ihr. 9: Sie soll etwas Gefährliches tun oder fast ohne Gewinn.</p>`;
+      h+=`<div class="dt-row"><span class="k">Zuhörer</span>${[["abgeneigt",-1],["neutral",0],["freundlich",1]].map(x=>`<span class="dt-chip ${c.aud===x[1]?"on":""}" data-saud="${x[1]}">${x[0]}${x[1]?" ("+(x[1]>0?"+":"−")+"1W)":""}</span>`).join("")}</div>`;
+      return h+btn("bgo:1","Zur Vorstellung",true);
+    }
+    if(i===1){
+      if(!c.started){ h+=`<p class="dt-hint">Dein Held stellt sich vor. Gelingt der Wurf, bekommt er mehr Versuche (Widerstand + Erfolgssymbole). Misslingt er, bleibt es beim Widerstand – aber ein Scheitern wird zum Verhängnis.</p><div class="dt-row">${INTRO.map(x=>`<span class="dt-chip" data-sintro="${x}">${x}</span>`).join("")}${otherSel("sintroX")}</div>`; h+=rollBox(); }
+      else { h+=`<div class="dt-state"><span>Versuche: <b>${c.tries}</b></span>${c.doom?'<span class="bad">Scheitern = Verhängnis</span>':""}</div>`; h+=rollBox(); h+=btn("bgo:2","Zur Interaktion",true); }
+      return h;
+    }
+    if(i===2){
+      h+=`<div class="dt-state"><span>Versuche übrig: <b>${c.tries}</b></span><span>Erfolge: <b>${c.succ}</b> / ${c.res}</span>${c.doom?'<span class="bad">Scheitern = Verhängnis</span>':""}</div>`;
+      if(c.started) h+=`<div class="dt-row"><span class="k">Interaktion</span>${SOCIAL.map(x=>`<span class="dt-chip" data-ssoc="${x}">${x}</span>`).join("")}${otherSel("ssocX")}</div><p class="dt-hint">Jedes Erfolgssymbol zählt als weiterer Erfolg. Berührt die Ansprache, was der Gegenseite wichtig ist, gib dir (1W) oder (2W) über die Extras.</p>`;
+      h+=rollBox();
+      if(!c.started) h+=btn("bgo:3","Zum Ausgang",true);
+      return h;
+    }
+    const o=OUT[c.bres||"haken"];
+    h+=`<div class="dt-verdict ${c.bres==="erfolg"?"ok":c.bres==="verh"?"no":""}">${o[0]}</div><p>${o[1]}</p>`;
+    return h+`<button class="dt-btn sf-go" data-send="beratung">Beratung abschließen</button>`;
+  },i=>i===0?`Widerstand ${c.res}`:i===1?`${c.tries0!=null?c.tries0:c.tries} Versuche${c.doom?", Verhängnis droht":""}`:i===2?`${c.succ} Erfolge`:"");
+}
+
+/* ---------------- Einhängen ---------------- */
+const _paint=paintScene;
+paintScene=function(){
+  if(!ON()) return _paint.apply(this,arguments);
+  const s=SC(), c=s.sc;
+  if(!C()) return `<p class="dt-hint">Erst einen Helden erschaffen.</p>`;
+  if(c.scene==="reise") return travel(s,c);
+  if(c.scene==="kampf") return fight(s,c);
+  if(c.scene==="beratung") return council(s,c);
+  return _paint.apply(this,arguments);
+};
+const _set=setScene;
+setScene=function(id){
+  const s0=SC(), old=s0.sc.scene;
+  _set.apply(this,arguments);
+  if(!ON()||id===old) return;
+  const s=SC(), c=s.sc;
+  if(id==="reise"){ c.tstep=0; c.pos=0; c.evPend=false; c.ev=null; c.dz=0; c.tev=0; c.route=null; c.to=""; c.hexLeft=c.hex; DT.march=null; }
+  if(id==="kampf"){ c.kstep=0; c.foes=[]; c.target=0; DT.foeRes=null; }
+  if(id==="beratung"){ c.bstep=0; c.bres=null; c.goal=""; }
+  saveSess(s); paint();
+};
+const _after=sceneAfterRoll;
+sceneAfterRoll=function(R){
+  if(!ON()) return _after.apply(this,arguments);
+  const s=SC(), c=s.sc, tag=R.cfg.tag, keep=c.hexLeft, wasStarted=c.started;
+  _after.apply(this,arguments);
+  const s2=SC(), c2=s2.sc;
+  if(tag==="march"){ c2.hexLeft=keep; R.notes.push("Weiter mit dem Knopf unter der Marschprobe."); }
+  if(tag==="event"){ c2.tev=(c2.tev||0)+1; }
+  if(tag==="travelEnd"){
+    if(c2.route&&MAP()&&c2.route.length>1){ const R2=c2.route.slice(0,c2.hex+1); HS_MAP.addTrail(R2,c2.to||""); HS_MAP.setFlag(R2[R2.length-1],c2.to||"Gemeinschaft"); }
+    chron("reise","Ankunft"+(c2.to?" in "+c2.to:"")+" nach "+c2.hex+" Feldern"); c2.tstep=0; c2.route=null;
+  }
+  if(tag==="intro"&&c2.started){ c2.bstep=Math.max(c2.bstep||0,1); c2.tries0=c2.tries; }
+  if(tag==="interact"&&wasStarted&&!c2.started){ c2.bres=c2.succ>=c2.res?"erfolg":c2.doom?"verh":"haken"; }
+  saveSess(s2);
+};
+const _bind=bindScene;
+bindScene=function(P){
+  _bind.apply(this,arguments);
+  if(!ON()) return;
+  const inp=P.querySelector("#sfTo"); if(inp) inp.onchange=()=>{ const s=SC(); s.sc.to=inp.value.trim(); saveSess(s); };
+  const gi=P.querySelector("#sfGoal"); if(gi) gi.onchange=()=>{ const s=SC(); s.sc.goal=gi.value.trim(); saveSess(s); };
+  P.querySelectorAll("[data-fl]").forEach(b=>b.onclick=ev=>{ ev.stopPropagation(); const [k,n]=b.dataset.fl.split(":"); const s=SC(), c=s.sc; c[k+"step"]=+n; saveSess(s); DT.cfg=newMods(freeCfg()); DT.last=null; paint(); });
+  P.querySelectorAll("[data-fa]").forEach(b=>b.onclick=ev=>{ ev.stopPropagation();
+    const [a,arg]=b.dataset.fa.split(/:(.*)/); const s=SC(), c=s.sc;
+    if(a==="thunt"){ s.hunt=arg; }
+    if(a==="tstart"){ const t=document.getElementById("sfTo"); if(t) c.to=t.value.trim(); c.tstep=1; c.pos=0; c.hexLeft=c.hex; c.startFat=s.fatigue; c.evPend=false; c.ev=null; c.dz=0; c.tev=0; DT.march=null; regionFromMap(s,c); flagTo(c); chron("reise","Aufbruch"+(c.to?" nach "+c.to:"")+" – "+c.hex+" Hexfelder"); }
+    if(a==="tmap"){ saveSess(s); HS_MAP.openWith(c.route&&c.route.length>1?{route:c.route,center:c.route[0]}:{mode:"route"}); return; }
+    if(a==="tshow"){ const h=hexAt(c,c.pos||0); HS_MAP.openWith(h?{center:h}:{}); return; }
+    if(a==="tadv"){ if(DT.march==null) return; tAdvance(s,c); DT.cfg=newMods(freeCfg()); DT.last=null; }
+    if(a==="tnext"){ c.ev=null; if(c.dz>1){ c.dz--; } else { c.dz=0; c.evPend=false; if(c.pos>=c.hex) c.tstep=2; } DT.cfg=newMods(freeCfg()); DT.last=null; }
+    if(a==="kgo"){ c.kstep=+arg; DT.cfg=newMods(freeCfg()); DT.last=null; DT.foeRes=null; if(c.kstep===2&&!c.round) c.round=1; }
+    if(a==="kdel"){ c.foes.splice(+arg,1); c.target=0; }
+    if(a==="bgo"){ c.bstep=+arg; DT.cfg=newMods(freeCfg()); DT.last=null; }
+    saveSess(s); paint(); });
+};
+/* Weg von der Karte */
+window.HS_DICE=window.HS_DICE||{};
+HS_DICE.flowRoute=function(n,route){ if(SC().sc.scene!=="reise") setScene("reise"); const s=SC(), c=s.sc; c.tstep=0; c.hex=n; c.hexLeft=n; c.route=route; c.pos=0; regionFromMap(s,c); saveSess(s); paint(); toast(n+" Hexfelder für die Reise übernommen"); };
+HS_DICE.flowOn=ON;
+})();
+
 if(PLAY){ step=STEPS.length-1; if(window.innerWidth>=1180) DT.open=true; render(); } else enhance();
 })();
 </script>
@@ -3988,7 +4232,7 @@ function routeTap(h){
 function useRoute(){
   const n=Math.max(0,D.route.length-1);
   if(CFG.useRoute){ CFG.useRoute(n,D.route.slice()); close(); return; }
-  try{ const H=window.HS_DICE; if(H&&H.SC&&typeof solo==="function"&&solo()){ const ss=H.SC(); ss.sc.hex=n; ss.sc.hexLeft=n; localStorage.setItem("hs2-session-"+(S.name||"held"),JSON.stringify(ss)); note(n+" Hexfelder in die Reise übernommen"); return; } }catch(e){}
+  try{ const H=window.HS_DICE; if(H&&H.flowRoute&&H.flowOn&&H.flowOn()){ H.flowRoute(n,D.route.slice()); close(); return; } if(H&&H.SC&&typeof solo==="function"&&solo()){ const ss=H.SC(); ss.sc.hex=n; ss.sc.hexLeft=n; localStorage.setItem("hs2-session-"+(S.name||"held"),JSON.stringify(ss)); note(n+" Hexfelder in die Reise übernommen"); return; } }catch(e){}
   note(`Reiseweg: ${n} Hexfelder – sag es deinem Spielleiter`);
 }
 /* ---------- Markierungen ---------- */
@@ -4081,7 +4325,7 @@ function bindGestures(){
 function open(){
   if(root){ root.style.display="flex"; apply(); return; }
   root=document.createElement("div"); root.id="hsMap";
-  root.innerHTML=`<div class="mtop"><b>Karte</b><button data-mm="mark">Markieren</button><button data-mm="route">Reiseweg</button>${CFG.danger?`<button data-mm="danger">Gefahr</button>`:""}<button data-mb="list">Liste</button><button data-mb="legend">Legende</button><button class="x" data-mb="close" aria-label="Schließen">×</button></div>
+  root.innerHTML=`<div class="mtop"><b>Karte</b><button data-mm="mark">Markieren</button><button data-mm="route">Reiseweg</button>${CFG.danger||window.HS_STRIDER_FLOW?`<button data-mm="danger">Gefahr</button>`:""}<button data-mb="list">Liste</button><button data-mb="legend">Legende</button><button class="x" data-mb="close" aria-label="Schließen">×</button></div>
   <div class="mview"><div class="mlayer"><img src="${BASE}karte-0.jpg" alt="Karte von Mittelerde" style="left:0;top:0;width:${MW}px;height:${MH}px"></div><svg class="mroute"></svg><div class="mpins"></div><div class="mhint" style="display:none"></div>
   <div class="mzoom"><button data-z="in">+</button><button data-z="out">−</button><button data-z="wir" title="Zur Gemeinschaft">🚩</button></div>
   <div class="mbar" style="display:none"></div><div class="mpanel" style="display:none"></div>

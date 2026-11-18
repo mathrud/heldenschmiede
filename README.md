@@ -22,6 +22,7 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Szenen Reise, Kampf und Beratung mit den passenden Werkzeugen
 - Erfahrung und Gefährtenphase inkl. Julfest
 - Chronik der Abenteuer, als PDF exportierbar
+- Im Streicher-Modus führen Reise, Kampf und Beratung Schritt für Schritt durch den Ablauf – du bist Spieler und Spielleiter zugleich
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
 - Held per QR-Code oder Link an den Spielleiter geben
 

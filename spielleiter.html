@@ -3813,7 +3813,7 @@ function routeTap(h){
 function useRoute(){
   const n=Math.max(0,D.route.length-1);
   if(CFG.useRoute){ CFG.useRoute(n,D.route.slice()); close(); return; }
-  try{ const H=window.HS_DICE; if(H&&H.SC&&typeof solo==="function"&&solo()){ const ss=H.SC(); ss.sc.hex=n; ss.sc.hexLeft=n; localStorage.setItem("hs2-session-"+(S.name||"held"),JSON.stringify(ss)); note(n+" Hexfelder in die Reise übernommen"); return; } }catch(e){}
+  try{ const H=window.HS_DICE; if(H&&H.flowRoute&&H.flowOn&&H.flowOn()){ H.flowRoute(n,D.route.slice()); close(); return; } if(H&&H.SC&&typeof solo==="function"&&solo()){ const ss=H.SC(); ss.sc.hex=n; ss.sc.hexLeft=n; localStorage.setItem("hs2-session-"+(S.name||"held"),JSON.stringify(ss)); note(n+" Hexfelder in die Reise übernommen"); return; } }catch(e){}
   note(`Reiseweg: ${n} Hexfelder – sag es deinem Spielleiter`);
 }
 /* ---------- Markierungen ---------- */
@@ -3906,7 +3906,7 @@ function bindGestures(){
 function open(){
   if(root){ root.style.display="flex"; apply(); return; }
   root=document.createElement("div"); root.id="hsMap";
-  root.innerHTML=`<div class="mtop"><b>Karte</b><button data-mm="mark">Markieren</button><button data-mm="route">Reiseweg</button>${CFG.danger?`<button data-mm="danger">Gefahr</button>`:""}<button data-mb="list">Liste</button><button data-mb="legend">Legende</button><button class="x" data-mb="close" aria-label="Schließen">×</button></div>
+  root.innerHTML=`<div class="mtop"><b>Karte</b><button data-mm="mark">Markieren</button><button data-mm="route">Reiseweg</button>${CFG.danger||window.HS_STRIDER_FLOW?`<button data-mm="danger">Gefahr</button>`:""}<button data-mb="list">Liste</button><button data-mb="legend">Legende</button><button class="x" data-mb="close" aria-label="Schließen">×</button></div>
   <div class="mview"><div class="mlayer"><img src="${BASE}karte-0.jpg" alt="Karte von Mittelerde" style="left:0;top:0;width:${MW}px;height:${MH}px"></div><svg class="mroute"></svg><div class="mpins"></div><div class="mhint" style="display:none"></div>
   <div class="mzoom"><button data-z="in">+</button><button data-z="out">−</button><button data-z="wir" title="Zur Gemeinschaft">🚩</button></div>
   <div class="mbar" style="display:none"></div><div class="mpanel" style="display:none"></div>
