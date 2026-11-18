@@ -2,7 +2,8 @@
 
 **Charaktergenerator und Spieltisch für *Der Eine Ring*, 2. Edition – auf Deutsch, kostenlos, offline.**
 
-👉 **App öffnen:** https://mathrud.github.io/heldenschmiede/
+👉 **App öffnen:** https://DEIN-NAME.github.io/heldenschmiede/
+👉 **Spielleiter-App:** https://DEIN-NAME.github.io/heldenschmiede/spielleiter.html
 
 Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, Mac, Windows und Linux wie eine App installieren. Danach funktioniert sie auch ohne Internet.
 
@@ -22,6 +23,20 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Erfahrung und Gefährtenphase inkl. Julfest
 - Chronik der Abenteuer, als PDF exportierbar
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
+- Held per QR-Code oder Link an den Spielleiter geben
+
+**Spielleiter-App** (`spielleiter.html`, im Aufbau)
+- Gemeinschaft im Blick: Ausdauer, Hoffnung, Schatten, Erschöpfung, Wunden, Parade aller Helden
+- Fertigkeit nachschlagen: Wer kann was, mit welchem Schwierigkeitsgrad?
+- Begegnungen aus den Widersachern des Grundregelwerks zusammenstellen und speichern
+- Reise als Ablauf: Aufgaben verteilen, Marschproben, Ereignisse mit Ziel und Folgen, Reiseerschöpfung bei der Ankunft – dazu ein Ideengenerator für Reiseereignisse
+- Beratung als Ablauf: Widerstand, Vorstellung mit Zeitlimit, Erfolge zählen, Ausgang
+- Kampf als Ablauf zum Durchklicken: Überraschung, Auftaktsalven, Nahkampfrunden, Kampfende – mit Gegnerwürfen gegen die Parade der Helden
+- Abenteuer vorbereiten nach Wann? Wo? Was? Warum? Wer? – mit verknüpften Figuren und Begegnungen
+- Landmarken bauen nach dem Aufbau des Regelwerks: Name, Gerücht und Altes Wissen, Hintergrund, Abbildung, Standorte, Ränke und Ungemach – mit Ideengenerator
+- Rätselfundus mit rund 60 gemeinfreien Rätseln (Symphosius, Exeter-Buch, Heidreks Rätsel, Volksrätsel) in freier deutscher Nachdichtung, Rätselspiel-Ansicht und eigene Rätsel
+- Kampagnenbuch als PDF: Titelseite, Inhaltsverzeichnis, Kapitel zu Gemeinschaft, Abenteuern, Landmarken, Figuren, Begegnungen und Rätseln – wahlweise ohne Lösungen und Geheimnisse für Spieler
+- Generator für Nebenfiguren (Name, Beschäftigung, Merkmale, Auftreten, Wille) und ein Verzeichnis mit Ort, Beziehung und Notizen
 
 ## Installieren
 
@@ -36,12 +51,14 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 
 Alle Helden und Spielstände bleiben auf deinem Gerät, nichts wird hochgeladen. Zum Gerätewechsel im Spielmodus **„Held sichern“** und auf dem anderen Gerät **„Held laden“**.
 
+In der Spielleiter-App sichert **„Sichern“** (oben rechts) alles in eine Datei: Gruppe, Abenteuer, Figuren, Begegnungen und laufende Szenen. **„Laden“** holt eine Sicherung zurück, auch auf einem anderen Gerät. Der Browserspeicher allein ist nicht sicher – regelmäßig sichern!
+
 ## Hinweis
 
 Die Heldenschmiede ist ein **inoffizielles, kostenloses Fanprojekt** und steht in keiner Verbindung zu Free League Publishing oder Middle-earth Enterprises. *The One Ring™*, *The Lord of the Rings™* sowie alle zugehörigen Namen und Begriffe sind Marken bzw. Eigentum ihrer jeweiligen Rechteinhaber. Regeln werden nur knapp zusammengefasst – zum Spielen braucht ihr die offiziellen Bücher.
 
 ## Lizenz
 
-Der Code steht unter der [MIT-Lizenz](LICENSE). Ausgenommen sind die Spielinhalte von *Der Eine Ring*, die eingebetteten Schriften Cinzel und EB Garamond ([SIL Open Font License 1.1](OFL-Cinzel.txt)) sowie die Bibliotheken pdf-lib, @pdf-lib/fontkit, html2canvas und jsPDF (jeweils MIT).
+Der Code steht unter der [MIT-Lizenz](LICENSE). Ausgenommen sind die Spielinhalte von *Der Eine Ring*, die eingebetteten Schriften Cinzel und EB Garamond ([SIL Open Font License 1.1](OFL-Cinzel.txt)) sowie die Bibliotheken pdf-lib, @pdf-lib/fontkit, html2canvas, jsPDF und qrcode-generator (jeweils MIT) und jsQR (Apache 2.0).
 
 Feedback, Fehlerfunde und Wünsche gern als [Issue](../../issues).
