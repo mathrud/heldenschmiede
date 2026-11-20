@@ -3615,29 +3615,41 @@ const KL_ALL=()=>KLANG.flatMap(g=>g.l.map(x=>Object.assign({grp:g.g,src:TTA},x))
 const KL_DEF=/\.github\.io$/.test(location.hostname)?"../heldenschmiede-klang/":"https://mathrud.github.io/heldenschmiede-klang/";
 function klCfg(){ if(!G.klang) G.klang={base:KL_DEF,own:[],vol:[0.8,0.5]}; if(!G.klang.m2){ G.klang.m2=1; if(G.klang.base==="../heldenschmiede-klang/") G.klang.base=KL_DEF; } if(!G.klang.base) G.klang.base=KL_DEF; return G.klang; }
 function klUrl(x){ if(x.url) return x.url; const b=klCfg().base||""; return b+(b&&!b.endsWith("/")?"/":"")+(x.f||x.id+".mp3"); }
-const KL={L:[null,null],bad:{}};
-function klFade(a,to,ms,done){ const from=a.volume, t0=performance.now(); const step=n=>{ const k=Math.min(1,(n-t0)/ms); a.volume=Math.max(0,Math.min(1,from+(to-from)*k)); if(k<1) requestAnimationFrame(step); else if(done) done(); }; requestAnimationFrame(step); }
+const KL={L:[null,null],bad:{}}; window.HS_KL=KL;
+function klFade(a,to,ms,done){ const tok=(a._ft=(a._ft||0)+1), from=a.volume, t0=performance.now(); const step=n=>{ if(a._ft!==tok) return; const k=Math.min(1,(n-t0)/ms); a.volume=Math.max(0,Math.min(1,from+(to-from)*k)); if(k<1) requestAnimationFrame(step); else if(done) done(); }; requestAnimationFrame(step); }
+/* Endlosschleife mit weicher Überblendung: kurz vor Schluss startet ein zweiter Player von vorn */
+const KL_XF=6;
+function klWire(o,layer,el){
+  el.ontimeupdate=()=>{ if(o.a!==el||o.xf||KL.L[layer]!==o) return; const d=el.duration; if(!d||!isFinite(d)) return; const xf=Math.min(KL_XF,d/4); if(el.currentTime<d-xf) return;
+    o.xf=true; const n=o.n, vol=klCfg().vol[layer]; n.currentTime=0; n.volume=0; n.play().catch(()=>{}); klWire(o,layer,n);
+    klFade(n,vol,xf*1000); klFade(el,0,xf*1000,()=>{ el.pause(); try{ el.currentTime=0; }catch(e){} if(o.a===el){ o.a=n; o.n=el; } o.xf=false; }); };
+  el.onended=()=>{ if(KL.L[layer]!==o||o.a!==el||o.xf) return; el.currentTime=0; el.play().catch(()=>{}); };
+}
+function klEls(o){ return [o.a,o.n].filter(Boolean); }
+function klToggle(o){ if(!o) return; if(o.a.paused){ o.a.play().catch(()=>{}); if(o.xf) o.n.play().catch(()=>{}); } else klEls(o).forEach(el=>el.pause()); }
+function klKill(o,ms){ klEls(o).forEach(el=>klFade(el,0,ms,()=>{ el.pause(); el.removeAttribute("src"); el.load(); })); }
 function klPlay(id,layer){
   const x=KL_ALL().find(z=>z.id===id); if(!x) return;
   layer=layer||0; const old=KL.L[layer], vol=klCfg().vol[layer];
-  if(old&&old.x.id===id){ if(old.a.paused) old.a.play(); else old.a.pause(); klBar(); return; }
-  const a=new Audio(); a.preload="auto"; a.loop=true; a.volume=0; a.src=klUrl(x);
+  if(old&&old.x.id===id){ klToggle(old); klBar(); return; }
+  const url=klUrl(x), a=new Audio(); a.preload="auto"; a.volume=0; a.src=url;
   a.onerror=()=>{ KL.bad[id]=1; note(`„${x.de||x.t}“ ließ sich nicht laden – liegt die Datei ${x.url?"unter dem Link":"in der Klang-Ablage"}?`); klBar(); if(document.getElementById("klPanel")) klPanel(); };
   let first=true;
-  a.onplaying=()=>{ delete KL.bad[id]; if(first){ first=false; KL.L[layer]={x,a}; klFade(a,vol,2000); if(old){ klFade(old.a,0,2000,()=>{ old.a.pause(); old.a.src=""; }); } klMedia(x); } klBar(); if(document.getElementById("klPanel")&&document.getElementById("klPanel").style.display!=="none") klPanel(); };
+  a.onplaying=()=>{ delete KL.bad[id]; if(first){ first=false; const n=new Audio(); n.preload="auto"; n.src=url; n.volume=0; const o={x,a,n,xf:false}; KL.L[layer]=o; klWire(o,layer,a); klFade(a,vol,2000); if(old) klKill(old,2000); klMedia(x); } klBar(); if(document.getElementById("klPanel")&&document.getElementById("klPanel").style.display!=="none") klPanel(); };
   a.play().catch(()=>{});
   klBar();
 }
-function klStop(layer){ const o=KL.L[layer]; if(!o) return; KL.L[layer]=null; klFade(o.a,0,1200,()=>{ o.a.pause(); o.a.src=""; }); klBar(); }
-function klMedia(x){ try{ if("mediaSession" in navigator){ navigator.mediaSession.metadata=new MediaMetadata({title:x.de||x.t,artist:x.own?"Eigener Klang":"Tabletop Audio",album:"Heldenschmiede – Klang"}); navigator.mediaSession.setActionHandler("pause",()=>{ KL.L.forEach(o=>o&&o.a.pause()); klBar(); }); navigator.mediaSession.setActionHandler("play",()=>{ KL.L.forEach(o=>o&&o.a.play()); klBar(); }); } }catch(e){} }
+function klStopAll(){ KL.L.forEach((o,i)=>{ if(o){ KL.L[i]=null; klKill(o,300); } }); klBar(); if(document.getElementById("klPanel")&&document.getElementById("klPanel").style.display!=="none") klPanel(); }
+function klStop(layer){ const o=KL.L[layer]; if(!o) return; KL.L[layer]=null; klKill(o,1200); klBar(); }
+function klMedia(x){ try{ if("mediaSession" in navigator){ navigator.mediaSession.metadata=new MediaMetadata({title:x.de||x.t,artist:x.own?"Eigener Klang":"Tabletop Audio",album:"Heldenschmiede – Klang"}); navigator.mediaSession.setActionHandler("pause",()=>{ KL.L.forEach(o=>o&&klEls(o).forEach(el=>el.pause())); klBar(); }); navigator.mediaSession.setActionHandler("play",()=>{ KL.L.forEach(o=>o&&klToggle(o)); klBar(); }); } }catch(e){} }
 function klBar(){
   let b=document.getElementById("klBar");
   const on=KL.L.some(Boolean);
   if(!on){ if(b) b.remove(); return; }
   if(!b){ b=document.createElement("div"); b.id="klBar"; document.body.appendChild(b); }
-  b.innerHTML=`<div class="klb-h"><b>Klang</b><button data-kb="list" title="Klangliste">☰</button><button data-kb="min" title="Einklappen">${b.classList.contains("min")?"▴":"▾"}</button></div>`+KL.L.map((o,i)=>o?`<div class="klb-r"><button data-kb="tog:${i}" class="pp">${o.a.paused?"▶":"❚❚"}</button><span class="nm" title="${E((o.x.de?o.x.t+" · ":"")+(o.x.src||""))}">${i?"+ ":""}${E(o.x.de||o.x.t)}</span><input type="range" min="0" max="100" value="${Math.round(klCfg().vol[i]*100)}" data-kv="${i}" aria-label="Lautstärke"><button data-kb="stop:${i}" title="Beenden">✕</button></div>`:"").join("");
-  b.querySelectorAll("[data-kb]").forEach(el=>el.onclick=()=>{ const [k,n]=el.dataset.kb.split(":"); if(k==="list") klPanel(); if(k==="min"){ b.classList.toggle("min"); klBar(); } if(k==="tog"){ const o=KL.L[+n]; if(o){ if(o.a.paused) o.a.play(); else o.a.pause(); } klBar(); } if(k==="stop") klStop(+n); });
-  b.querySelectorAll("[data-kv]").forEach(el=>el.oninput=()=>{ const i=+el.dataset.kv, v=el.value/100; klCfg().vol[i]=v; const o=KL.L[i]; if(o) o.a.volume=v; saveG(); });
+  b.innerHTML=`<div class="klb-h"><b>Klang</b><button data-kb="all" class="klb-stop" title="Alles stoppen">■ Stopp</button><button data-kb="list" title="Klangliste">☰</button><button data-kb="min" title="Einklappen">${b.classList.contains("min")?"▴":"▾"}</button></div>`+KL.L.map((o,i)=>o?`<div class="klb-r"><button data-kb="tog:${i}" class="pp">${o.a.paused?"▶":"❚❚"}</button><span class="nm" title="${E((o.x.de?o.x.t+" · ":"")+(o.x.src||""))}">${i?"+ ":""}${E(o.x.de||o.x.t)}</span><input type="range" min="0" max="100" value="${Math.round(klCfg().vol[i]*100)}" data-kv="${i}" aria-label="Lautstärke"><button data-kb="stop:${i}" title="Beenden">✕</button></div>`:"").join("");
+  b.querySelectorAll("[data-kb]").forEach(el=>el.onclick=()=>{ const [k,n]=el.dataset.kb.split(":"); if(k==="list") klPanel(); if(k==="min"){ b.classList.toggle("min"); klBar(); } if(k==="tog"){ klToggle(KL.L[+n]); klBar(); } if(k==="stop") klStop(+n); if(k==="all") klStopAll(); });
+  b.querySelectorAll("[data-kv]").forEach(el=>el.oninput=()=>{ const i=+el.dataset.kv, v=el.value/100; klCfg().vol[i]=v; const o=KL.L[i]; if(o&&!o.xf){ o.a._ft=(o.a._ft||0)+1; o.a.volume=v; } saveG(); });
 }
 function klPanel(){
   let p=document.getElementById("klPanel");
@@ -3675,6 +3687,7 @@ if(window.HS_GM_KLANG){ const st=document.createElement("style"); st.textContent
 #klBar .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #klBar input[type=range]{width:80px;accent-color:#c9a24a}
 #klBar .pp{width:34px}
+#klBar .klb-stop{border-color:#c0473a;color:#ffb4a8;font-family:"EB Garamond",serif}
 #klPanel{position:fixed;inset:0;z-index:9500;background:#0007;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:24px 10px}
 #klPanel .kl-box{background:var(--paper,#f6efe0);color:var(--ink,#2a241c);border-radius:14px;max-width:640px;width:100%;padding:16px 18px 18px;box-shadow:0 10px 40px #0008}
 #klPanel .kl-head{display:flex;align-items:center}#klPanel h2{flex:1;margin:0;font-family:Cinzel,serif}
