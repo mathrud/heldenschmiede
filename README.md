@@ -25,13 +25,16 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Im Streicher-Modus führen Reise, Kampf und Beratung Schritt für Schritt durch den Ablauf – du bist Spieler und Spielleiter zugleich
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
 - Held per QR-Code oder Link an den Spielleiter geben
+- Kurze Würfelanimation (abschaltbar, Antippen überspringt) – Rune und Auge leuchten beim Landen auf
 
 **Karte von Mittelerde** (in beiden Apps)
 - Fan-Karte mit Hexfeldern und Gebieten, stufenlos zoombar, auch offline
 - Reiseweg planen: Start und Ziel antippen, der Weg wird über passierbares Gelände berechnet – mit Hexfeldern je Gebiet
 - Eigene Markierungen mit Notizen: Gemeinschaft, Zufluchten, Orte, Personen, Gefahren
+- Fahne der Gemeinschaft mit einem Tipp auf 🚩 setzen oder versetzen
 - Spieler: Im Streicher-Modus wandert der Weg direkt in die Reise
 - Spielleiter: Landmarken, Figuren, Abenteuer und Begegnungen auf die Karte setzen und von dort öffnen; Gefährliche Stellen mit Gefahrenstufe markieren; die Reise läuft auf der Karte mit – die Fahne zieht weiter, das Gebiet für den Ereigniswurf stellt sich selbst ein, an Gefährlichen Stellen hält die Gemeinschaft an; bereiste Wege bleiben eingezeichnet
+- Spielleiter: Fundstellen aus den Büchern als zuschaltbare Ebene – Landmarken und Orte aus Grundregelwerk, Ruinen des Verlorenen Reiches und Tales from the Lone-lands, nur mit Name, Buch und Seite (keine Buchtexte). Schalter: Landmarken, Nur Orte (spoilerfrei zum Zeigen) oder beides. Je Fundstelle: Gebiet, Entfernung von der Fahne, was ihr dort erlebt habt, eigene Notiz und „Als Reiseziel planen“
 
 **Spielleiter-App** (`spielleiter.html`)
 - Gemeinschaft im Blick: Ausdauer, Hoffnung, Schatten, Erschöpfung, Wunden, Parade aller Helden
@@ -44,6 +47,8 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Landmarken bauen nach dem Aufbau des Regelwerks: Name, Gerücht und Altes Wissen, Hintergrund, Abbildung, Standorte, Ränke und Ungemach – mit Ideengenerator
 - Rätselfundus mit rund 60 gemeinfreien Rätseln (Symphosius, Exeter-Buch, Heidreks Rätsel, Volksrätsel) in freier deutscher Nachdichtung, Rätselspiel-Ansicht und eigene Rätsel
 - Kampagnenbuch als PDF: Titelseite, Inhaltsverzeichnis, Kapitel zu Gemeinschaft, Abenteuern, Landmarken, Figuren, Begegnungen und Rätseln – wahlweise ohne Lösungen und Geheimnisse für Spieler
+- Kampagnenzeit (Jahr und Jahreszeit) und ein Journal, in das sich Reisen, Ereignisse, Kämpfe, Beratungen und Begegnungen selbst eintragen – nach Spielabenden geordnet, auf der Karte als Chronik sichtbar und im Kampagnenbuch als eigenes Kapitel
+- Wetter zu jedem Reiseereignis (reine Stimmung) und Nachwirkungen als Inspiration: Was bleibt für den Helden, was für die Geschichte?
 - Generator für Nebenfiguren (Name, Beschäftigung, Merkmale, Auftreten, Wille) und ein Verzeichnis mit Ort, Beziehung und Notizen
 
 ## Installieren
