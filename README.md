@@ -65,6 +65,8 @@ In der Spielleiter-App sichert **„Sichern“** (oben rechts) alles in eine Dat
 
 Die Heldenschmiede ist ein **inoffizielles, kostenloses Fanprojekt** und steht in keiner Verbindung zu Free League Publishing oder Middle-earth Enterprises. *The One Ring™*, *The Lord of the Rings™* sowie alle zugehörigen Namen und Begriffe sind Marken bzw. Eigentum ihrer jeweiligen Rechteinhaber. Regeln werden nur knapp zusammengefasst – zum Spielen braucht ihr die offiziellen Bücher.
 
+**Klang:** Die Ambiences im Klang-Player der Spielleiter-App stammen von Tabletop Audio (tabletopaudio.com) und stehen unter CC BY-NC-ND 4.0. Sie liegen unverändert im Repository `heldenschmiede-klang` und werden erst beim Antippen geladen.
+
 **Homebrew:** Die Kulturen Reiter von Rohan und Dunländer sowie die Gönner Bard, Beorn, Dáin, Elrond, Radagast und Thranduil sind Fan-Material – aus der ersten Edition für die zweite umgearbeitet, nach Circleofnoms’ „TOR 2e Homebrew Cultures“ und „Homebrew Collection“. Sie sind in der App deutlich als Homebrew markiert und werden beim Zufallswurf nicht gezogen.
 
 **Karte:** Tayla Sommer · Übersetzung: Philip Doba „Klopare“. Die Karte im Ordner `karte/` gehört ihren Urhebern und fällt nicht unter die MIT-Lizenz.
