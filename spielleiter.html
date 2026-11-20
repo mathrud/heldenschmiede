@@ -3554,43 +3554,62 @@ function backupBanner(){
 }
 /* ---------- Klang (Ambience-Player) ---------- */
 const KLANGON=()=>!!window.HS_GM_KLANG;
+const KL_M={a:"nur Ambience",am:"Ambience + Musik",amin:"Ambience, wenig Musik",m:"Musik"};
 const TTA="Tabletop Audio (tabletopaudio.com) · CC BY-NC-ND 4.0";
 /* Auswahl aus den 10-Minuten-Ambiences von Tabletop Audio. Die Dateien liegen in der eigenen Klang-Ablage (Repository „heldenschmiede-klang“) unter dem Dateinamen aus „f“. */
 const KLANG=[
   {g:"Gasthaus und Siedlung",l:[
-    {id:"hearth-inn",de:"Gasthaus am Kamin",f:"255_The_Hearth_Inn.mp3",t:"The Hearth Inn",h:"Gemütliches Gasthaus – Das Tänzelnde Pony in Bree, Gasthäuser im Auenland"},
-    {id:"tavern-music",de:"Musik in der Schankstube",f:"177_Tavern_Music.mp3",t:"Tavern Music",h:"Musik und Stimmen – Gasthausabende, Feiern nach einem Abenteuer"},
-    {id:"country-village",de:"Stilles Dorf",f:"182_Country_Village.mp3",t:"Country Village",h:"Ruhiges Dorf – Hobbingen, Dörfer im Breeland"},
-    {id:"goodhaven",de:"Kleine Stadt am Fluss",f:"439_Goodhaven.mp3",t:"Goodhaven",h:"Kleine Stadt am Fluss – Seestadt, Furten und Fährorte"},
-    {id:"medieval-market",de:"Markttag",f:"389_Medieval_Market.mp3",t:"Medieval Market",h:"Markttag im Frühling – Bree, Thal"},
-    {id:"village-festival",de:"Dorffest",f:"500_Village_Festival.mp3",t:"Village Festival",h:"Dorffest bei schönem Wetter – Feste im Auenland"}]},
+    {id:"hearth-inn",m:"am",de:"Gasthaus am Kamin",f:"255_The_Hearth_Inn.mp3",t:"The Hearth Inn",h:"Gemütliches Gasthaus – Das Tänzelnde Pony in Bree, Gasthäuser im Auenland"},
+    {id:"tavern-music",m:"m",de:"Musik in der Schankstube",f:"177_Tavern_Music.mp3",t:"Tavern Music",h:"Musik und Stimmen – Gasthausabende, Feiern nach einem Abenteuer"},
+    {id:"country-village",m:"am",de:"Stilles Dorf",f:"182_Country_Village.mp3",t:"Country Village",h:"Ruhiges Dorf – Hobbingen, Dörfer im Breeland"},
+    {id:"goodhaven",m:"am",de:"Kleine Stadt am Fluss",f:"439_Goodhaven.mp3",t:"Goodhaven",h:"Kleine Stadt am Fluss – Seestadt, Furten und Fährorte"},
+    {id:"medieval-market",m:"am",de:"Markttag",f:"389_Medieval_Market.mp3",t:"Medieval Market",h:"Markttag im Frühling – Bree, Thal"},
+    {id:"village-festival",m:"am",de:"Dorffest",f:"500_Village_Festival.mp3",t:"Village Festival",h:"Dorffest bei schönem Wetter – Feste im Auenland"},
+    {id:"bog-standard",f:"131_The_Bog_Standard.mp3",m:"a",de:"Schenke ohne Musik",t:"The Bog Standard",h:"Stimmen, Krüge, Kaminfeuer – jede Schankstube von Bree bis Thal"},
+    {id:"mountain-tavern",f:"54_Mountain_Tavern.mp3",m:"a",de:"Berggasthaus",t:"Mountain Tavern",h:"Warme Stube, draußen raue Berge – Rasthäuser am Fuß des Nebelgebirges"},
+    {id:"medieval-town",f:"56_Medieval_Town.mp3",m:"a",de:"Leben in der Stadt",t:"Medieval Town",h:"Gassen innerhalb der Mauern – Bree, Thal, Seestadt"},
+    {id:"medieval-library",f:"73_Medieval_Library.mp3",m:"a",de:"Schreibstube",t:"Medieval Library",h:"Schreiber beim Abschreiben – Bruchtal, Archive und Gelehrte"}]},
   {g:"Wald",l:[
-    {id:"sun-dappled-trail",de:"Sonniger Waldweg",f:"199_Sun_Dappled_Trail.mp3",t:"Sun Dappled Trail",h:"Zu Pferd durch sonnigen Wald – Reisen im Grenzland, Waldwege im Auenland"},
-    {id:"eldritch-wood",de:"Uralter Wald",f:"530_Eldritch_Wood.mp3",t:"Eldritch Wood",h:"Uralter, wacher Wald – der Alte Wald, Fangorn"},
-    {id:"blighted-forest",de:"Kranker Wald",f:"258_Blighted_Forest.mp3",t:"Blighted Forest",h:"Kranker, verdorbener Wald – der südliche Düsterwald"},
-    {id:"lorekeeper-grove",de:"Verborgener Hain",f:"275_Lorekeeper_Grove.mp3",t:"Lorekeeper Grove",h:"Ein Hain, den es zu schützen gilt – Elbenwälder"}]},
+    {id:"sun-dappled-trail",m:"am",de:"Sonniger Waldweg",f:"199_Sun_Dappled_Trail.mp3",t:"Sun Dappled Trail",h:"Zu Pferd durch sonnigen Wald – Reisen im Grenzland, Waldwege im Auenland"},
+    {id:"eldritch-wood",m:"am",de:"Uralter Wald",f:"530_Eldritch_Wood.mp3",t:"Eldritch Wood",h:"Uralter, wacher Wald – der Alte Wald, Fangorn"},
+    {id:"blighted-forest",m:"am",de:"Kranker Wald",f:"258_Blighted_Forest.mp3",t:"Blighted Forest",h:"Kranker, verdorbener Wald – der südliche Düsterwald"},
+    {id:"lorekeeper-grove",m:"am",de:"Verborgener Hain",f:"275_Lorekeeper_Grove.mp3",t:"Lorekeeper Grove",h:"Ein Hain, den es zu schützen gilt – Elbenwälder"},
+    {id:"forest-night",f:"69_Forest_Night.mp3",m:"a",de:"Wald bei Nacht",t:"Forest: Night",h:"Nachtgeräusche im Wald – Nachtlager im Düsterwald oder Alten Wald"}]},
   {g:"Ebene und Sumpf",l:[
-    {id:"spirit-of-the-plains",de:"Weite Ebene",f:"353_Spirit_of_the_Plains.mp3",t:"Spirit of the Plains",h:"Weite Ebene – Rohan, die Wilden Lande"},
-    {id:"harvests-end",de:"Wind über dem Stoppelfeld",f:"524_Harvests_End.mp3",t:"Harvest's End",h:"Wind über dem Feld – Breeland und Auenland im Herbst"},
-    {id:"misty-marsh",de:"Nebliges Moor",f:"398_The_Misty_Marsh.mp3",t:"Misty Marsh",h:"Durch Schilf und Nebel – die Mückenwassermoore"}]},
+    {id:"spirit-of-the-plains",m:"am",de:"Weite Ebene",f:"353_Spirit_of_the_Plains.mp3",t:"Spirit of the Plains",h:"Weite Ebene – Rohan, die Wilden Lande"},
+    {id:"harvests-end",m:"am",de:"Wind über dem Stoppelfeld",f:"524_Harvests_End.mp3",t:"Harvest's End",h:"Wind über dem Feld – Breeland und Auenland im Herbst"},
+    {id:"misty-marsh",m:"am",de:"Nebliges Moor",f:"398_The_Misty_Marsh.mp3",t:"Misty Marsh",h:"Durch Schilf und Nebel – die Mückenwassermoore"}]},
+  {g:"Unterwegs und Rast",l:[
+    {id:"overland-with-oxen",f:"48_Overland_with_Oxen.mp3",m:"a",de:"Ochsenkarren auf der Straße",t:"Overland with Oxen",h:"Reisen auf der Straße – Oststraße, Grünweg"},
+    {id:"windswept-plains",f:"96_Windswept_Plains_b.mp3",m:"a",de:"Lager in der Ebene",t:"Windswept Plains",h:"Reiter lagern unter offenem Himmel – Rohan, die Wilden Lande"},
+    {id:"woodland-campsite",f:"51_Woodland_Campsite.mp3",m:"a",de:"Lagerfeuer im Wald",t:"Woodland Campsite",h:"Feuer, Wald, Nacht – das Lager der Gemeinschaft"},
+    {id:"shelter-from-the-storm",f:"11_Shelter_from_the_Storm.mp3",m:"a",de:"Zuflucht vor dem Sturm",t:"Shelter from the Storm",h:"Warme Zuflucht zum Ausruhen – Gefährtenphase, Rast in einer Zuflucht"}]},
   {g:"Gebirge und Wetter",l:[
-    {id:"frost-giant-ridge",de:"Eisiger Grat",f:"503_Frost_Giant_Ridge.mp3",t:"Frost Giant Ridge",h:"Eisiger Grat – Pässe des Nebelgebirges"},
-    {id:"storm-giant",de:"Wütendes Gewitter",f:"516_Storm_Giant.mp3",t:"Storm Giant",h:"Gewitter mit Zorn – Unwetter in den Bergen"},
-    {id:"invisible-mountain",de:"Über den Wolken",f:"321_Invisible_Mountain.mp3",t:"Invisible Mountain",h:"In den Wolken – Gipfel des Nebelgebirges"}]},
+    {id:"frost-giant-ridge",m:"am",de:"Eisiger Grat",f:"503_Frost_Giant_Ridge.mp3",t:"Frost Giant Ridge",h:"Eisiger Grat – Pässe des Nebelgebirges"},
+    {id:"storm-giant",m:"am",de:"Wütendes Gewitter",f:"516_Storm_Giant.mp3",t:"Storm Giant",h:"Gewitter mit Zorn – Unwetter in den Bergen"},
+    {id:"invisible-mountain",m:"am",de:"Über den Wolken",f:"321_Invisible_Mountain.mp3",t:"Invisible Mountain",h:"In den Wolken – Gipfel des Nebelgebirges"},
+    {id:"dark-and-stormy",f:"60_Dark_and_Stormy.mp3",m:"a",de:"Sturmnacht",t:"Dark and Stormy",h:"Gewitter in der Nacht"},
+    {id:"frozen-wastes",f:"31_Frozen_Wastes.mp3",m:"a",de:"Schneesturm",t:"Frozen Wastes",h:"Überleben im Blizzard – Caradhras, die Eisbucht von Forochel"},
+    {id:"ice-cavern",f:"55_Ice_Cavern.mp3",m:"a",de:"Eishöhle",t:"Ice Cavern",h:"Hallende Eisgewölbe – der hohe Norden"}]},
   {g:"Unter der Erde",l:[
-    {id:"forge-of-fury",de:"Zwergenschmiede",f:"276_Forge_of_Fury.mp3",t:"Forge of Fury",h:"Zwergenschmiede – Erebor, die Blauen Berge"},
-    {id:"the-underdark",de:"Tiefe Höhlen und Gänge",f:"170_The_Underdark.mp3",t:"The Underdark",h:"Weite Höhlen und Gänge – Moria"},
-    {id:"underground-lake",de:"See im Berg",f:"184_Underground_Lake.mp3",t:"Underground Lake",h:"See tief im Berg – Seen unter dem Nebelgebirge, Moria"},
-    {id:"mysterious-grotto",de:"Dunkle Grotte",f:"263_Mysterious_Grotto.mp3",t:"Mysterious Grotto",h:"Höhle mit dunklem Luftzug – Unterschlupf, Trollhöhlen"},
-    {id:"whispering-caverns",de:"Flüsternde Höhlen",f:"400_Whispering_Caverns.mp3",t:"Whispering Caverns",h:"Höhlen voller Qual – Orkgruben, Kerker"}]},
+    {id:"forge-of-fury",m:"am",de:"Zwergenschmiede",f:"276_Forge_of_Fury.mp3",t:"Forge of Fury",h:"Zwergenschmiede – Erebor, die Blauen Berge"},
+    {id:"the-underdark",m:"am",de:"Tiefe Höhlen und Gänge",f:"170_The_Underdark.mp3",t:"The Underdark",h:"Weite Höhlen und Gänge – Moria"},
+    {id:"underground-lake",m:"am",de:"See im Berg",f:"184_Underground_Lake.mp3",t:"Underground Lake",h:"See tief im Berg – Seen unter dem Nebelgebirge, Moria"},
+    {id:"mysterious-grotto",m:"am",de:"Dunkle Grotte",f:"263_Mysterious_Grotto.mp3",t:"Mysterious Grotto",h:"Höhle mit dunklem Luftzug – Unterschlupf, Trollhöhlen"},
+    {id:"whispering-caverns",m:"am",de:"Flüsternde Höhlen",f:"400_Whispering_Caverns.mp3",t:"Whispering Caverns",h:"Höhlen voller Qual – Orkgruben, Kerker"},
+    {id:"goblins-cave",f:"49_Goblins_Cave.mp3",m:"a",de:"Orkhöhle",t:"Goblin's Cave",h:"Höhleneingang mit Fackeln – Orks im Nebelgebirge"},
+    {id:"catacombs",f:"37_Catacombs.mp3",m:"a",de:"Katakomben",t:"Catacombs",h:"Verwinkelte Gänge unter einer Stadt – unter Fornost und Annúminas"}]},
   {g:"Ruinen und Gräber",l:[
-    {id:"stone-barrow",de:"Hügelgrab",f:"490_Stone_Barrow.mp3",t:"Stone Barrow",h:"Steinzeitliches Grabmal – die Hügelgräberhöhen"},
-    {id:"broken-pantheon",de:"Verfallenes Heiligtum",f:"454_Broken_Pantheon.mp3",t:"Broken Pantheon",h:"Verlassenes Heiligtum – Ruinen Arnors"}]},
+    {id:"stone-barrow",m:"am",de:"Hügelgrab",f:"490_Stone_Barrow.mp3",t:"Stone Barrow",h:"Steinzeitliches Grabmal – die Hügelgräberhöhen"},
+    {id:"broken-pantheon",m:"am",de:"Verfallenes Heiligtum",f:"454_Broken_Pantheon.mp3",t:"Broken Pantheon",h:"Verlassenes Heiligtum – Ruinen Arnors"},
+    {id:"cavern-of-lost-souls",f:"99_Cavern_of_Lost_Souls.mp3",m:"a",de:"Halle der Verlorenen Seelen",t:"Cavern of Lost Souls",h:"Geister gefallener Krieger – Grabhügel, Pfade der Toten"}]},
   {g:"Gefahr und Kampf",l:[
-    {id:"barghest-fell",de:"Unheilvolles Omen",f:"476_Barghest_Fell.mp3",t:"Barghest Fell",h:"Ein Todesomen – unheilvolle Vorzeichen, die Schatten Angmars"},
-    {id:"fog-of-war",de:"Vor der Schlacht",f:"304_Fog_of_War.mp3",t:"Fog of War",h:"Eine kleine Schar vor der Schlacht – der Vorabend eines Kampfes"},
-    {id:"village-raid",de:"Überfall auf das Dorf",f:"496_Village_Raid.mp3",t:"Village Raid",h:"Krieger überfallen ein Dorf – Orks oder Räuber im Breeland"},
-    {id:"burning-village",de:"Brennendes Dorf",f:"213_Burning_Village.mp3",t:"Burning Village",h:"Das Dorf brennt schon – nach einem Überfall"}]}
+    {id:"barghest-fell",m:"am",de:"Unheilvolles Omen",f:"476_Barghest_Fell.mp3",t:"Barghest Fell",h:"Ein Todesomen – unheilvolle Vorzeichen, die Schatten Angmars"},
+    {id:"fog-of-war",m:"am",de:"Vor der Schlacht",f:"304_Fog_of_War.mp3",t:"Fog of War",h:"Eine kleine Schar vor der Schlacht – der Vorabend eines Kampfes"},
+    {id:"village-raid",m:"am",de:"Überfall auf das Dorf",f:"496_Village_Raid.mp3",t:"Village Raid",h:"Krieger überfallen ein Dorf – Orks oder Räuber im Breeland"},
+    {id:"burning-village",m:"amin",de:"Brennendes Dorf",f:"213_Burning_Village.mp3",t:"Burning Village",h:"Das Dorf brennt schon – nach einem Überfall"},
+    {id:"in-the-shadows",f:"10_In_The_Shadows.mp3",m:"a",de:"Im Versteck",t:"In the Shadows",h:"Unruhiges Ausharren – verfolgt von Orks oder Schwarzen Reitern"},
+    {id:"medieval-battle",f:"79_Medieval_Battle.mp3",m:"a",de:"Schlacht",t:"Medieval Battle",h:"Zwei Heere prallen aufeinander"}]}
 ];
 const KL_ALL=()=>KLANG.flatMap(g=>g.l.map(x=>Object.assign({grp:g.g,src:TTA},x))).concat(((G.klang&&G.klang.own)||[]).map(o=>Object.assign({grp:"Eigene Klänge",own:1},o)));
 const KL_DEF=/\.github\.io$/.test(location.hostname)?"../heldenschmiede-klang/":"https://mathrud.github.io/heldenschmiede-klang/";
@@ -3624,10 +3643,12 @@ function klPanel(){
   let p=document.getElementById("klPanel");
   if(!p){ p=document.createElement("div"); p.id="klPanel"; document.body.appendChild(p); }
   const cur=KL.L.map(o=>o&&o.x.id), own=klCfg().own;
-  const row=x=>`<div class="kl-it ${cur[0]===x.id?"on":""} ${cur[1]===x.id?"on2":""} ${KL.bad[x.id]?"bad":""}"><button class="kl-play" data-kp="${E(x.id)}:0">${cur[0]===x.id&&KL.L[0]&&!KL.L[0].a.paused?"❚❚":"▶"}</button><div class="kl-t"><b>${E(x.de||x.t)}</b>${(()=>{ const r=x.h&&x.h.includes(" – ")?x.h.split(" – ").slice(1).join(" – "):""; return r?`<small>passt zu: ${E(r)}</small>`:""; })()}${x.de?`<small class="kl-orig">Tabletop Audio: „${E(x.t)}“</small>`:""}${KL.bad[x.id]?`<small class="kl-bad">Datei nicht gefunden</small>`:""}</div><button class="kl-add" data-kp="${E(x.id)}:1" title="Als zweite Ebene dazumischen">+ Ebene</button>${x.own?`<button class="kl-add" data-kd="${E(x.id)}" title="Entfernen">✕</button>`:""}</div>`;
-  const groups={}; KL_ALL().forEach(x=>{ (groups[x.grp]=groups[x.grp]||[]).push(x); });
+  const row=x=>`<div class="kl-it ${cur[0]===x.id?"on":""} ${cur[1]===x.id?"on2":""} ${KL.bad[x.id]?"bad":""}"><button class="kl-play" data-kp="${E(x.id)}:0">${cur[0]===x.id&&KL.L[0]&&!KL.L[0].a.paused?"❚❚":"▶"}</button><div class="kl-t"><b>${E(x.de||x.t)}</b>${x.m?` <span class="kl-m ${x.m==="a"?"a":""}">${KL_M[x.m]}</span>`:""}${(()=>{ const r=x.h&&x.h.includes(" – ")?x.h.split(" – ").slice(1).join(" – "):""; return r?`<small>passt zu: ${E(r)}</small>`:""; })()}${x.de?`<small class="kl-orig">Tabletop Audio: „${E(x.t)}“</small>`:""}${KL.bad[x.id]?`<small class="kl-bad">Datei nicht gefunden</small>`:""}</div><button class="kl-add" data-kp="${E(x.id)}:1" title="Als zweite Ebene dazumischen">+ Ebene</button>${x.own?`<button class="kl-add" data-kd="${E(x.id)}" title="Entfernen">✕</button>`:""}</div>`;
+  const flt=klCfg().flt||"";
+  const groups={}; KL_ALL().filter(x=>!flt||x.own||(flt==="a"?x.m==="a":x.m!=="a")).forEach(x=>{ (groups[x.grp]=groups[x.grp]||[]).push(x); });
   p.innerHTML=`<div class="kl-box"><div class="kl-head"><h2>Klang</h2><button data-kc="1" class="kl-x">✕</button></div>
   <p class="kl-lead">Antippen startet den Klang und blendet den laufenden sanft aus. „+ Ebene“ mischt einen zweiten dazu, etwa Regen zum Gasthaus. Der Klang läuft weiter, während du in der App arbeitest – Steuerung unten links.</p>
+  <div class="kl-flt">${[["","Alle"],["a","Nur Ambience"],["m","Mit Musik"]].map(([k,l])=>`<button data-kf="${k}" class="${flt===k?"on":""}">${l}</button>`).join("")}</div>
   ${Object.keys(groups).map(g=>`<h3>${E(g)}</h3>${groups[g].map(row).join("")}`).join("")}
   <h3>Eigenen Klang hinzufügen</h3>
   <p class="kl-lead">Link zu einer Audiodatei (MP3, OGG), die du verwenden darfst – etwa eigene Aufnahmen oder gemeinfreie Klänge.</p>
@@ -3637,6 +3658,7 @@ function klPanel(){
   p.style.display="";
   p.onclick=e=>{ if(e.target===p) klClose(); };
   p.querySelector("[data-kc]").onclick=klClose;
+  p.querySelectorAll("[data-kf]").forEach(el=>el.onclick=()=>{ klCfg().flt=el.dataset.kf; saveG(); klPanel(); });
   p.querySelectorAll("[data-kp]").forEach(el=>el.onclick=()=>{ const i=el.dataset.kp.lastIndexOf(":"); klPlay(el.dataset.kp.slice(0,i),+el.dataset.kp.slice(i+1)); setTimeout(klPanel,60); });
   p.querySelectorAll("[data-kd]").forEach(el=>el.onclick=()=>{ const id=el.dataset.kd; KL.L.forEach((o,i)=>{ if(o&&o.x.id===id) klStop(i); }); klCfg().own=own.filter(o=>o.id!==id); saveG(); klPanel(); });
   p.querySelector("[data-kn]").onclick=()=>{ const t=p.querySelector("#klOwnT").value.trim(), u=p.querySelector("#klOwnU").value.trim(); if(!/^https?:\/\//.test(u)){ note("Bitte einen vollständigen Link (https://…) eintragen"); return; } klCfg().own.push({id:"own-"+Date.now().toString(36),t:t||"Eigener Klang",url:u}); saveG(); klPanel(); };
@@ -3663,7 +3685,7 @@ if(window.HS_GM_KLANG){ const st=document.createElement("style"); st.textContent
 #klPanel .kl-it.on{border-color:#c9a24a;box-shadow:0 0 0 1px #c9a24a inset;background:#fff7e0}
 #klPanel .kl-it.on2{border-style:dashed;border-color:#c9a24a}
 #klPanel .kl-it.bad{opacity:.65}
-#klPanel .kl-t{flex:1;min-width:0}#klPanel .kl-t small{display:block;color:#6b5d4a;font-size:13px}#klPanel .kl-bad{color:#a33!important}#klPanel .kl-orig{font-style:italic;font-size:12px!important;opacity:.8}
+#klPanel .kl-t{flex:1;min-width:0}#klPanel .kl-t small{display:block;color:#6b5d4a;font-size:13px}#klPanel .kl-bad{color:#a33!important}#klPanel .kl-m{font:600 11px "EB Garamond",serif;border:1px solid #c9b48a;border-radius:6px;padding:0 5px;color:#7a6440;white-space:nowrap;vertical-align:2px}#klPanel .kl-m.a{background:#e6efe0;border-color:#9bb38a;color:#3d5a2e}#klPanel .kl-flt{display:flex;gap:6px;margin:10px 0 2px}#klPanel .kl-flt button{border:1px solid #d8c9a6;background:#fffdf7;border-radius:16px;padding:4px 12px;cursor:pointer;font:14px "EB Garamond",serif}#klPanel .kl-flt button.on{background:#2a241c;color:#f3e9d2;border-color:#2a241c}#klPanel .kl-orig{font-style:italic;font-size:12px!important;opacity:.8}
 #klPanel .kl-play{width:38px;height:38px;border-radius:50%;border:1px solid #c9a24a;background:#2a241c;color:#f3e9d2;cursor:pointer;flex:none}
 #klPanel .kl-add{border:1px solid #d8c9a6;background:transparent;border-radius:8px;padding:4px 8px;cursor:pointer;font:13px "EB Garamond",serif;flex:none}
 #klPanel .kl-own{display:flex;gap:6px;flex-wrap:wrap}#klPanel .kl-own input,#klPanel .kl-set input{flex:1;min-width:160px;border:1px solid #d8c9a6;border-radius:8px;padding:6px 8px;font:15px "EB Garamond",serif;background:#fff}
