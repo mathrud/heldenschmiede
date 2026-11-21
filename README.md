@@ -39,19 +39,22 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 
 **Spielleiter-App** (`spielleiter.html`)
 - Gemeinschaft im Blick: Ausdauer, Hoffnung, Schatten, Erschöpfung, Wunden, Parade aller Helden
-- Fertigkeit nachschlagen: Wer kann was, mit welchem Schwierigkeitsgrad?
+- Fertigkeit nachschlagen: Wer kann was, mit welchem Schwierigkeitsgrad – und wie hoch ist die Erfolgschance in Prozent (mit bevorzugten Fertigkeiten, Erschöpfung und Verzweiflung)?
 - Begegnungen aus den Widersachern des Grundregelwerks zusammenstellen und speichern
+- Eigene Widersacher mit eigenen Werten, Waffen und Fähigkeiten – auch aus einer Vorlage, mit einer Figur verknüpfbar
 - Reise als Ablauf: Aufgaben verteilen, Marschproben, Ereignisse mit Ziel und Folgen, Reiseerschöpfung bei der Ankunft – dazu ein Ideengenerator für Reiseereignisse
 - Beratung als Ablauf: Widerstand, Vorstellung mit Zeitlimit, Erfolge zählen, Ausgang
 - Kampf als Ablauf zum Durchklicken: Überraschung, Auftaktsalven, Nahkampfrunden, Kampfende – mit Gegnerwürfen gegen die Parade der Helden
 - Abenteuer vorbereiten nach Wann? Wo? Was? Warum? Wer? – mit verknüpften Figuren und Begegnungen
+- Orte: alle Schauplätze der Kampagne (Siedlung, Gasthaus, Ruine, Lager, Landmarke …), auch aus den Fundstellen der Bücher oder von eigenen Kartenpins; Unterorte, Suche, Stand (bekannt, besucht, erkundet) und Zuflucht. Jedem Ort lassen sich Figuren, Begegnungen, Rätsel und Horte zuordnen – im Abenteuer verknüpft man dann nur noch den Ort. Gerüchte lassen sich den Spielern groß zeigen
 - Landmarken bauen nach dem Aufbau des Regelwerks: Name, Gerücht und Altes Wissen, Hintergrund, Abbildung, Standorte, Ränke und Ungemach – mit Ideengenerator
 - Rätselfundus mit rund 60 gemeinfreien Rätseln (Symphosius, Exeter-Buch, Heidreks Rätsel, Volksrätsel) in freier deutscher Nachdichtung, Rätselspiel-Ansicht und eigene Rätsel
 - Kampagnenbuch als PDF: Titelseite, Inhaltsverzeichnis, Kapitel zu Gemeinschaft, Abenteuern, Landmarken, Figuren, Begegnungen und Rätseln – wahlweise ohne Lösungen und Geheimnisse für Spieler
 - Kampagnenzeit (Jahr und Jahreszeit) und ein Journal, in das sich Reisen, Ereignisse, Kämpfe, Beratungen und Begegnungen selbst eintragen – nach Spielabenden geordnet, auf der Karte als Chronik sichtbar und im Kampagnenbuch als eigenes Kapitel
 - Wetter zu jedem Reiseereignis (reine Stimmung) und Nachwirkungen als Inspiration: Was bleibt für den Helden, was für die Geschichte?
-- Hort-Generator nach den Regeln des Grundregelwerks: Schatzwert, Magische Schatzwürfe, Segnungen, Berühmte Waffen und Rüstungen mit Bann und Eigenschaften, Flüche und Kostbare Objekte – Effekte kurz zusammengefasst mit Seitenverweis
-- Generator für Nebenfiguren (Name, Beschäftigung, Merkmale, Auftreten, Wille) und ein Verzeichnis mit Ort, Beziehung und Notizen
+- Hort-Generator nach den Regeln des Grundregelwerks: Schatzwert, Magische Schatzwürfe, Segnungen, Berühmte Waffen und Rüstungen mit Bann und Eigenschaften, Flüche und Kostbare Objekte – Effekte kurz zusammengefasst mit Seitenverweis. Horte behalten, besondere Fundstücke eintragen und Orten zuordnen
+- Generator für Nebenfiguren (Name, Beschäftigung, Merkmale, Auftreten, Wille) und ein Verzeichnis mit Ort, Beziehung, Zustand, Gönner, Beziehungen zwischen Figuren und Notizen
+- Fraktionen: Ziel, Mitglieder, Filter im Verzeichnis und optional Pläne mit Jahr und Stand (droht, eingetreten, verhindert)
 
 ## Installieren
 
@@ -77,6 +80,8 @@ Die Heldenschmiede ist ein **inoffizielles, kostenloses Fanprojekt** und steht i
 **Homebrew:** Die Kulturen Reiter von Rohan und Dunländer sowie die Gönner Bard, Beorn, Dáin, Elrond, Radagast und Thranduil sind Fan-Material – aus der ersten Edition für die zweite umgearbeitet, nach Circleofnoms’ „TOR 2e Homebrew Cultures“ und „Homebrew Collection“. Sie sind in der App deutlich als Homebrew markiert und werden beim Zufallswurf nicht gezogen.
 
 **Karte:** Tayla Sommer · Übersetzung: Philip Doba „Klopare“. Die Karte im Ordner `karte/` gehört ihren Urhebern und fällt nicht unter die MIT-Lizenz.
+
+**Inspiration:** Die Kartenfunktion und ein, zwei weitere Ideen sind von der englischen App *The One Ring Companion* inspiriert – danke dafür!
 
 ## Lizenz
 

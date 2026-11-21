@@ -4303,6 +4303,7 @@ function clampView(){ const r=view.getBoundingClientRect(); const minS=fitScale(
 function apply(){ clampView(); layer.style.transform=`translate(${tx}px,${ty}px) scale(${s})`; loadTiles(); drawPins(); drawRoute(); D.view={s:s/fitScale(),cx:(view.clientWidth/2-tx)/s,cy:(view.clientHeight/2-ty)/s}; saveDebounced(); }
 let sdT=null; function saveDebounced(){ clearTimeout(sdT); sdT=setTimeout(saveD,400); }
 function zoomAt(f,px,py){ const ns=s*f; const wx=(px-tx)/s, wy=(py-ty)/s; s=ns; tx=px-wx*s; ty=py-wy*s; apply(); }
+function centerTop(x,y,rel){ if(view.clientWidth<700) rel=Math.max(rel||0,4); centerOn(x,y,rel); const r=view.getBoundingClientRect(); ty=r.height*0.17-y*s; apply(); }
 function centerOn(x,y,rel){ const r=view.getBoundingClientRect(); if(rel) s=fitScale()*rel; tx=r.width/2-x*s; ty=r.height/2-y*s; apply(); }
 const LEVELS=[{l:1,n:3,thr:0.9},{l:2,n:4,thr:3.0}];
 function loadTiles(){
@@ -4440,9 +4441,12 @@ function openRefMk(id){ const r=refList().find(z=>z.id===id); if(!r) return; con
     else if(I.route) x+=`<div style="font-size:15px">Von eurer Fahne: <b>${I.n} Hexfelder</b>, also mindestens ${I.n} Tage zu Fuß${I.dark?` · ${I.dark} Feld${I.dark>1?"er":""} Dunkles Land`:""}${I.dz?` · <span style="color:#c0473a">${I.dz} Gefährliche Stelle${I.dz>1?"n":""}</span>`:""}</div><div style="color:var(--muted);font-size:12px">Kürzester Weg; schwieriges Gelände kostet zusätzlich Tage.</div>`;
     else if(!I.flag) x+=`<div style="color:var(--muted);font-size:13px">Tippe unten rechts auf 🚩 und dann auf das Feld der Gemeinschaft – dann siehst du hier die Entfernung.</div>`;
     if(I.chron.length) x+=sub("Bei euch hier passiert")+I.chron.slice(-4).reverse().map(e=>`<div style="font-size:14px;margin:3px 0;line-height:1.3">${E(e.t)}<br><small style="color:var(--muted)">${E(e.z)} · Spielabend ${e.ses}</small></div>`).join("")+(I.chron.length>4?`<div style="color:var(--muted);font-size:12px">… und ${I.chron.length-4} weitere im Journal</div>`:""); }
+  const PR=CFG.refPrep?CFG.refPrep(r.id):null;
+  if(PR) x+=sub("Eure Vorbereitung")+`<div style="font-size:15px">${PR.txt?E(PR.txt):"Als Ort übernommen – noch nichts zugeordnet."}</div>`;
   x+=sub("Eigene Notiz")+`<textarea data-rn rows="2" style="width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:6px;border-radius:8px;border:1px solid #c9b78a;background:#fffdf7" placeholder="z. B. Gurnow schuldet der Gruppe einen Gefallen">${E(D.refNotes[r.id]||"")}</textarea>`;
-  x+=`<div class="row">${I&&I.route&&CFG.planTrip?`<button data-b="trip">Als Reiseziel planen</button>`:""}<button class="g" data-b="mv">Verschieben</button><button class="g" data-b="close">Schließen</button></div>`;
+  x+=`<div class="row">${I&&I.route&&CFG.planTrip?`<button data-b="trip">Als Reiseziel planen</button>`:""}${PR?`<button data-b="ort">Zum Ort</button>`:CFG.adoptRef?`<button class="g" data-b="adopt">Als Ort übernehmen</button>`:""}<button class="g" data-b="mv">Verschieben</button><button class="g" data-b="close">Schließen</button></div>`;
   panel(x);
+  { const ob=panelEl.querySelector('[data-b="ort"]'); if(ob) ob.onclick=()=>{ closePanel(); close(); CFG.openRef("lm",PR.id); }; const ab=panelEl.querySelector('[data-b="adopt"]'); if(ab) ab.onclick=()=>{ const id=CFG.adoptRef(r.id); if(id){ closePanel(); close(); CFG.openRef("lm",id); } }; }
   const ta=panelEl.querySelector("[data-rn]"); let nt=null; ta.oninput=()=>{ clearTimeout(nt); nt=setTimeout(()=>{ const v=ta.value.trim(); if(v) D.refNotes[r.id]=v; else delete D.refNotes[r.id]; saveD(); },400); }; ta.onblur=()=>{ clearTimeout(nt); const v=ta.value.trim(); if(v) D.refNotes[r.id]=v; else delete D.refNotes[r.id]; saveD(); };
   panelEl.querySelector('[data-b="close"]').onclick=()=>{ ta.onblur(); closePanel(); };
   const tb=panelEl.querySelector('[data-b="trip"]'); if(tb) tb.onclick=()=>{ ta.onblur(); if(CFG.planTrip(I.route,r.n.replace(/\s*\(.*\)$/,"").replace(/,.*$/,"").replace(/^(Der|Die|Das) /,""))){ D.route=[]; closePanel(); close(); } };
@@ -4457,7 +4461,7 @@ function openRefs(){ const L=refList(), lay=RL(); const show=L.filter(r=>(lay===
   panelEl.querySelectorAll("[data-rl]").forEach(b=>b.onclick=()=>{ D.refLayer=b.dataset.rl; saveD(); drawPins(); topRef(); openRefs(); });
   panelEl.querySelectorAll("[data-rg]").forEach(el=>el.onclick=()=>{ const r=L.find(z=>z.id===el.dataset.rg); closePanel();
     if(r.x==null){ placeOpts={refId:r.id,n:r.n}; if(mode!=="place") setMode("place"); else hint(); return; }
-    centerOn(r.x,r.y,Math.max(r.k==="lm"?2.5:3.5,s/fitScale())); setTimeout(()=>openRefMk(r.id),250); }); }
+    centerTop(r.x,r.y,Math.max(r.k==="lm"?2.5:3.5,s/fitScale())); setTimeout(()=>openRefMk(r.id),250); }); }
 function topRef(){ const b=root&&root.querySelector('[data-mb="refs"]'); if(b) b.classList.toggle("on",RL()!=="off"); }
 function openList(){
   const L=D.pins.slice().sort((a,b)=>(a.t==="wir"?-1:0)-(b.t==="wir"?-1:0)||(a.n||"").localeCompare(b.n||""));
@@ -4484,6 +4488,8 @@ function close(){ if(root){ root.style.display="none"; if(panelEl) closePanel();
 function openWith(o){ o=o||{}; open(); if(o.mode&&mode!==o.mode) setMode(o.mode); if(o.place){ placeOpts=o.place; if(mode!=="place") setMode("place"); hint(); }
   if(o.center){ const [x,y]=Array.isArray(o.center)?hexCenter(o.center[0],o.center[1]):[o.center.x,o.center.y]; requestAnimationFrame(()=>centerOn(x,y,Math.max(3,s/fitScale()))); }
   if(o.route){ D.route=o.route.slice(); D.segs=[D.route.length]; saveD(); requestAnimationFrame(()=>{ drawRoute(); bar(); }); } }
+function showBook(id){ const r=refList().find(z=>z.id===id); if(!r||r.x==null) return false; const lay=RL(); if(lay==="off"||(lay==="lm"&&r.k!=="lm")||(lay==="ort"&&(r.k==="lm"||r.sp))){ D.refLayer="all"; saveD(); }
+  open(); drawPins(); topRef(); setTimeout(()=>centerTop(r.x,r.y,Math.max(r.k==="lm"?2.5:3.5,s/fitScale())),150); setTimeout(()=>openRefMk(r.id),400); return true; }
 function showRef(t,ref){ const p=D.pins.find(q=>q.t===t&&q.ref===ref); if(!p){ return false; } openWith({center:{x:p.x,y:p.y}}); setTimeout(()=>openPin(p),300); return true; }
 function setFlag(h,name){ const [x,y]=hexCenter(h[0],h[1]); D.pins=D.pins.filter(p=>p.t!=="wir"); D.pins.push({id:uid(),x,y,t:"wir",n:name||"Gemeinschaft",note:"",d:Date.now()}); saveD(); if(root&&root.style.display!=="none") drawPins(); }
 function addTrail(route,label){ if(route&&route.length>1){ D.trails.push({route:route.slice(),label:label||"",d:Date.now()}); saveD(); } }
@@ -4551,7 +4557,7 @@ new MutationObserver(ensureButton).observe(document.body,{childList:true,subtree
 if(typeof render==="function"){ const orig=render; render=function(){ orig.apply(this,arguments); try{ ensureButton(); }catch(e){} }; }
 ensureButton(); }
 if(CFG.noButtons&&window.HS_GM) setTimeout(()=>HS_GM.render(),0);
-window.HS_MAP={open,openWith,close,showRef,setFlag,addTrail,hexCenter,dangerAt:(r,c)=>D.danger[r+","+c]||0,reload:()=>{ if(CFG.load){ const d=CFG.load(); if(d){ D=d; D.pins=D.pins||[]; D.route=D.route||[]; D.danger=D.danger||{}; D.trails=D.trails||[]; } } },get data(){return D;},view:()=>({s,tx,ty,rect:view.getBoundingClientRect()}),hexAt,terr,findPath,TERR};
+window.HS_MAP={open,openWith,close,showRef,showBook,setFlag,addTrail,hexCenter,dangerAt:(r,c)=>D.danger[r+","+c]||0,reload:()=>{ if(CFG.load){ const d=CFG.load(); if(d){ D=d; D.pins=D.pins||[]; D.route=D.route||[]; D.danger=D.danger||{}; D.trails=D.trails||[]; } } },get data(){return D;},view:()=>({s,tx,ty,rect:view.getBoundingClientRect()}),hexAt,terr,findPath,TERR};
 })();
 </script>
 <script id="hs-anim">/* Heldenschmiede – kurze Würfelanimation (Test) */
