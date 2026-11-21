@@ -2073,11 +2073,15 @@ function rollXP(){
   // Haupt-Kampffähigkeit öfter auf 3 bringen
   if(S.combatMain){ let pr=S.calling==="streiter"?0.65:(S.calling==="gelehrter"||S.calling==="bote")?0.25:0.4; if(solo())pr+=0.15;
     while(combatVal(S.combatMain)<3&&Math.random()<pr){ const v=combatVal(S.combatMain); if(COMBAT_COST[v]>xpPool()-xpSpent())break; S.xp.combat[S.combatMain]=(S.xp.combat[S.combatMain]||0)+1; } }
+  // Berufungs-Fertigkeiten möglichst nicht bei 0 lassen
+  if(k) shuffle(k.skills.slice()).forEach(sk=>{ if(skillVal(sk)===0&&SKILL_COST[0]<=xpPool()-xpSpent()&&Math.random()<0.85) S.xp.skills[sk]=(S.xp.skills[sk]||0)+1; });
+  const at=attrs()||{kraft:4,mut:4,verstand:4}; const avgA=(at.kraft+at.mut+at.verstand)/3;
   let guard=0;
   while(guard++<50){
     const left=xpPool()-xpSpent(); const cands=[],w=[];
     ALLSKILLS.forEach(sk=>{const v=skillVal(sk); if(v>=4)return; const cost=SKILL_COST[v]; if(cost>left)return;
       let wt=v>0?1:0.35; if(k&&k.skills.includes(sk))wt*=3; if(fav.has(sk))wt*=2; if(v===0&&k&&k.skills.includes(sk))wt*=1.5; if(v===3)wt*=0.4;
+      wt*=Math.pow(Math.max(1,at[skillAttr(sk)])/avgA,1.6);
       cands.push({t:"s",id:sk});w.push(wt/Math.sqrt(cost));});
     PROFS.forEach(p=>{const v=combatVal(p); if(v>=3)return; const cost=COMBAT_COST[v]; if(cost>left)return;
       let wt=p===S.combatMain?3.5:(v>0?1:0.3); if(S.calling==="streiter")wt*=1.6; if(S.calling==="gelehrter"||S.calling==="bote")wt*=0.7;
@@ -2140,10 +2144,10 @@ function rollVirtue(){
   if(id==="tuechtigkeit"){const k=K(); const cnt={kraft:0,mut:0,verstand:0}; (k?k.skills:[]).forEach(s=>cnt[skillAttr(s)]++); S.virtue.sg=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];}
 }
 function rollName(){
-  const c=C(); S.gender=Math.random()<.5?"m":"f";
-  let n=pick(c[S.gender]);
-  if(c.fam) n+=" "+pick(famList());
-  else if(c.patronym){ const father=pick(c.m); n+=", "+(S.gender==="m"?"Sohn":"Tochter")+" von "+father; }
+  const c=C(); if(S.gender!=="d") S.gender=Math.random()<.5?"m":"f";
+  let n=pick(nameList());
+  if(c.fam){ let L=famList(); if(S.gender==="d"){ const g0=S.gender; S.gender=c.f.includes(n)?"f":"m"; L=famList(); S.gender=g0; } n+=" "+pick(L); }
+  else if(c.patronym){ let father=pick(c.m), g=0; while(father===n&&g++<10) father=pick(c.m); n+=", "+(S.gender==="m"?"Sohn":S.gender==="f"?"Tochter":"Kind")+" von "+father; }
   S.name=n;
   const [lo,hi]=c.age; let ag;
   if(S.culture==="hobbits"||S.culture==="breehobbits") ag=Math.random()<.75?33+rnd(18):24+rnd(9);
@@ -2151,7 +2155,8 @@ function rollName(){
   else ag=lo+Math.round(Math.pow(Math.random(),1.4)*(hi-lo));
   S.age=ag;
 }
-function famList(){const c=C(); if(!c||!c.fam) return null; const FEM={"der Jäger":"die Jägerin","der Bogner":"die Bognerin","der Heiler":"die Heilerin","der Waldgänger":"die Waldgängerin","der Schildträger":"die Schildträgerin","der Hirte":"die Hirtin","der Schmied":"die Schmiedin","der Läufer":"die Läuferin","der Adler":"der Adler","der Hund":"der Hund"}; return c.fam.map(f=>S.gender==="f"?(FEM[f]||f.replace(/^der /,"die ")):f);}
+function famList(){const c=C(); if(!c||!c.fam) return null; const FEM={"der Jäger":"die Jägerin","der Bogner":"die Bognerin","der Heiler":"die Heilerin","der Waldgänger":"die Waldgängerin","der Schildträger":"die Schildträgerin","der Hirte":"die Hirtin","der Schmied":"die Schmiedin","der Läufer":"die Läuferin","der Adler":"der Adler","der Hund":"der Hund"}; const fem=f=>FEM[f]||f.replace(/^der /,"die "); if(S.gender==="d") return [...new Set(c.fam.flatMap(f=>[f,fem(f)]))]; return c.fam.map(f=>S.gender==="f"?fem(f):f);}
+function nameList(){const c=C(); if(!c) return []; if(S.gender==="d") return [...new Set([...c.f,...c.m])].sort((a,b)=>a.localeCompare(b,"de")); return c[S.gender==="f"?"f":"m"];}
 function isDwarf(){return S.culture==="zwerge"||S.culture==="nogrod";}
 function rollPatron(){
   const ids=Object.keys(PATRONS).filter(id=>!PATRONS[id].hb); const fit=ids.filter(id=>S.calling&&PATRONS[id].fav.includes(S.calling));
@@ -2349,11 +2354,11 @@ name(){
   h+=`<div class="row"><label class="field" style="flex:1;min-width:260px"><span>Name</span><input id="nameIn" value="${esc(S.name)}" placeholder="Name deines Helden"></label>
   <label class="field"><span>Alter</span><input id="ageIn" type="number" min="1" value="${S.age??""}" style="min-width:90px;width:110px"></label></div>
   <p class="small lead">${c.ageHint}</p>`;
-  h+=`<h3>Namensvorschläge</h3><div class="row" style="margin-bottom:8px"><span class="chip ${S.gender==="m"?"sel":""}" data-gd="m">männlich</span><span class="chip ${S.gender==="f"?"sel":""}" data-gd="f">weiblich</span></div><div class="chips">`;
-  c[S.gender].forEach(n=>h+=`<span class="chip" data-nm="${esc(n)}">${n}</span>`);
+  h+=`<h3>Namensvorschläge</h3><div class="row" style="margin-bottom:8px"><span class="chip ${S.gender==="m"?"sel":""}" data-gd="m">männlich</span><span class="chip ${S.gender==="f"?"sel":""}" data-gd="f">weiblich</span><span class="chip ${S.gender==="d"?"sel":""}" data-gd="d">divers</span></div>${S.gender==="d"?`<p class="small lead" style="margin:0 0 6px">Alle Namen deines Volkes zur Auswahl.</p>`:""}<div class="chips">`;
+  nameList().forEach(n=>h+=`<span class="chip" data-nm="${esc(n)}">${n}</span>`);
   h+=`</div>`;
   if(c.fam){h+=`<h3>${c.famLabel||"Familiennamen"}</h3><div class="chips">${famList().map(n=>`<span class="chip" data-fm="${esc(n)}">${n}</span>`).join("")}</div>`;}
-  if(c.patronym) h+=`<p class="small lead" style="margin-top:8px">Bardinger stellen sich förmlich mit dem Vatersnamen vor, etwa „Lifstan, Sohn von Leiknir“.</p>`;
+  if(c.patronym) h+=`<p class="small lead" style="margin-top:8px">Bardinger stellen sich förmlich mit dem Vatersnamen vor, etwa „Lifstan, Sohn von Leiknir“${S.gender==="d"?" – oder neutral „Kind von …“":""}.</p>`;
   {
     const pt=S.patron&&PATRONS[S.patron];
     const lead=solo()?"Im Solo-Spiel vielleicht die wichtigste Wahl: Er gibt deinem Helden Aufträge und bindet ihn in die Welt ein. Gefährtenwert = 3 + Gefährtenpunkte des Gönners."

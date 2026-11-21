@@ -25,6 +25,7 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Im Streicher-Modus führen Reise, Kampf und Beratung Schritt für Schritt durch den Ablauf – du bist Spieler und Spielleiter zugleich
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
 - Held per QR-Code oder Link an den Spielleiter geben
+- Geschlecht männlich, weiblich oder divers (dann alle Namen des Volkes zur Auswahl)
 - Kurze Würfelanimation (abschaltbar, Antippen überspringt) – Rune und Auge leuchten beim Landen auf
 
 **Karte von Mittelerde** (in beiden Apps)
@@ -49,6 +50,7 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Kampagnenbuch als PDF: Titelseite, Inhaltsverzeichnis, Kapitel zu Gemeinschaft, Abenteuern, Landmarken, Figuren, Begegnungen und Rätseln – wahlweise ohne Lösungen und Geheimnisse für Spieler
 - Kampagnenzeit (Jahr und Jahreszeit) und ein Journal, in das sich Reisen, Ereignisse, Kämpfe, Beratungen und Begegnungen selbst eintragen – nach Spielabenden geordnet, auf der Karte als Chronik sichtbar und im Kampagnenbuch als eigenes Kapitel
 - Wetter zu jedem Reiseereignis (reine Stimmung) und Nachwirkungen als Inspiration: Was bleibt für den Helden, was für die Geschichte?
+- Hort-Generator nach den Regeln des Grundregelwerks: Schatzwert, Magische Schatzwürfe, Segnungen, Berühmte Waffen und Rüstungen mit Bann und Eigenschaften, Flüche und Kostbare Objekte – Effekte kurz zusammengefasst mit Seitenverweis
 - Generator für Nebenfiguren (Name, Beschäftigung, Merkmale, Auftreten, Wille) und ein Verzeichnis mit Ort, Beziehung und Notizen
 
 ## Installieren
