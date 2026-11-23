@@ -1909,8 +1909,8 @@ ausruestung(){
   h+=`<div class="row" style="margin-top:12px"><div class="stat"><span class="v">${g.load}</span><span class="l">Belastung</span></div>${d?`<div class="stat"><span class="v">${d.aus}</span><span class="l">Ausdauer</span></div>`:""}</div>`;
   if(d&&g.load>=d.aus) h+=`<div class="warn">Deine Belastung erreicht deine Ausdauer – du wärst sofort Erschöpft.</div>`;
   if(isDwarf()) h+=`<p class="small lead">Unnachgiebig: Rüstung und Helm zählen nur halb (aufgerundet).</p>`;
-  h+=`<h3>Nützliche Gegenstände</h3><p class="lead">Jeder Gegenstand ist mit einer Fertigkeit verbunden und kann außerhalb des Kampfes (1W) bringen.</p>`;
-  S.items.forEach((it,i)=>{h+=`<div class="row" style="margin-bottom:6px"><label class="field" style="flex:1"><span>Gegenstand ${i+1}</span><input data-it="${i}" value="${esc(it.text)}" placeholder="z. B. ${esc(ITEM_IDEAS[ALLSKILLS[(i*5+3)%18]])}"></label><label class="field"><span>Fertigkeit</span><select data-is="${i}"><option value="">–</option>${ALLSKILLS.map(s=>`<option ${it.skill===s?"selected":""}>${s}</option>`).join("")}</select></label></div>`;});
+  h+=`<h3>Nützliche Gegenstände</h3><p class="lead">Jeder Gegenstand ist mit einer Fertigkeit verbunden und kann außerhalb des Kampfes (1W) bringen. Im Auswahlmenü steht hinter jeder Fertigkeit dein Wert, ★ heißt bevorzugt.</p>`;
+  S.items.forEach((it,i)=>{h+=`<div class="row" style="margin-bottom:6px"><label class="field" style="flex:1"><span>Gegenstand ${i+1}</span><input data-it="${i}" value="${esc(it.text)}" placeholder="z. B. ${esc(ITEM_IDEAS[ALLSKILLS[(i*5+3)%18]])}"></label><label class="field"><span>Fertigkeit</span><select data-is="${i}"><option value="">–</option>${(()=>{const fv=favSet(); return ALLSKILLS.map(s=>`<option value="${s}" ${it.skill===s?"selected":""}>${s} – ${skillVal(s)}${fv.has(s)?" ★":""}</option>`).join("");})()}</select></label></div>`;});
   const m=MOUNT[c.std]; h+=`<h3>Reittier</h3><p>${m[0]}${m[1]?` (Vitalität ${m[1]})`:""}</p>`;
   return h+navBtns();
 },

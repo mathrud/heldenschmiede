@@ -1,4 +1,4 @@
-const CACHE="hs-v24";
+const CACHE="hs-v25";
 const FILES=["./","./index.html","./spielleiter.html","./manifest.webmanifest","./spielleiter.webmanifest","./icon-sl-192.png","./icon-sl-512.png","./apple-touch-icon-sl.png","./icon-192.png","./icon-512.png","./apple-touch-icon.png","./icon-32.png","./karte/karte-0.jpg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
