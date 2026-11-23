@@ -726,7 +726,7 @@ const STRIDER_CONTENT = [
   {p:"Frage so, dass **Ja** das Gute für deinen Helden ist. Lege die Wahrscheinlichkeit fest (im Zweifel **Mittel**) und wirf **einen Heldenwürfel**:"},
   {t:[["Wahrscheinlichkeit","Ja ab"],["Gewiss","1"],["Wahrscheinlich","4"],["Mittel","6"],["Zweifelhaft","8"],["Unvorstellbar","10"]],w:[0.6,0.4]},
   {b:["**Gandalf-Rune:** immer Ja – mit drastischer Wendung.","**Auge:** immer Nein – mit drastischer Wendung."]},
-  {p:"**Wissen-Tabelle** (SM S. 11–12) für offene Fragen: Heldenwürfel wählt die Untertabelle, Erfolgswürfel die Zeile; Spalten Aktion, Aspekt, Fokus. Passt nichts, Nachbarzeile nehmen oder neu würfeln. Und oft gilt einfach: **dem Bauchgefühl trauen.**"},
+  {p:"**Wissen-Tabelle** (SM S. 11–12, hinten in diesem Blatt) für offene Fragen: Heldenwürfel wählt die Untertabelle, Erfolgswürfel die Zeile; Spalten Aktion, Aspekt, Fokus. Passt nichts, Nachbarzeile nehmen oder neu würfeln. Und oft gilt einfach: **dem Bauchgefühl trauen.**"},
 
   {page:"Streicher-Modus · Abenteuerphase"},
   {h:"Saurons Blick (empfohlen)"},
@@ -739,7 +739,7 @@ const STRIDER_CONTENT = [
   {t:[["Gebiet","Jagdschwelle"],["Grenzland","18"],["Wildes Land","16"],["Dunkles Land","14"]],w:[0.6,0.4]},
   {b:["**+4** Segen eines Zauberers o. Ä. · **+2** unauffällig, falscher Name, Schleichwege",
       "**−2** in der Gegend berühmt · **−4** der Feind sucht dich gezielt"]},
-  {p:"Erreicht Saurons Blick die Schwelle: **Enthüllung** – würfle auf der Enthüllungstabelle (SM S. 14), wähle oder erfinde eine passende Bedrohung. Danach Blick auf den Startwert."},
+  {p:"Erreicht Saurons Blick die Schwelle: **Enthüllung** – würfle auf der Enthüllungstabelle (hinten in diesem Blatt, SM S. 14), wähle oder erfinde eine passende Bedrohung. Danach Blick auf den Startwert."},
 
   {h:"Kampf allein"},
   {h2:"Scharmützel-Haltung (Fernkampf)"},
@@ -770,13 +770,54 @@ const STRIDER_CONTENT = [
       ["8–9","Abkürzung · Erfolg: 1 Tag kürzer","1"],
       ["10","Zufällige Begegnung · Erfolg: keine Erschöpfung","1"],
       ["Rune","Erfreulicher Anblick · Erfolg: +1 Hoffnung","—"]],w:[0.14,0.68,0.18]},
-  {p:"Einen W6 gleich mitwerfen: Die **Ereignis-Detail-Tabellen** (SM S. 17–19) sagen, was genau passiert und welche Fertigkeit gefragt ist. Eine **Bemerkenswerte Begegnung** spielst du als eigene Szene aus – geht sie gut aus, zählt sie als gelungener Wurf."},
+  {p:"Einen W6 gleich mitwerfen: Die **Ereignis-Details** (hinten in diesem Blatt, SM S. 17–19) sagen, was genau passiert und welche Fertigkeit gefragt ist. Eine **Bemerkenswerte Begegnung** spielst du als eigene Szene aus – geht sie gut aus, zählt sie als gelungener Wurf."},
 
   {h:"Gefährtenphase solo"},
   {p:"Ablauf wie im GRW; Ort und Dauer legst du selbst fest, etwa jede dritte Phase ein Julfest. **Geistige Erholung** – Schattenpunkte entfernst du je nach deinem Beitrag gegen den Schatten:"},
   {t:[["Deine Taten","Schatten −"],["kleiner Beitrag","1"],["den Feind spürbar behindert","2"],["große Taten, die selbst seine Diener bemerken","3"]],w:[0.75,0.25]},
   {p:"Koop ohne SL: zu zweit diese Reiseregeln nutzen (Ziel eines Ereignisses notfalls auswürfeln), ab drei Helden die normalen Reiseaufgaben. Rampenlicht reihum teilen.",i:true}
 ];
+/* Streicher-Tabellen zum Würfeln – Wissen-Tabelle aus dem Heft, übrige Tabellen in eigenen Worten (SM S. 11–19). */
+const SM_DIE=v=>v===11?0:v===12?11:v; /* Heldenwürfel → Zeile 0 (Auge) … 11 (Rune) */
+const SM_DIEL=["Auge","1","2","3","4","5","6","7","8","9","10","Rune"];
+/* Wissen-Tabelle (SM S. 11–12): 12 Untertabellen à 6 Zeilen – Aktion · Aspekt · Fokus */
+const SM_LORE=[[["Verlassen", "Korrumpiert", "Fluch"], ["Angreifen", "Grausam", "Verzweiflung"], ["Verraten", "Trügerisch", "Feind"], ["Korrumpieren", "Tödlich", "Furcht"], ["Besiegen", "Zerstört", "Schatten"], ["Schwächen", "Verräterisch", "Krieg"]], [["Unterstützen", "Tatkräftig", "Schlacht"], ["Eintreffen", "Uralt", "Grenze"], ["Abwarten", "Kühn", "Bürde"], ["Brechen", "Strahlend", "Rat"], ["Zerbrechen", "Zerbrochen", "Hof"], ["Fangen", "Freudlos", "Kreatur"]], [["Verändern", "Kalt", "Dunkelheit"], ["Verfolgen", "Verborgen", "Tod"], ["Befehligen", "Gefährlich", "Verteidigung"], ["Kontrollieren", "Dunkel", "Tiefen"], ["Erschaffen", "Tot", "Zweifel"], ["Trotzen", "Verteidigt", "Träume"]], [["Fordern", "Trostlos", "Schicksal"], ["Entdecken", "Vernichtet", "Feuer"], ["Verbergen", "Grässlich", "Volk"], ["Ertragen", "Leer", "Gefolgsleute"], ["Entkommen", "Böse", "Gier"], ["Umgehen", "Verblasst", "Zuflucht"]], [["Erkunden", "Weitreichend", "Geschichte"], ["Finden", "Wild", "Ehre"], ["Konzentrieren", "Unheilvoll", "Reise"], ["Sammeln", "Vergessen", "Verwandte"], ["Bewachen", "Zerbrechlich", "Wissen"], ["Führen", "Grausig", "Land"]], [["Verbergen", "Düster", "Anführer"], ["Behindern", "Wachsend", "Legende"], ["Horten", "Versteckt", "Leben"], ["Halten", "Unglückselig", "Licht"], ["Jagen", "Undurchdringlich", "Glück"], ["Reisen", "Inspirierend", "Erinnerung"]], [["Anführen", "Isoliert", "Botschaft"], ["Lernen", "Stolz", "Macht"], ["Verlassen", "Verirrt", "Natur"], ["Verlieren", "Bedrohlich", "Schmerz"], ["Betrauern", "Mächtig", "Pfad"], ["Bewegen", "Geheimnisvoll", "Gönner"]], [["Fortbestehen", "Edel", "Gefahr"], ["Bewahren", "Gehemmt", "Plan"], ["Verhindern", "Alt", "Gewalt"], ["Ablehnen", "Verhängnisvoll", "Prophezeiung"], ["Abstoßen", "Offen", "Aufgabe"], ["Entfernen", "Friedlich", "Zufluchtsort"]], [["Auffrischen", "Wiederhergestellt", "Rätsel"], ["Wiederherstellen", "Behütet", "Ruinen"], ["Intrigieren", "Lautlos", "Gerücht"], ["Suchen", "Einfach", "Geheimnis"], ["Ergreifen", "Klein", "Fertigkeit"], ["Teilen", "Düster", "Lied"]], [["Erschlagen", "Steinig", "Erzählung"], ["Stehlen", "Stabil", "Stärke"], ["Herbeirufen", "Angeschlagen", "Zeit"], ["Aufgeben", "Stur", "Hilfsmittel"], ["Umschließen", "Verdreht", "Schatz"], ["Bedrohen", "Widernatürlich", "Vertrauen"]], [["Verwandeln", "Verschleiert", "Wahrheit"], ["Fangen", "Lebhaft", "Rache"], ["Überlisten", "Erschöpft", "Wohlstand"], ["Aufdecken", "Ungestüm", "Waffe"], ["Aufrechterhalten", "Erbärmlich", "Wildnis"], ["Standhalten", "Jung", "Wunsch"]], [["Glauben", "Gedeihend", "Tapferkeit"], ["Stärken", "Schön", "Pflicht"], ["Verteidigen", "Gut", "Gemeinschaft"], ["Verzeihen", "Freundlich", "Hoffnung"], ["Widerstehen", "Sanft", "Liebe"], ["Stärken", "Wundersam", "Friede"]]];
+/* Enthüllungen – eigene Formulierungen (Heldenwürfel) */
+const SM_REVEAL=["Streit in den eigenen Reihen oder eine Gefahr von außen bedroht deine Zuflucht.",
+ "Eine unvorhergesehene Gefahr versperrt den Weg – du musst eine andere Route nehmen.",
+ "Das Land selbst ist vergiftet und kehrt sich gegen dich.",
+ "Späher des Feindes tragen Nachricht über deinen Auftrag davon.",
+ "Diener des Feindes lauern dir auf oder stellen eine Falle.",
+ "Häscher des Feindes heften sich an deine Spur.",
+ "Ein bedeutsamer Ort fällt dem Feind in die Hände.",
+ "Etwas, das du mitführst, ist verflucht – oder ein Feind ist hinter ihm her.",
+ "Etwas, nach dem du dich sehr sehnst, führt dich in Versuchung und gefährdet deinen Auftrag.",
+ "Üble Gerüchte bringen andere dazu, dir zu misstrauen oder dich zu fürchten.",
+ "Unter deinen Verbündeten bricht Zwist aus.",
+ "Ein wichtiger Verbündeter schwebt in Gefahr."];
+/* Ereignis-Details je Reiseereignis (Erfolgswürfel 1–6): [Anlass, Fertigkeit oder null = Bemerkenswerte Begegnung, wozu] */
+const SM_BB=null;
+const SM_EVD=[
+ [["Unheilvolle Begegnung",SM_BB],["Ein Raubtier, das selbst jagt","Jagen","um nicht selbst zur Beute zu werden"],["Unwetter","Erkunden","um Unterschlupf zu finden"],["Tückische Gefahr","Wahrnehmung","um sie rechtzeitig zu erkennen"],["Heimtückisches Gelände","Erkunden","um einen sichereren Weg zu suchen"],["Ein Verfolger im Verborgenen","Wahrnehmung","um die üble Gegenwart zu spüren"]],
+ [["Handlanger des Feindes",SM_BB],["Wolkenbruch","Erkunden","um den geschütztesten Weg zu finden"],["Bedrückende Gegenwart","Wahrnehmung","um die Gefahr zu erahnen"],["Schwindende Kräfte","Jagen","um Nahrung zu beschaffen"],["Ein verdorbener Ort","Erkunden","um wieder hinauszufinden"],["Grausiger Fund oder böses Omen","Wahrnehmung","um gewarnt zu sein"]],
+ [["Verschwendete Vorräte","Jagen","um sie wieder aufzufüllen"],["Falsche Fährte","Erkunden","um zum richtigen Weg zurückzufinden"],["Unbemerkte Gefahr","Wahrnehmung","um heil davonzukommen"],["Entwischte Beute","Jagen","um ihrer Spur zu folgen"],["Verwirrende Gegend","Erkunden","um die Richtung wiederzufinden"],["Dunkle Träume","Wahrnehmung","um die Düsternis abzuschütteln"]],
+ [["Magere Jagd","Jagen","um genug Nahrung zu finden"],["Vom Weg abgekommen","Erkunden","um ihn wiederzufinden"],["Hindernis auf dem Pfad","Wahrnehmung","um einen Umweg zu entdecken"],["Flüchtiges Wild","Jagen","um es aufzuspüren"],["Unwegsames Land","Erkunden","um es sicher zu durchqueren"],["Umherstreifende Feinde","Wahrnehmung","um sie früh zu entdecken"]],
+ [["Ein Wildwechsel","Jagen","um dem Pfad der Tiere zu folgen"],["Ein vergessener Steig","Erkunden","um ihn durch die Wildnis zu verfolgen"],["Nützliche Spuren","Wahrnehmung","um ihnen zu folgen"],["Ein Tier weist den Weg","Jagen","um ihm unauffällig nachzugehen"],["Gutes Wetter","Erkunden","um es zu nutzen"],["Eine bekannte Landmarke","Wahrnehmung","um sie wiederzuerkennen"]],
+ [["Ein Einzelgänger der Wildnis","Jagen","um Neuigkeiten auszutauschen"],["Ein Wandergefährte auf Zeit","Erkunden","um vom Weg vor dir zu erfahren"],["Ein stiller Beobachter","Wahrnehmung","um ihn zu bemerken"],["Ein stolzes Tier","Jagen","um dich mit ihm zu verständigen"],["Ein einsames Lager","Erkunden","um abseits der Wege hinzufinden"],["Eine glückliche Fügung",SM_BB]],
+ [["Prächtige Tiere","Jagen","um sie zu beobachten, ohne sie aufzuscheuchen"],["Weiter Ausblick","Erkunden","um den Aussichtspunkt zu erreichen"],["Ein gütiges Wesen","Wahrnehmung","um seine Nähe zu spüren"],["Reiche Ernte am Wegesrand","Jagen","um deine Vorräte aufzufrischen"],["Ein altes Denkmal","Wahrnehmung","um seine Bedeutung zu erkennen"],["Ein Ort des Friedens",SM_BB]]];
+const SM_EVN=["Schreckliches Unglück","Verzweiflung","Schlechte Entscheidungen","Missgeschick","Abkürzung","Zufällige Begegnung","Erfreulicher Anblick"];
+function smEvd(i,d){ const e=SM_EVD[i]&&SM_EVD[i][d-1]; if(!e) return null; return {n:e[0],sk:e[1],why:e[2]||"",txt:e[1]?`${e[0]} – ${e[1].toUpperCase()}, ${e[2]}`:`${e[0]} – Bemerkenswerte Begegnung: als eigene Szene ausspielen`}; }
+(function(){
+  const C=STRIDER_CONTENT;
+  C.push({page:"Streicher-Modus · Tabellen"});
+  C.push({h:"Enthüllungen (Heldenwürfel)"});
+  C.push({t:[["W12","Enthüllung"]].concat(SM_REVEAL.map((t,i)=>[SM_DIEL[i],t])),w:[0.12,0.88]});
+  C.push({h:"Ereignis-Details (Erfolgswürfel)"});
+  SM_EVD.forEach((tab,i)=>{ C.push({h2:SM_EVN[i]}); C.push({t:[["W6","Anlass","Wurf"]].concat(tab.map((e,j)=>[String(j+1),e[0],e[1]?e[1].toUpperCase()+", "+e[2]:"Bemerkenswerte Begegnung"])),w:[0.08,0.4,0.52]}); });
+  C.push({page:"Streicher-Modus · Wissen-Tabelle"});
+  C.push({p:"**Heldenwürfel** wählt den Block, **Erfolgswürfel** die Zeile (SM S. 11–12).",i:true});
+  SM_LORE.forEach((tab,i)=>{ C.push({h2:"Heldenwürfel: "+SM_DIEL[i]}); C.push({t:[["W6","Aktion","Aspekt","Fokus"]].concat(tab.map((r,j)=>[String(j+1)].concat(r))),w:[0.1,0.3,0.3,0.3]}); });
+})();
 function buildStriderSheet(PDFLib, fontkit, F){ return buildFlowSheet(PDFLib, fontkit, F, STRIDER_CONTENT, "STREICHER-MODUS", "Der Eine Ring – Streicher-Modus"); }
 if(typeof module!=="undefined") module.exports = {buildStriderSheet, STRIDER_CONTENT};
 </script>
@@ -2435,7 +2476,7 @@ const LSK="hsgm-state";
 let MEMS=null;
 function loadG(){ try{ return JSON.parse(localStorage.getItem(LSK)||"null"); }catch(e){ return MEMS; } }
 function saveG(){ try{ localStorage.setItem(LSK,JSON.stringify(G)); }catch(e){ MEMS=G; } }
-const PKEYS=["heroes","enc","fight","npcs","adv","sess","trip","council","lm","rUsed","myRiddles","bookTitle","map","klang","log","time","hort","hortCfg","hortObj","hoards","myFoes","factions"];
+const PKEYS=["heroes","enc","fight","npcs","adv","sess","trip","council","lm","rUsed","myRiddles","bookTitle","map","klang","log","time","hort","hortCfg","hortObj","hoards","myFoes","factions","eye"];
 function persistData(){ const o={}; PKEYS.forEach(k=>o[k]=G[k]); return o; }
 let META=(()=>{ try{ return JSON.parse(localStorage.getItem("hsgm-meta")||"null")||{}; }catch(e){ return {}; } })();
 function saveMeta(){ try{ localStorage.setItem("hsgm-meta",JSON.stringify(META)); }catch(e){} }
@@ -2732,7 +2773,8 @@ function vFiguren(){
   x+=`</div>`;
   // Verzeichnis
   const q=(G.npcQ||"").toLowerCase(), rf=G.npcRel||"", ff=ORTEON()&&facById(G.npcFac||"")||G.npcFac==="-"?G.npcFac:"";
-  const list=G.npcs.filter(o=>(!rf||o.rel===rf)&&(!ff||(ff==="-"?!o.fac:o.fac===ff))&&(!q||[o.n,o.job,o.ort,o.note,(ORIG[o.org]||{}).l].join(" ").toLowerCase().includes(q))).sort((a,b)=>(b.last||0)-(a.last||0)||a.n.localeCompare(b.n));
+  const AF=advF();
+  const list=G.npcs.filter(o=>(!AF||AF.npcs.has(o.id))&&(!rf||o.rel===rf)&&(!ff||(ff==="-"?!o.fac:o.fac===ff))&&(!q||[o.n,o.job,o.ort,o.note,(ORIG[o.org]||{}).l].join(" ").toLowerCase().includes(q))).sort((a,b)=>(b.last||0)-(a.last||0)||a.n.localeCompare(b.n));
   x+=(ORTEON()?vFactions():"")+`<div class="gm-card" id="npcDir"><h2>Verzeichnis <span class="gm-tag">${G.npcs.length}</span></h2>`;
   if(!G.npcs.length) x+=`<div class="gm-empty">Hier sammeln sich alle Figuren, die du behältst – mit Ort, Beziehung zur Gemeinschaft und Notizen.</div>`;
   else { x+=`<div class="gm-row"><input class="gm-in" data-npcq="1" placeholder="Suchen: Name, Ort, Beschäftigung …" value="${E(G.npcQ||"")}" style="flex:1;min-width:200px"></div>
@@ -3345,7 +3387,8 @@ function allRiddles(){ return RIDDLES.map((r,i)=>Object.assign({id:"r"+i},r)).co
 const LVL=["","leicht","mittel","schwer"];
 function vRaetsel(){
   const all=allRiddles(), used=G.rUsed||{}, f=G.rFilter||{};
-  const list=all.filter(r=>(!f.l||r.l===f.l)&&(!f.t||r.t===f.t)&&(!f.hideUsed||!used[r.id])&&(!f.q||(r.q+" "+r.a).toLowerCase().includes(f.q.toLowerCase())));
+  const AFr=advF();
+  const list=all.filter(r=>(!AFr||AFr.rid.has(r.id))&&(!f.l||r.l===f.l)&&(!f.t||r.t===f.t)&&(!f.hideUsed||!used[r.id])&&(!f.q||(r.q+" "+r.a).toLowerCase().includes(f.q.toLowerCase())));
   const cur=all.find(r=>r.id===G.rCur);
   let x=`<div class="gm-card"><h2>Rätselspiel</h2><p class="gm-hint">Ein Rätselspiel wird in Mittelerde selbst von finsteren Geschöpfen geachtet. Gemeinfreie Rätsel aus alter Überlieferung, frei ins Deutsche nachgedichtet. Vorschlag: Kommen die Spieler nicht weiter, darf ein Held RÄTSELN würfeln – gelingt es, gibst du den Hinweis.</p>
   <div class="gm-row"><button class="gm-btn" data-a="rrand">Zufälliges Rätsel</button><span class="gm-hint" style="margin:0">aus ${list.filter(r=>!used[r.id]).length} unbenutzten (Filter unten)</span></div>`;
@@ -3533,11 +3576,69 @@ async function buildBook(sel,secrets){
 }
 
 /* ---------- Ansichten ---------- */
+/* Saurons Blick (GRW S. 170–173) und Gemeinschaftspunkte – eine kompakte Karte im Gruppe-Tab */
+const EYE_HUNT={grenz:18,wild:16,dunkel:14};
+const EYE_MODS=[[4,"Segen eines Zauberers o. Ä."],[2,"unauffällig, falsche Namen, Schleichwege"],[-2,"in der Gegend berühmt"],[-4,"der Feind sucht gezielt"]];
+const EYE_IDEAS=["Ein Held verliert auf der Reise oder auf der Flucht die anderen aus den Augen.",
+ "Ein Verbündeter wendet sich ab – Gerüchte oder Furcht haben ihn erreicht.",
+ "Späher oder Krähen folgen der Gemeinschaft; der nächste Lagerplatz ist nicht mehr sicher.",
+ "Ein bisher harmloses Wesen verhält sich plötzlich feindselig, als hätte etwas es aufgehetzt.",
+ "Ein Unglück trifft Ausrüstung oder Reittiere – zu passend, um Zufall zu sein.",
+ "Diener des Feindes erfahren vom Ziel der Helden und kommen ihnen zuvor.",
+ "Ein Ort, auf den die Helden zählen, ist verlassen, besetzt oder verwüstet.",
+ "Ein alter Groll gegen das Volk eines Helden bricht auf und richtet sich gegen ihn."];
+function eyeS(){ if(!G.eye) G.eye={v:null,mod:0,fam:0,reg:"wild",fsp:null,fspMax:null,idea:null}; return G.eye; }
+function eyeBase(){ let b=0; G.heroes.forEach(h=>{ const c=(h.snap.cu||"")+" "+(h.snap.ca||""); const v=/Hochelb/i.test(c)?3:/Elb|Dúnad|Dúned|Waldläufer/i.test(c)?2:/Zwerg/i.test(c)?1:0; b=Math.max(b,v); }); return b; }
+function eyeStart(){ const e=eyeS(); return eyeBase()+G.heroes.filter(h=>(h.snap.tap||0)>=4).length+(e.fam||0); }
+function eyeReg(){ const e=eyeS(); return (G.trip&&G.trip.region)||e.reg||"wild"; }
+function eyeThr(){ return EYE_HUNT[eyeReg()]+(eyeS().mod||0); }
+function eyeVal(){ const e=eyeS(); if(e.v==null) e.v=eyeStart(); return e.v; }
+function fspMax(){ const e=eyeS(); return e.fspMax!=null?e.fspMax:G.heroes.length; }
+function vEye(){
+  const e=eyeS(), v=eyeVal(), th=eyeThr(), st=eyeStart(), rev=v>=th, open=!!G.open.eye;
+  const fm=fspMax(), fc=e.fsp==null?fm:e.fsp;
+  let x=`<div class="gm-card"><h2>Saurons Blick <span class="gm-tag" style="${rev?"background:#a3301f;color:#fff":""}">${v} / ${th}</span><span class="gm-tag" title="Gemeinschaftspunkte">GP ${fc}/${fm}</span></h2>`;
+  x+=`<div style="height:8px;border-radius:5px;background:#eadfca;overflow:hidden;margin:2px 0 8px"><span style="display:block;height:100%;width:${Math.min(100,100*v/Math.max(1,th))}%;background:${rev?"#a3301f":v>=th-3?"#c08a2a":"var(--gold,#b08d3c)"}"></span></div>`;
+  x+=`<div class="gm-row"><span>Blick</span>${stepper("eyv",v)}<button class="gm-btn small" data-a="eyadd:1" title="Ein Held hat außerhalb des Kampfes ein Auge gewürfelt">+1 Auge</button><span class="gm-hint" style="margin:0">Schatten außerhalb des Kampfes: + so viel wie Punkte</span></div>`;
+  x+=`<div class="gm-row"><span>Magie</span>${[[1,"schwach"],[2,"stark"],[3,"mächtig"]].map(m=>`<span class="gm-chip" data-a="eyadd:${m[0]}:m">+${m[0]} ${m[1]}</span>`).join("")}</div>`;
+  if(rev){
+    x+=`<div class="gm-sub" style="border-left:3px solid #a3301f"><div class="t">Enthüllung!</div><p class="gm-hint" style="margin:0 0 6px">Etwas Schlimmes geschieht – es muss sich klar aus dem Geschehen ergeben und nach dunklen Mächten riechen. Danach ist die Gemeinschaft wieder verborgen.</p>`;
+    if(e.idea!=null) x+=`<p style="margin:0 0 6px"><b>Idee:</b> ${EYE_IDEAS[e.idea]}</p>`;
+    x+=`<div class="gm-row"><button class="gm-btn ghost small" data-a="eyidea">${e.idea!=null?"Andere Idee":"Idee würfeln"}</button><button class="gm-btn small" data-a="eyrev">Enthüllung ausgespielt → zurück auf ${st}</button></div></div>`;
+  }
+  x+=`<div class="gm-row"><span>Gemeinschaftspunkte</span>${stepper("eyf",fc)}<span class="gm-hint" style="margin:0">von ${fm}</span><button class="gm-btn ghost small" data-a="eyfull">Auffüllen</button></div>`;
+  x+=`<details ${open?"open":""}><summary class="gm-hint" data-a="eytog" style="cursor:pointer;margin:6px 0 0">Startwert ${st} · ${REGION[eyeReg()][0]} ${EYE_HUNT[eyeReg()]}${e.mod?(e.mod>0?" +":" ")+e.mod:""} – einstellen</summary>`;
+  x+=`<p class="gm-hint">Start: Grundwert <b>${eyeBase()}</b> (stärkste Kultur der Gruppe) + <b>${G.heroes.filter(h=>(h.snap.tap||0)>=4).length}</b> für TAPFERKEIT ab 4 + berühmte Waffen/Rüstungen.</p>`;
+  x+=`<div class="gm-row"><span>Berühmte Waffen/Rüstungen</span>${stepper("eyfam",e.fam||0)}</div>`;
+  x+=`<div class="gm-row"><span>Gebiet</span>${G.trip&&G.trip.region?`<span class="gm-hint" style="margin:0">folgt der laufenden Reise</span>`:Object.keys(REGION).map(r=>`<span class="gm-chip ${eyeReg()===r?"on":""}" data-a="eyreg:${r}">${REGION[r][0]} ${EYE_HUNT[r]}</span>`).join("")}</div>`;
+  x+=`<div class="gm-row" style="flex-wrap:wrap"><span>Modifikator</span><span class="gm-chip ${!e.mod?"on":""}" data-a="eymod:0">keiner</span>${EYE_MODS.map(m=>`<span class="gm-chip ${e.mod===m[0]?"on":""}" data-a="eymod:${m[0]}" title="${m[1]}">${m[0]>0?"+":""}${m[0]} ${m[1]}</span>`).join("")}</div>`;
+  x+=`<div class="gm-row"><span>Gemeinschaftswert</span>${stepper("eyfm",fm)}<span class="gm-hint" style="margin:0">meist Zahl der Helden, plus Gönner-Bonus</span></div>`;
+  x+=`<div class="gm-row"><button class="gm-btn ghost small" data-a="eynew">Neue Abenteuerphase: Blick auf ${st}, GP auffüllen</button></div></details></div>`;
+  return x;
+}
+function actEye(k,p){
+  const e=eyeS();
+  if(k==="eyv"){ e.v=Math.max(0,eyeVal()+(+p[1])); eyeChk(); return true; }
+  if(k==="eyadd"){ const was=eyeVal()>=eyeThr(); e.v=eyeVal()+(+p[1]); if(p[2]==="m") logE("blick","Magie: Saurons Blick +"+p[1]); if(!was) eyeChk(); return true; }
+  if(k==="eyidea"){ let i; do{ i=Math.floor(Math.random()*EYE_IDEAS.length); }while(EYE_IDEAS.length>1&&i===e.idea); e.idea=i; return true; }
+  if(k==="eyrev"){ logE("blick","Enthüllung"+(e.idea!=null?": "+EYE_IDEAS[e.idea]:"")); e.v=eyeStart(); e.idea=null; return true; }
+  if(k==="eyf"){ const c=e.fsp==null?fspMax():e.fsp; e.fsp=Math.max(0,c+(+p[1])); return true; }
+  if(k==="eyfull"){ e.fsp=fspMax(); return true; }
+  if(k==="eyfm"){ e.fspMax=Math.max(0,fspMax()+(+p[1])); if(e.fsp!=null) e.fsp=Math.min(e.fsp,e.fspMax); return true; }
+  if(k==="eytog"){ G.open.eye=!G.open.eye; return true; }
+  if(k==="eyfam"){ e.fam=Math.max(0,(e.fam||0)+(+p[1])); return true; }
+  if(k==="eyreg"){ e.reg=p[1]; return true; }
+  if(k==="eymod"){ e.mod=+p[1]; return true; }
+  if(k==="eynew"){ e.v=eyeStart(); e.fsp=fspMax(); e.idea=null; logE("blick","Neue Abenteuerphase – Saurons Blick "+e.v); return true; }
+  return false;
+}
+function eyeChk(){ if(eyeVal()>=eyeThr()){ logE("blick","Jagdschwelle erreicht ("+eyeVal()+"/"+eyeThr()+")"); if(typeof toast==="function") toast("Saurons Blick erreicht die Jagdschwelle – Enthüllung!"); } }
 function vGruppe(){
   let x=`<div class="gm-card"><h2>Gemeinschaft</h2>`;
   if(!G.heroes.length) x+=`<div class="gm-empty">Noch keine Helden.<br>Die Spieler tippen in ihrer Heldenschmiede auf <b>Held sichern → An Spielleiter geben</b>.<br>Du scannst den Code oder fügst den Link hier ein.<div class="gm-row" style="justify-content:center;margin-top:12px"><button class="gm-btn ghost small" data-a="demo">Zum Ausprobieren: Beispielgruppe laden</button></div></div>`;
   else x+=`<div class="gm-heroes">${G.heroes.map(h=>heroCard(h,true)).join("")}</div>`;
   x+=`<div class="gm-row" style="margin-top:12px"><button class="gm-btn" data-a="add">+ Held hinzufügen</button></div></div>`;
+  if(G.heroes.length) x+=vEye();
   if(JOURON()) x+=vJournal();
   if(G.heroes.length){
     x+=`<div class="gm-card"><h2>Fertigkeit nachschlagen</h2><p class="gm-hint">Wer kann was? Wähle eine Fertigkeit – du siehst Wert und Schwierigkeit jedes Helden.</p>
@@ -3562,7 +3663,7 @@ function vEnc(){
   }
   x+=`<div class="gm-card"><h2>Begegnungen</h2><p class="gm-hint">Stelle Kämpfe vorab zusammen und starte sie am Spielabend mit einem Tipp.</p>`;
   if(!G.enc.length) x+=`<div class="gm-empty">Noch keine Begegnung gespeichert.</div>`;
-  G.enc.forEach(e=>{ x+=`<div class="gm-foe"><div class="fh"><b>${E(e.n||"Ohne Namen")}</b>${ortTag("enc",e.id)}<span class="st">${e.foes.map(o=>(o.c>1?o.c+"× ":"")+o.n).join(", ")||"keine Gegner"}</span></div>
+  const AFe=advF(); (AFe?G.enc.filter(e=>AFe.enc.has(e.id)):G.enc).forEach(e=>{ x+=`<div class="gm-foe"><div class="fh"><b>${E(e.n||"Ohne Namen")}</b>${ortTag("enc",e.id)}<span class="st">${e.foes.map(o=>(o.c>1?o.c+"× ":"")+o.n).join(", ")||"keine Gegner"}</span></div>
     <div class="gm-row"><button class="gm-btn small" data-a="estart:${e.id}">Kampf starten</button><button class="gm-btn ghost small" data-a="eedit:${e.id}">Bearbeiten</button>${ortSel("enc",e.id)}${mapBtn("enc",e.id)}<button class="gm-btn ghost small" data-a="edel:${e.id}">Löschen</button></div></div>`; });
   x+=`<div class="gm-row" style="margin-top:10px"><button class="gm-btn" data-a="enew">+ Neue Begegnung</button></div></div>`;
   return x+(ORTEON()?vMyFoes():"");
@@ -3689,7 +3790,7 @@ let KL_JALL=false;
 function T0(){ if(!G.time){ const a=G.adv.find(z=>z.stat==="aktiv"); G.time={y:(a&&+a.jahr)||2965,s:Math.max(0,SEASONS.indexOf((a&&a.zeit)||"Frühling"))}; } return G.time; }
 function zeit(){ const t=T0(); return SEASONS[t.s]+" "+t.y; }
 function logE(k,t,h){ if(!JOURON()) return; if(!G.log) G.log=[]; const z=T0(); G.log.push({id:uid(),k,t,z:zeit(),y:z.y,s:z.s,ses:G.sess,h:h||null,ts:Date.now()}); }
-const LK={reise:["🧭","Reise"],ereignis:["⚑","Reiseereignis"],gefahr:["⚠","Gefährliche Stelle"],kampf:["⚔","Kampf"],beratung:["🗣","Beratung"],begegnung:["👤","Begegnung"],notiz:["✎","Notiz"],zeit:["⏳","Zeit"],sitzung:["📜","Spielabend"],folge:["↪","Nachwirkung"],hort:["💰","Hort"]};
+const LK={blick:["👁","Saurons Blick"],reise:["🧭","Reise"],ereignis:["⚑","Reiseereignis"],gefahr:["⚠","Gefährliche Stelle"],kampf:["⚔","Kampf"],beratung:["🗣","Beratung"],begegnung:["👤","Begegnung"],notiz:["✎","Notiz"],zeit:["⏳","Zeit"],sitzung:["📜","Spielabend"],folge:["↪","Nachwirkung"],hort:["💰","Hort"]};
 /* Wetter: reine Stimmung, ohne Regelwirkung */
 const WX={
   Frühling:["Klarer Morgen, später Schauer","Milder Sonnenschein zwischen schnellen Wolken","Feiner Nieselregen den ganzen Tag","Frühnebel, der gegen Mittag aufreißt","Aprilwetter: Sonne, Graupel, wieder Sonne","Kühler, heller Tag mit Tau im Gras","Warmer Regen, die Wege werden weich","Böiges Wetter, Wolkenschatten jagen übers Land"],
@@ -4216,7 +4317,8 @@ function vOrte(){
     x+=`<div class="gm-row"><input class="gm-in" data-oq="1" placeholder="Ort suchen …" value="${E(G.ortQ||"")}" style="flex:1;min-width:180px"></div>
     <div class="gm-row"><span class="gm-chip ${tf?"":"on"}" data-a="ottf:">alle</span>${typs.map(t=>`<span class="gm-chip ${tf===t[0]?"on":""}" data-a="ottf:${t[0]}">${t[1]} ${t[2]}</span>`).join("")}</div>`; }
   if(!G.lm.length) x+=`<div class="gm-empty">Noch kein Ort angelegt.</div>`;
-  if(q||tf){ const L=G.lm.filter(l=>(!tf||l.typ===tf)&&(!q||[l.n,l.kind,l.desc,l.way].join(" ").toLowerCase().includes(q)));
+  const AFo=advF();
+  if(q||tf||AFo){ const L=G.lm.filter(l=>(!AFo||AFo.orte.has(l.id))&&(!tf||l.typ===tf)&&(!q||[l.n,l.kind,l.desc,l.way].join(" ").toLowerCase().includes(q)));
     L.forEach(l=>x+=ortCard(l,true,0)); if(!L.length) x+=`<p class="gm-hint">Kein Ort passt.</p>`; }
   else G.lm.filter(l=>!ortParent(l)).forEach(l=>x+=ortCard(l,false,0));
   return x+`</div>`;
@@ -4250,6 +4352,7 @@ function ortAdopt(v){
 }
 function actOrte(k,p,el){
   if(!ORTEON()) return false;
+  if(k==="advfx"){ G.advF=""; return true; }
   if(k==="otkids"){ G.open["oc"+p[1]]=!G.open["oc"+p[1]]; return true; }
   if(k==="ottf"){ G.ortTyp=p[1]||""; return true; }
   if(k==="otgo"){ G.tab="landmarken"; G.lmOpen=p[1]; window.scrollTo(0,0); return true; }
@@ -4274,6 +4377,7 @@ function actOrte(k,p,el){
 function changeOrte(t){
   if(!ORTEON()) return false;
   const d=t.dataset;
+  if(d.advf!==undefined){ G.advF=t.value; return true; }
   if(d.oq){ G.ortQ=t.value; return true; }
   if(d.opar){ const l=lmById(d.opar); if(l){ l.parent=t.value||""; if(l.parent) G.open["oc"+l.parent]=true; } return true; }
   if(d.onew){ const v=t.value; t.value=""; return v?ortAdopt(v):"quiet"; }
@@ -4291,7 +4395,7 @@ function hortForBanner(){ return G.hortFor&&lmById(G.hortFor)&&ORTEON()?`<div cl
 function vHoards(){
   if(!ORTEON()) return "";
   let x="";
-  const L=G.hoards||[];
+  const AFh=advF(); const L=(G.hoards||[]).filter(h=>!AFh||AFh.hort.has(h.id));
   x+=`<div class="gm-card"><h2>Horte und Fundstücke <span class="gm-tag">${L.length}</span></h2>`;
   if(!L.length) x+=`<div class="gm-empty">Würfle einen Hort und tippe auf „Hort behalten“ – oder trage ein besonderes Fundstück ein, etwa ein Schwert aus einem Abenteuerbuch.</div>`;
   L.forEach(h=>{ const op=G.open["hk"+h.id];
@@ -4309,7 +4413,7 @@ function foeAbilList(f){ return (f.abil||"").replace(/\.$/,"").split(/,\s*/).map
 function setFoeAbils(f,L){ f.abil=L.length?L.join(", ")+".":""; }
 function foeLine(f){ return `Attr. ${f.attr} · Ausdauer ${f.aus} · ${f.res?"Entschl.":"Hass"} ${f.he} · Parade ${f.par?"+"+f.par:"–"} · Rüstung ${f.arm}W · Macht ${f.macht}`; }
 function vMyFoes(){
-  const L=G.myFoes||[], e=G.foeEdit;
+  const AFm=advF(); const L=(G.myFoes||[]).filter(f=>!AFm||AFm.foes.has(f.n)||(G.foeEdit&&G.foeEdit.id===f.id)), e=G.foeEdit;
   if(e){
     const num=(k,lbl,min,max)=>`<label class="gm-mf"><span>${lbl}</span><input class="gm-in" type="number" inputmode="numeric" min="${min}" max="${max}" data-mf="${k}" value="${E(e[k])}"></label>`;
     const ab=foeAbilList(e), known=Object.keys(abilities()).filter(k=>!ab.includes(k)).sort((a,b)=>a.localeCompare(b,"de"));
@@ -4486,13 +4590,23 @@ function changeExtra(t){
   return false;
 }
 
+/* Filter „nur dieses Abenteuer“ für alle Vorbereitungslisten */
+function advF(){ if(!ORTEON()||!G.advF) return null; const a=adv(G.advF); if(!a){ G.advF=""; return null; }
+  const orte=new Set(); (a.orte||[]).map(lmById).filter(Boolean).forEach(l=>{ orte.add(l.id); ortDesc(l.id).forEach(k=>orte.add(k.id)); });
+  const R={a,orte,npcs:new Set(a.npcs||[]),enc:new Set(a.enc||[]),rid:new Set(a.rid||[]),hort:new Set(a.hort||[])};
+  G.lm.filter(l=>orte.has(l.id)).forEach(l=>{ (l.npcs||[]).forEach(z=>R.npcs.add(z)); (l.enc||[]).forEach(z=>R.enc.add(z)); (l.rid||[]).forEach(z=>R.rid.add(z)); (l.hort||[]).forEach(z=>R.hort.add(z)); (l.spots||[]).forEach(sp=>{ if(sp.npc) R.npcs.add(sp.npc); if(sp.enc) R.enc.add(sp.enc); }); });
+  R.foes=new Set(); G.enc.filter(e=>R.enc.has(e.id)).forEach(e=>e.foes.forEach(f=>R.foes.add(f.n))); (G.myFoes||[]).forEach(f=>{ if(f.npc&&R.npcs.has(f.npc)) R.foes.add(f.n); });
+  return R; }
+function advFBar(){ if(!ORTEON()||!G.adv.length||G.tab==="abenteuer") return "";
+  const F=advF();
+  return `<div class="gm-row" style="margin:-4px 0 10px"><select class="gm-sel" data-advf="1" style="${F?"border-color:var(--red);font-weight:600":""}"><option value="">Alle Abenteuer</option>${G.adv.map(a=>`<option value="${a.id}" ${G.advF===a.id?"selected":""}>Nur: ${E(a.t||"Ohne Titel")}</option>`).join("")}</select>${F?`<button class="gm-btn small ghost" data-a="advfx">Filter aufheben</button>`:""}</div>`; }
 function render(){
   normOrte();
   const PREP=["abenteuer","landmarken","enc","figuren","horte","raetsel"]; if(PREP.includes(G.tab)) G.prep=G.tab;
   const tabs=[["gruppe","Gruppe",G.heroes.length||""],["reise","Reise",G.trip?"läuft":""],["beratung","Beratung",G.council?"läuft":""],["kampf","Kampf",G.fight?"läuft":""],[G.prep||"abenteuer","Vorbereitung",""]];
   const TL=l=>l==="Vorbereitung"?`<span class="lg">Vorbereitung</span><span class="sm">Vorb.</span>`:l;
   root.innerHTML=`<div class="gm-top"><div class="gm-io"><button data-a="io:load" title="Gesicherte Kampagne laden">Laden</button><button data-a="io:save" class="${isDirtyG()?"dirty":""}" title="Alles als Datei sichern">Sichern</button>${MAPON()?`<button data-a="map" class="gm-mapbtn" title="Karte von Mittelerde">Karte</button>`:""}${KLANGON()?`<button data-a="klang" title="Ambience-Klänge">Klang</button>`:""}</div><h1>Heldenschmiede<span>Spielleiter</span></h1>${JOURON()?`<button class="gm-when" data-a="when" title="Kampagnenzeit ändern">${zeit()} D. Z. · Spielabend ${G.sess}</button>`:""}<div class="gm-tabs">${tabs.map(([k,l,c])=>`<button class="${G.tab===k||(l==="Vorbereitung"&&PREP.includes(G.tab))?"on":""}" data-a="tab:${k}">${TL(l)}${c!==""?`<span class="cnt">${c}</span>`:""}</button>`).join("")}</div></div>`+
-    (PREP.includes(G.tab)?`<div class="gm-row" style="margin:0 0 10px">${[["abenteuer","Abenteuer"],["landmarken",ORTEON()?"Orte":"Landmarken"],["enc","Begegnungen"],["figuren","Figuren"]].concat(HORTON()?[["horte","Horte"]]:[]).concat([["raetsel","Rätsel"]]).map(([k,l])=>`<span class="gm-chip ${G.tab===k?"on":""}" data-a="tab:${k}">${l}</span>`).join("")}<button class="gm-btn small ghost" style="margin-left:auto;background:var(--paper)" data-a="book">Kampagnenbuch (PDF)</button></div>`:"")+
+    (PREP.includes(G.tab)?`<div class="gm-row" style="margin:0 0 10px">${[["abenteuer","Abenteuer"],["landmarken",ORTEON()?"Orte":"Landmarken"],["enc","Begegnungen"],["figuren","Figuren"]].concat(HORTON()?[["horte","Horte"]]:[]).concat([["raetsel","Rätsel"]]).map(([k,l])=>`<span class="gm-chip ${G.tab===k?"on":""}" data-a="tab:${k}">${l}</span>`).join("")}<button class="gm-btn small ghost" style="margin-left:auto;background:var(--paper)" data-a="book">Kampagnenbuch (PDF)</button></div>`:"")+(PREP.includes(G.tab)?advFBar():"")+
     backupBanner()+(G.tab==="kampf"?vKampf():G.tab==="reise"?vReise():G.tab==="beratung"?vBeratung():G.tab==="enc"?vEnc():G.tab==="figuren"?vFiguren():G.tab==="landmarken"?(ORTEON()?vOrte():vLandmarken()):G.tab==="raetsel"?vRaetsel():G.tab==="horte"&&HORTON()?vHorte():G.tab==="abenteuer"?vAbenteuer():activeBanner()+vGruppe())+
     `<p style="color:#bfae8c;font-size:12.5px;text-align:center;margin-top:20px">Inoffizielles Fan-Werkzeug für Der Eine Ring 2e · Regeln sinngemäß nach dem Grundregelwerk${window.HS_ANIM&&!HS_ANIM.reduced()?` · <button class="hs-anim-tog" data-a="anim">Würfel-Animation: ${HS_ANIM.on()?"an":"aus"}</button>`:""}</p>`;
 }
@@ -4577,7 +4691,7 @@ function act(a,el){
   const rj=actJournal(k,p); if(rj==="noop") return; if(rj){ saveG(); render(); return; }
   if(actHort(k,p)){ saveG(); render(); return; }
   const rm=actMap(k,p); if(rm==="noop") return; if(rm){ saveG(); render(); return; }
-  const rt=actTrip(k,p,el)||actCouncil(k,p,el)||actMyFoes(k,p,el)||actFac(k,p,el)||actExtra(k,p,el)||actOrte(k,p,el)||actLm(k,p,el)||actRiddle(k,p,el); if(rt==="noop") return; if(rt){ saveG(); render(); return; }
+  const rt=actEye(k,p)||actTrip(k,p,el)||actCouncil(k,p,el)||actMyFoes(k,p,el)||actFac(k,p,el)||actExtra(k,p,el)||actOrte(k,p,el)||actLm(k,p,el)||actRiddle(k,p,el); if(rt==="noop") return; if(rt){ saveG(); render(); return; }
   const num=x=>+x;
   if(k==="tab"){ G.tab=p[1]; G.edit=null; }
   else if(k==="add"){ openAdd(); return; }

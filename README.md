@@ -4,6 +4,7 @@
 
 👉 **App öffnen:** https://DEIN-NAME.github.io/heldenschmiede/
 👉 **Spielleiter-App:** https://DEIN-NAME.github.io/heldenschmiede/spielleiter.html
+👉 **Streicher-App (Solo):** https://DEIN-NAME.github.io/heldenschmiede/streicher.html
 
 Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, Mac, Windows und Linux wie eine App installieren. Danach funktioniert sie auch ohne Internet.
 
@@ -24,6 +25,7 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Chronik der Abenteuer, als PDF exportierbar
 - Im Streicher-Modus führen Reise, Kampf und Beratung Schritt für Schritt durch den Ablauf – du bist Spieler und Spielleiter zugleich
 - Im Streicher-Modus zusätzlich: Antwort-Tabelle, Saurons Blick, Gegner, Reiseereignisse, Beratungszähler
+- Streicher-Tabellen zum Würfeln: Wissen-Tabelle (Aktion, Aspekt, Fokus), Enthüllungen und Ereignis-Details – auch zum Nachschlagen im Streicher-Blatt. Das Streicher-Heft selbst ersetzt das nicht
 - Held per QR-Code oder Link an den Spielleiter geben
 - Geschlecht männlich, weiblich oder divers (dann alle Namen des Volkes zur Auswahl)
 - Kurze Würfelanimation (abschaltbar, Antippen überspringt) – Rune und Auge leuchten beim Landen auf
@@ -37,8 +39,17 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 - Spielleiter: Landmarken, Figuren, Abenteuer und Begegnungen auf die Karte setzen und von dort öffnen; Gefährliche Stellen mit Gefahrenstufe markieren; die Reise läuft auf der Karte mit – die Fahne zieht weiter, das Gebiet für den Ereigniswurf stellt sich selbst ein, an Gefährlichen Stellen hält die Gemeinschaft an; bereiste Wege bleiben eingezeichnet
 - Spielleiter: Fundstellen aus den Büchern als zuschaltbare Ebene – Landmarken und Orte aus Grundregelwerk, Ruinen des Verlorenen Reiches und Tales from the Lone-lands, nur mit Name, Buch und Seite (keine Buchtexte). Schalter: Landmarken, Nur Orte (spoilerfrei zum Zeigen) oder beides. Je Fundstelle: Gebiet, Entfernung von der Fahne, was ihr dort erlebt habt, eigene Notiz und „Als Reiseziel planen“
 
+**Streicher-App** (`streicher.html`) – für das Solospiel im Streicher-Modus
+- Gleicher Charaktergenerator, Streicher-Modus fest eingestellt; Held aus der Heldenschmiede übernehmen oder per Datei laden
+- Gespielt wird in einem Reisetagebuch: frei schreiben, Kapitel anlegen, Ort und Zeit notieren
+- Unten die Werkzeuge: Würfeln, Fragen (Antwort- und Wissen-Tabelle), Reise, Kampf, Beratung, Rast, Gefährtenphase, Karte – sie öffnen sich über dem Journal
+- Ergebnisse landen als kleine Textbausteine im Journal, in der Ich-Form und jederzeit umschreibbar: die Reise mit ihren Ereignissen und einer Bleistiftskizze des Weges, Kämpfe, Beratungen, Wunden, Enthüllungen
+- Darunter jeweils das Würfelprotokoll: jede Marschprobe, jede Kampfrunde, Auge und Gandalf-Rune hervorgehoben
+- Das ganze Journal als Buch drucken oder als PDF speichern (A5, Titelseite, ein Kapitel je Seite)
+
 **Spielleiter-App** (`spielleiter.html`)
 - Gemeinschaft im Blick: Ausdauer, Hoffnung, Schatten, Erschöpfung, Wunden, Parade aller Helden
+- Saurons Blick: Startwert aus der Gruppe, Zähler für Augen, Schatten und Magie, Jagdschwelle nach Gebiet (folgt der laufenden Reise), Enthüllung mit Ideen und Journal-Eintrag; dazu die Gemeinschaftspunkte
 - Fertigkeit nachschlagen: Wer kann was, mit welchem Schwierigkeitsgrad – und wie hoch ist die Erfolgschance in Prozent (mit bevorzugten Fertigkeiten, Erschöpfung und Verzweiflung)?
 - Begegnungen aus den Widersachern des Grundregelwerks zusammenstellen und speichern
 - Eigene Widersacher mit eigenen Werten, Waffen und Fähigkeiten – auch aus einer Vorlage, mit einer Figur verknüpfbar
@@ -68,6 +79,8 @@ Die Heldenschmiede läuft im Browser und lässt sich auf Android, iPhone/iPad, M
 ## Daten
 
 Alle Helden und Spielstände bleiben auf deinem Gerät, nichts wird hochgeladen. Zum Gerätewechsel im Spielmodus **„Held sichern“** und auf dem anderen Gerät **„Held laden“**.
+
+In der Streicher-App sichert **☰ → Journal sichern** Held, Spielstand und Journal in eine Datei. Das Journal hat einen eigenen Speicher und kommt der Heldenschmiede nicht in die Quere.
 
 In der Spielleiter-App sichert **„Sichern“** (oben rechts) alles in eine Datei: Gruppe, Abenteuer, Figuren, Begegnungen, laufende Szenen und alles auf der Karte. **„Laden“** holt eine Sicherung zurück, auch auf einem anderen Gerät. Der Browserspeicher allein ist nicht sicher – regelmäßig sichern!
 

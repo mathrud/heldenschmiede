@@ -1144,7 +1144,7 @@ const STRIDER_CONTENT = [
   {p:"Frage so, dass **Ja** das Gute für deinen Helden ist. Lege die Wahrscheinlichkeit fest (im Zweifel **Mittel**) und wirf **einen Heldenwürfel**:"},
   {t:[["Wahrscheinlichkeit","Ja ab"],["Gewiss","1"],["Wahrscheinlich","4"],["Mittel","6"],["Zweifelhaft","8"],["Unvorstellbar","10"]],w:[0.6,0.4]},
   {b:["**Gandalf-Rune:** immer Ja – mit drastischer Wendung.","**Auge:** immer Nein – mit drastischer Wendung."]},
-  {p:"**Wissen-Tabelle** (SM S. 11–12) für offene Fragen: Heldenwürfel wählt die Untertabelle, Erfolgswürfel die Zeile; Spalten Aktion, Aspekt, Fokus. Passt nichts, Nachbarzeile nehmen oder neu würfeln. Und oft gilt einfach: **dem Bauchgefühl trauen.**"},
+  {p:"**Wissen-Tabelle** (SM S. 11–12, hinten in diesem Blatt) für offene Fragen: Heldenwürfel wählt die Untertabelle, Erfolgswürfel die Zeile; Spalten Aktion, Aspekt, Fokus. Passt nichts, Nachbarzeile nehmen oder neu würfeln. Und oft gilt einfach: **dem Bauchgefühl trauen.**"},
 
   {page:"Streicher-Modus · Abenteuerphase"},
   {h:"Saurons Blick (empfohlen)"},
@@ -1157,7 +1157,7 @@ const STRIDER_CONTENT = [
   {t:[["Gebiet","Jagdschwelle"],["Grenzland","18"],["Wildes Land","16"],["Dunkles Land","14"]],w:[0.6,0.4]},
   {b:["**+4** Segen eines Zauberers o. Ä. · **+2** unauffällig, falscher Name, Schleichwege",
       "**−2** in der Gegend berühmt · **−4** der Feind sucht dich gezielt"]},
-  {p:"Erreicht Saurons Blick die Schwelle: **Enthüllung** – würfle auf der Enthüllungstabelle (SM S. 14), wähle oder erfinde eine passende Bedrohung. Danach Blick auf den Startwert."},
+  {p:"Erreicht Saurons Blick die Schwelle: **Enthüllung** – würfle auf der Enthüllungstabelle (hinten in diesem Blatt, SM S. 14), wähle oder erfinde eine passende Bedrohung. Danach Blick auf den Startwert."},
 
   {h:"Kampf allein"},
   {h2:"Scharmützel-Haltung (Fernkampf)"},
@@ -1188,13 +1188,54 @@ const STRIDER_CONTENT = [
       ["8–9","Abkürzung · Erfolg: 1 Tag kürzer","1"],
       ["10","Zufällige Begegnung · Erfolg: keine Erschöpfung","1"],
       ["Rune","Erfreulicher Anblick · Erfolg: +1 Hoffnung","—"]],w:[0.14,0.68,0.18]},
-  {p:"Einen W6 gleich mitwerfen: Die **Ereignis-Detail-Tabellen** (SM S. 17–19) sagen, was genau passiert und welche Fertigkeit gefragt ist. Eine **Bemerkenswerte Begegnung** spielst du als eigene Szene aus – geht sie gut aus, zählt sie als gelungener Wurf."},
+  {p:"Einen W6 gleich mitwerfen: Die **Ereignis-Details** (hinten in diesem Blatt, SM S. 17–19) sagen, was genau passiert und welche Fertigkeit gefragt ist. Eine **Bemerkenswerte Begegnung** spielst du als eigene Szene aus – geht sie gut aus, zählt sie als gelungener Wurf."},
 
   {h:"Gefährtenphase solo"},
   {p:"Ablauf wie im GRW; Ort und Dauer legst du selbst fest, etwa jede dritte Phase ein Julfest. **Geistige Erholung** – Schattenpunkte entfernst du je nach deinem Beitrag gegen den Schatten:"},
   {t:[["Deine Taten","Schatten −"],["kleiner Beitrag","1"],["den Feind spürbar behindert","2"],["große Taten, die selbst seine Diener bemerken","3"]],w:[0.75,0.25]},
   {p:"Koop ohne SL: zu zweit diese Reiseregeln nutzen (Ziel eines Ereignisses notfalls auswürfeln), ab drei Helden die normalen Reiseaufgaben. Rampenlicht reihum teilen.",i:true}
 ];
+/* Streicher-Tabellen zum Würfeln – Wissen-Tabelle aus dem Heft, übrige Tabellen in eigenen Worten (SM S. 11–19). */
+const SM_DIE=v=>v===11?0:v===12?11:v; /* Heldenwürfel → Zeile 0 (Auge) … 11 (Rune) */
+const SM_DIEL=["Auge","1","2","3","4","5","6","7","8","9","10","Rune"];
+/* Wissen-Tabelle (SM S. 11–12): 12 Untertabellen à 6 Zeilen – Aktion · Aspekt · Fokus */
+const SM_LORE=[[["Verlassen", "Korrumpiert", "Fluch"], ["Angreifen", "Grausam", "Verzweiflung"], ["Verraten", "Trügerisch", "Feind"], ["Korrumpieren", "Tödlich", "Furcht"], ["Besiegen", "Zerstört", "Schatten"], ["Schwächen", "Verräterisch", "Krieg"]], [["Unterstützen", "Tatkräftig", "Schlacht"], ["Eintreffen", "Uralt", "Grenze"], ["Abwarten", "Kühn", "Bürde"], ["Brechen", "Strahlend", "Rat"], ["Zerbrechen", "Zerbrochen", "Hof"], ["Fangen", "Freudlos", "Kreatur"]], [["Verändern", "Kalt", "Dunkelheit"], ["Verfolgen", "Verborgen", "Tod"], ["Befehligen", "Gefährlich", "Verteidigung"], ["Kontrollieren", "Dunkel", "Tiefen"], ["Erschaffen", "Tot", "Zweifel"], ["Trotzen", "Verteidigt", "Träume"]], [["Fordern", "Trostlos", "Schicksal"], ["Entdecken", "Vernichtet", "Feuer"], ["Verbergen", "Grässlich", "Volk"], ["Ertragen", "Leer", "Gefolgsleute"], ["Entkommen", "Böse", "Gier"], ["Umgehen", "Verblasst", "Zuflucht"]], [["Erkunden", "Weitreichend", "Geschichte"], ["Finden", "Wild", "Ehre"], ["Konzentrieren", "Unheilvoll", "Reise"], ["Sammeln", "Vergessen", "Verwandte"], ["Bewachen", "Zerbrechlich", "Wissen"], ["Führen", "Grausig", "Land"]], [["Verbergen", "Düster", "Anführer"], ["Behindern", "Wachsend", "Legende"], ["Horten", "Versteckt", "Leben"], ["Halten", "Unglückselig", "Licht"], ["Jagen", "Undurchdringlich", "Glück"], ["Reisen", "Inspirierend", "Erinnerung"]], [["Anführen", "Isoliert", "Botschaft"], ["Lernen", "Stolz", "Macht"], ["Verlassen", "Verirrt", "Natur"], ["Verlieren", "Bedrohlich", "Schmerz"], ["Betrauern", "Mächtig", "Pfad"], ["Bewegen", "Geheimnisvoll", "Gönner"]], [["Fortbestehen", "Edel", "Gefahr"], ["Bewahren", "Gehemmt", "Plan"], ["Verhindern", "Alt", "Gewalt"], ["Ablehnen", "Verhängnisvoll", "Prophezeiung"], ["Abstoßen", "Offen", "Aufgabe"], ["Entfernen", "Friedlich", "Zufluchtsort"]], [["Auffrischen", "Wiederhergestellt", "Rätsel"], ["Wiederherstellen", "Behütet", "Ruinen"], ["Intrigieren", "Lautlos", "Gerücht"], ["Suchen", "Einfach", "Geheimnis"], ["Ergreifen", "Klein", "Fertigkeit"], ["Teilen", "Düster", "Lied"]], [["Erschlagen", "Steinig", "Erzählung"], ["Stehlen", "Stabil", "Stärke"], ["Herbeirufen", "Angeschlagen", "Zeit"], ["Aufgeben", "Stur", "Hilfsmittel"], ["Umschließen", "Verdreht", "Schatz"], ["Bedrohen", "Widernatürlich", "Vertrauen"]], [["Verwandeln", "Verschleiert", "Wahrheit"], ["Fangen", "Lebhaft", "Rache"], ["Überlisten", "Erschöpft", "Wohlstand"], ["Aufdecken", "Ungestüm", "Waffe"], ["Aufrechterhalten", "Erbärmlich", "Wildnis"], ["Standhalten", "Jung", "Wunsch"]], [["Glauben", "Gedeihend", "Tapferkeit"], ["Stärken", "Schön", "Pflicht"], ["Verteidigen", "Gut", "Gemeinschaft"], ["Verzeihen", "Freundlich", "Hoffnung"], ["Widerstehen", "Sanft", "Liebe"], ["Stärken", "Wundersam", "Friede"]]];
+/* Enthüllungen – eigene Formulierungen (Heldenwürfel) */
+const SM_REVEAL=["Streit in den eigenen Reihen oder eine Gefahr von außen bedroht deine Zuflucht.",
+ "Eine unvorhergesehene Gefahr versperrt den Weg – du musst eine andere Route nehmen.",
+ "Das Land selbst ist vergiftet und kehrt sich gegen dich.",
+ "Späher des Feindes tragen Nachricht über deinen Auftrag davon.",
+ "Diener des Feindes lauern dir auf oder stellen eine Falle.",
+ "Häscher des Feindes heften sich an deine Spur.",
+ "Ein bedeutsamer Ort fällt dem Feind in die Hände.",
+ "Etwas, das du mitführst, ist verflucht – oder ein Feind ist hinter ihm her.",
+ "Etwas, nach dem du dich sehr sehnst, führt dich in Versuchung und gefährdet deinen Auftrag.",
+ "Üble Gerüchte bringen andere dazu, dir zu misstrauen oder dich zu fürchten.",
+ "Unter deinen Verbündeten bricht Zwist aus.",
+ "Ein wichtiger Verbündeter schwebt in Gefahr."];
+/* Ereignis-Details je Reiseereignis (Erfolgswürfel 1–6): [Anlass, Fertigkeit oder null = Bemerkenswerte Begegnung, wozu] */
+const SM_BB=null;
+const SM_EVD=[
+ [["Unheilvolle Begegnung",SM_BB],["Ein Raubtier, das selbst jagt","Jagen","um nicht selbst zur Beute zu werden"],["Unwetter","Erkunden","um Unterschlupf zu finden"],["Tückische Gefahr","Wahrnehmung","um sie rechtzeitig zu erkennen"],["Heimtückisches Gelände","Erkunden","um einen sichereren Weg zu suchen"],["Ein Verfolger im Verborgenen","Wahrnehmung","um die üble Gegenwart zu spüren"]],
+ [["Handlanger des Feindes",SM_BB],["Wolkenbruch","Erkunden","um den geschütztesten Weg zu finden"],["Bedrückende Gegenwart","Wahrnehmung","um die Gefahr zu erahnen"],["Schwindende Kräfte","Jagen","um Nahrung zu beschaffen"],["Ein verdorbener Ort","Erkunden","um wieder hinauszufinden"],["Grausiger Fund oder böses Omen","Wahrnehmung","um gewarnt zu sein"]],
+ [["Verschwendete Vorräte","Jagen","um sie wieder aufzufüllen"],["Falsche Fährte","Erkunden","um zum richtigen Weg zurückzufinden"],["Unbemerkte Gefahr","Wahrnehmung","um heil davonzukommen"],["Entwischte Beute","Jagen","um ihrer Spur zu folgen"],["Verwirrende Gegend","Erkunden","um die Richtung wiederzufinden"],["Dunkle Träume","Wahrnehmung","um die Düsternis abzuschütteln"]],
+ [["Magere Jagd","Jagen","um genug Nahrung zu finden"],["Vom Weg abgekommen","Erkunden","um ihn wiederzufinden"],["Hindernis auf dem Pfad","Wahrnehmung","um einen Umweg zu entdecken"],["Flüchtiges Wild","Jagen","um es aufzuspüren"],["Unwegsames Land","Erkunden","um es sicher zu durchqueren"],["Umherstreifende Feinde","Wahrnehmung","um sie früh zu entdecken"]],
+ [["Ein Wildwechsel","Jagen","um dem Pfad der Tiere zu folgen"],["Ein vergessener Steig","Erkunden","um ihn durch die Wildnis zu verfolgen"],["Nützliche Spuren","Wahrnehmung","um ihnen zu folgen"],["Ein Tier weist den Weg","Jagen","um ihm unauffällig nachzugehen"],["Gutes Wetter","Erkunden","um es zu nutzen"],["Eine bekannte Landmarke","Wahrnehmung","um sie wiederzuerkennen"]],
+ [["Ein Einzelgänger der Wildnis","Jagen","um Neuigkeiten auszutauschen"],["Ein Wandergefährte auf Zeit","Erkunden","um vom Weg vor dir zu erfahren"],["Ein stiller Beobachter","Wahrnehmung","um ihn zu bemerken"],["Ein stolzes Tier","Jagen","um dich mit ihm zu verständigen"],["Ein einsames Lager","Erkunden","um abseits der Wege hinzufinden"],["Eine glückliche Fügung",SM_BB]],
+ [["Prächtige Tiere","Jagen","um sie zu beobachten, ohne sie aufzuscheuchen"],["Weiter Ausblick","Erkunden","um den Aussichtspunkt zu erreichen"],["Ein gütiges Wesen","Wahrnehmung","um seine Nähe zu spüren"],["Reiche Ernte am Wegesrand","Jagen","um deine Vorräte aufzufrischen"],["Ein altes Denkmal","Wahrnehmung","um seine Bedeutung zu erkennen"],["Ein Ort des Friedens",SM_BB]]];
+const SM_EVN=["Schreckliches Unglück","Verzweiflung","Schlechte Entscheidungen","Missgeschick","Abkürzung","Zufällige Begegnung","Erfreulicher Anblick"];
+function smEvd(i,d){ const e=SM_EVD[i]&&SM_EVD[i][d-1]; if(!e) return null; return {n:e[0],sk:e[1],why:e[2]||"",txt:e[1]?`${e[0]} – ${e[1].toUpperCase()}, ${e[2]}`:`${e[0]} – Bemerkenswerte Begegnung: als eigene Szene ausspielen`}; }
+(function(){
+  const C=STRIDER_CONTENT;
+  C.push({page:"Streicher-Modus · Tabellen"});
+  C.push({h:"Enthüllungen (Heldenwürfel)"});
+  C.push({t:[["W12","Enthüllung"]].concat(SM_REVEAL.map((t,i)=>[SM_DIEL[i],t])),w:[0.12,0.88]});
+  C.push({h:"Ereignis-Details (Erfolgswürfel)"});
+  SM_EVD.forEach((tab,i)=>{ C.push({h2:SM_EVN[i]}); C.push({t:[["W6","Anlass","Wurf"]].concat(tab.map((e,j)=>[String(j+1),e[0],e[1]?e[1].toUpperCase()+", "+e[2]:"Bemerkenswerte Begegnung"])),w:[0.08,0.4,0.52]}); });
+  C.push({page:"Streicher-Modus · Wissen-Tabelle"});
+  C.push({p:"**Heldenwürfel** wählt den Block, **Erfolgswürfel** die Zeile (SM S. 11–12).",i:true});
+  SM_LORE.forEach((tab,i)=>{ C.push({h2:"Heldenwürfel: "+SM_DIEL[i]}); C.push({t:[["W6","Aktion","Aspekt","Fokus"]].concat(tab.map((r,j)=>[String(j+1)].concat(r))),w:[0.1,0.3,0.3,0.3]}); });
+})();
 function buildStriderSheet(PDFLib, fontkit, F){ return buildFlowSheet(PDFLib, fontkit, F, STRIDER_CONTENT, "STREICHER-MODUS", "Der Eine Ring – Streicher-Modus"); }
 if(typeof module!=="undefined") module.exports = {buildStriderSheet, STRIDER_CONTENT};
 </script>
@@ -3216,7 +3257,7 @@ function paintResult(R){
   } else if(cfg.kind==="protect"){
     h+=`<div class="dt-verdict ${r.ok?"ok":"no"}">${r.ok?"Rüstung hält!":"Wunde!"}</div>`;
     if(r.why) h+=`<div class="dt-note">${r.why}</div>`;
-    if(!r.ok){ const s=sess(); h+=`<div class="dt-note">${s.on&&s.wounded?"<b>Zweite Wunde:</b> Ausdauer 0, sterbend – HEILEN innerhalb von etwa einer Stunde!":"Du bist <b>Verwundet</b>."}</div>`; if(s.on&&!s.wounded) h+=`<button class="dt-btn" data-act="wound">Als Verwundet markieren</button>`; }
+    if(!r.ok&&!(solo()&&cfg.tag==="prot")){ const s=sess(); h+=`<div class="dt-note">${s.on&&s.wounded?"<b>Zweite Wunde:</b> Ausdauer 0, sterbend – HEILEN innerhalb von etwa einer Stunde!":"Du bist <b>Verwundet</b>."}</div>`; if(s.on&&!s.wounded&&!(solo()&&cfg.tag==="prot")) h+=`<button class="dt-btn" data-act="wound">Als Verwundet markieren</button>`; }
   } else {
     h+=`<div class="dt-verdict ${r.ok?"ok":"no"}">${grade(r)}</div>`;
     if(r.why) h+=`<div class="dt-note">${r.why}</div>`;
@@ -3285,13 +3326,13 @@ function paintOracle(){
   if(DT.ans){ const o=DT.ans;
     h+=`<div class="dt-res"><div class="dt-dice"><span class="dt-d feat ${o.v===12?"rune":o.v===11?"eye":""}">${featHtml(o.v)}</span>${o.q?`<span style="font-size:14px">${esc(o.q)}</span>`:""}</div><div class="dt-verdict ${o.yes?"ok":"no"}">${o.yes?"Ja":"Nein"}${o.v>=11?" – mit drastischer Wendung!":""}</div></div>`; }
   h+=`<div class="dt-lbl" style="margin-top:14px">Wissen-Tabelle</div><button class="dt-btn" data-act="lore">Heldenwürfel + Erfolgswürfel werfen</button>`;
-  if(DT.lore) h+=`<div class="dt-res"><div class="dt-note">Untertabelle <b>${DT.lore.sub}</b>, Zeile <b>${DT.lore.row}</b> – Aktion, Aspekt oder Fokus (Streicher-Heft S. 11–12)</div></div>`;
+  if(DT.lore){ const L=DT.lore; const w=SM_LORE[SM_DIE(L.v)][L.row-1]; h+=`<div class="dt-res"><div class="dt-dice"><span class="dt-d feat ${L.v===12?"rune":L.v===11?"eye":""}">${featHtml(L.v)}</span><span class="dt-d">${L.row}</span></div><div class="dt-row" style="gap:6px;flex-wrap:wrap"><span class="dt-chip"><span class="dt-hint" style="margin:0 4px 0 0">Aktion</span><b>${w[0]}</b></span><span class="dt-chip"><span class="dt-hint" style="margin:0 4px 0 0">Aspekt</span><b>${w[1]}</b></span><span class="dt-chip"><span class="dt-hint" style="margin:0 4px 0 0">Fokus</span><b>${w[2]}</b></span></div><p class="dt-hint" style="margin:4px 0 0">Wissen-Tabelle, SM S. 11–12.</p></div>`; }
   h+=`<div class="dt-lbl" style="margin-top:14px">Saurons Blick</div>
   <div class="dt-trk"><span>Aktueller Wert <span class="dt-hint">(Start ${sbStart()})</span></span>${stepper("sb",s.sb)}
   <span>Gebiet</span><select class="dt-sel" id="dtHunt">${Object.keys(HUNT).map(k=>`<option ${s.hunt===k?"selected":""}>${k}</option>`).join("")}</select>
   <span>Jagd-Modifikator</span>${stepper("hm",(s.huntMod>0?"+":"")+s.huntMod)}
   <span>Jagdschwelle</span><b style="text-align:center">${HUNT[s.hunt]+s.huntMod}</b></div>`;
-  if(s.sb>=HUNT[s.hunt]+s.huntMod) h+=`<div class="dt-state"><span class="bad">Enthüllung! Danach Blick zurück auf ${sbStart()}.</span></div><button class="dt-btn" data-act="sbreset">Enthüllung abgehandelt</button>`;
+  if(s.sb>=HUNT[s.hunt]+s.huntMod) h+=`<div class="dt-state"><span class="bad">Enthüllung! Danach Blick zurück auf ${sbStart()}.</span></div>${DT.rev?`<div class="dt-res"><div class="dt-dice"><span class="dt-d feat ${DT.rev.v===12?"rune":DT.rev.v===11?"eye":""}">${featHtml(DT.rev.v)}</span></div><div class="dt-note"><b>${DT.rev.t}</b></div><p class="dt-hint" style="margin:4px 0 0">Passt es nicht, wähle oder erfinde eine Bedrohung. Was dein Held (noch) nicht merkt, notierst du für später.</p></div>`:`<button class="dt-btn" style="border-color:var(--red);color:var(--red)" data-act="reveal">Enthüllung würfeln</button>`}<button class="dt-btn" data-act="sbreset">Enthüllung abgehandelt</button>`;
   h+=`<p class="dt-hint">Ein Auge bei einem Wurf außerhalb des Kampfes erhöht den Blick automatisch um 1. Schattenpunkte außerhalb des Kampfes zählst du selbst dazu.</p>`;
   return h;
 }
@@ -3378,8 +3419,9 @@ function bindPanel(P){
     if(a==="long"){ s.aus=s.wounded?Math.min(m.aus,s.aus+attrs().kraft):m.aus; if(s.hof===0) s.hof=1; saveSess(s); toast("Ausgedehnte Rast"); }
     if(a==="reset"){ s.aus=m.aus; s.hof=m.hof; s.schatten=0; s.fatigue=0; s.wounded=false; saveSess(s); }
     if(a==="answer"){ const v=d12(); const th=ANSWER[DT.answerP][1]; const yes=v===12?true:v===11?false:v>=th; DT.ans={v,yes,q:DT.question}; DT.log.unshift(`Antwort (${ANSWER[DT.answerP][0]}): ${featTxt(v)} → ${yes?"Ja":"Nein"}${DT.question?" – "+esc(DT.question):""}`); chron("orakel",(DT.question?DT.question+" – ":"")+(yes?"Ja":"Nein")+(v>=11?", mit drastischer Wendung":"")+" ("+ANSWER[DT.answerP][0]+")"); }
-    if(a==="lore"){ const v=d12(); DT.lore={sub:v===11?"Auge":v===12?"Gandalf-Rune":v,row:d6()}; }
-    if(a==="sbreset"){ s.sb=sbStart(); saveSess(s); }
+    if(a==="lore"){ const v=d12(), row=d6(); DT.lore={v,row}; const w=SM_LORE[SM_DIE(v)][row-1]; DT.log.unshift(`Wissen: ${featTxt(v)}/${row} → ${w.join(" · ")}`); chron("orakel","Wissen: "+w.join(" · ")+(DT.question?" – zu: "+DT.question:"")); }
+    if(a==="reveal"){ const v=d12(); DT.rev={v,t:SM_REVEAL[SM_DIE(v)]}; DT.log.unshift(`Enthüllung: ${featTxt(v)} → ${DT.rev.t}`); chron("blick","Enthüllung: "+DT.rev.t); }
+    if(a==="sbreset"){ s.sb=sbStart(); DT.rev=null; saveSess(s); }
     if(a==="fp2hope"){ if((s.fp||0)<1){toast("Keine Gefährtenpunkte übrig");} else if(s.hof>=m.hof){toast("Hoffnung ist schon voll");} else {s.fp--;s.hof++;saveSess(s);toast("+1 Hoffnung");} }
     if(a==="wsev"){ const v=d12(); if(v===12){s.wounded=false;s.woundDays=null;toast("Gandalf-Rune: nur eine leichte Verletzung – nach dem Kampf verheilt");}
       else if(v===11){s.woundDays=10;s.aus=0;toast("Saurons Auge: üble Verletzung – bewusstlos und sterbend! HEILEN binnen einer Stunde");}
@@ -3408,7 +3450,7 @@ function bindScene(P){
   q("[data-shit]",b=>{const s=S2(); const n=b.dataset.shit==="2"?Math.ceil(s.sc.hit/2):s.sc.hit; s.on=true; s.aus=Math.max(0,s.aus-n); saveSess(s); toast("−"+n+" Ausdauer"+(b.dataset.shit==="2"?" (Rückschlag)":"")); paint();});
   q("[data-send]",b=>{const s=S2(), k=b.dataset.send;
     if(k==="kampf"){ const lost=s.sc.startAus!=null?Math.max(0,s.sc.startAus-s.aus):0; DT.foeRes=null;
-      chron("kampf","Kampf beendet"+(lost?", −"+lost+" Ausdauer":", unverletzt")+((s.sc.slain||[]).length?"; besiegt: "+s.sc.slain.join(", "):"")+(s.wounded?"; verwundet":"")); endScene("Kampf beendet"+(lost?" · −"+lost+" Ausdauer":""),solo()?8:null); }
+      chron("kampf","Kampf beendet"+(lost?", −"+lost+" Ausdauer":", unverletzt")+((s.sc.slain||[]).length?"; besiegt: "+s.sc.slain.join(", "):"")+(s.wounded?"; verwundet":"")); endScene("Kampf beendet"+(lost?" · −"+lost+" Ausdauer":""),solo()&&s.aus>0?8:null); }
     if(k==="beratung"){ chron("beratung","Beratung beendet"); endScene("Beratung beendet",solo()?6:null); }
     if(k==="reise"){ const c=C(); const vit=MOUNT[c.std][1]||0; const before=s.fatigue; s.fatigue=Math.max(0,s.fatigue-vit); saveSess(s);
       sceneTool(skillCfg("Reisen"),"travelEnd"); DT.cfg.label="Ankunft · REISEN"; DT.taskHint=(vit?`Reittier (Vitalität ${vit}): Erschöpfung ${before} → ${s.fatigue}. `:"")+"Gelungener REISEN-Wurf: −1 Erschöpfung, −1 je Symbol."; paint(); } });
@@ -3419,6 +3461,7 @@ function bindScene(P){
   q("[data-sev]",()=>{const s=S2(); const reg=s.hunt; let a=d12(),b2=d12(); const rk=v=>v===11?0:v===12?13:v; let v=a; if(reg==="Grenzland") v=rk(a)>=rk(b2)?a:b2; if(reg==="Dunkles Land") v=rk(a)<=rk(b2)?a:b2;
     const i=v===11?0:v===12?6:v===1?1:v<=3?2:v<=7?3:v<=9?4:5; s.sc.ev={i,d:d6(),done:null}; saveSess(s); DT.log.unshift(`Reiseereignis (${reg}): ${featTxt(v)} → ${SOLO_EV[i].n}`); DT.cfg=newMods(freeCfg()); paint();});
   q("[data-sevsk]",b=>{const s=S2(); const cf=skillCfg(b.dataset.sevsk); cf.label=SOLO_EV[s.sc.ev.i].n+" · "+cf.label; sceneTool(cf,"event"); DT.cfg.bonus=s.sc.road; paint();});
+  q("[data-sevbb]",b=>{const ok=b.dataset.sevbb==="1"; const R={r:{ok,icons:0,kept:0},cfg:{tag:"event",sk:"Begegnung"},notes:[]}; sceneAfterRoll(R); const s=S2(); saveSess(s); toast(R.notes[0]?R.notes[0].replace(/<[^>]+>/g,""):"Begegnung gewertet"); paint();});
   q("[data-sroad]",b=>{const s=S2(); s.sc.road=+b.dataset.sroad; saveSess(s); paint();});
   q("[data-saud]",b=>{const s=S2(); s.sc.aud=+b.dataset.saud; saveSess(s); if(DT.cfg&&DT.cfg.kind==="skill") DT.cfg.bonus=s.sc.aud; paint();});
   q("[data-sres]",b=>{const s=S2(); s.sc.res=+b.dataset.sres; saveSess(s); paint();});
@@ -3741,6 +3784,11 @@ const STANCES={offensiv:{n:"Offensiv",task:"Feind einschüchtern",sk:"Beeindruck
   defensiv:{n:"Defensiv",task:"Gefährten beschützen",sk:"Kriegskunst",eff:"Nächster Angriff gegen den Beschützten −1W (+1W je Symbol)."},
   hinten:{n:"Hinten",task:"Schuss vorbereiten",sk:"Untersuchen",eff:"Nächster Fernkampfangriff (1W), +1W je Symbol."}};
 const ROLES={anfuehrer:["Anführer","Reisen"],kundschafter:["Kundschafter","Erkunden"],spaeher:["Späher","Wahrnehmung"],jaeger:["Jäger","Jagen"]};
+function evDetail(c){ const d=typeof smEvd==="function"&&smEvd(c.ev.i,c.ev.d); if(!d) return ""; return `<div class="dt-note"><b>${esc(d.n)}</b>${d.sk?` – würfle <b>${d.sk.toUpperCase()}</b>, ${esc(d.why)}.`:` – <b>Bemerkenswerte Begegnung:</b> spiele sie als eigene Szene aus.`} <span class="dt-hint">(Detail W6: ${c.ev.d})</span></div>`; }
+function evChips(c){ const d=typeof smEvd==="function"&&smEvd(c.ev.i,c.ev.d);
+  let h=`<div class="dt-row"><span class="k">Wurf mit</span>${["Erkunden","Wahrnehmung","Jagen"].map(x=>`<span class="dt-chip ${d&&d.sk===x?"on":""}" data-sevsk="${x}">${x}</span>`).join("")}</div>`;
+  if(d&&!d.sk) h+=`<div class="dt-row"><span class="k">Ausgang</span><span class="dt-chip" data-sevbb="1">Ging gut aus</span><span class="dt-chip" data-sevbb="0">Ging schlecht aus</span></div><p class="dt-hint" style="margin:0">Nach der Szene den Ausgang wählen – oder doch einfach würfeln.</p>`;
+  return h; }
 const SOLO_EV=[{n:"Schreckliches Unglück",fat:3,fail:"wound",t:"misslingt: Verwundet"},{n:"Verzweiflung",fat:2,fail:"sh2",t:"misslingt: +2 Schatten (Schrecken)"},{n:"Schlechte Entscheidungen",fat:2,fail:"sh1",t:"misslingt: +1 Schatten (Schrecken)"},{n:"Missgeschick",fat:2,fail:"day",t:"misslingt: +1 Tag, +1 Erschöpfung"},{n:"Abkürzung",fat:1,ok:"short",t:"gelingt: 1 Tag kürzer"},{n:"Zufällige Begegnung",fat:1,ok:"nofat",t:"gelingt: keine Erschöpfung"},{n:"Erfreulicher Anblick",fat:0,ok:"hope",t:"gelingt: +1 Hoffnung"}];
 const SOCIAL=["Ermutigen","Verständnis","Überreden","Rätseln","Musizieren"];
 const INTRO=["Beeindrucken","Auftreten","Rätseln"];
@@ -3812,8 +3860,8 @@ function paintScene(){
     h+=`<div class="dt-row">${role==="anfuehrer"?`<span class="dt-chip" data-smarch="1">Marschprobe (REISEN)</span>`:""}${role&&role!=="anfuehrer"?`<span class="dt-chip" data-sroll="${ROLES[role][1]}">${ROLES[role][1]}-Wurf</span>`:""}${solo()?`<span class="dt-chip" data-sev="1">Reiseereignis würfeln</span>`:""}</div>`;
     if(DT.march!=null) h+=`<p class="dt-hint"><b>Marschprobe:</b> nächstes Ereignis nach ${DT.march} Hexfeld${DT.march===1?"":"ern"}.${solo()&&c.hexLeft<=0&&c.hex?" <b>Ziel erreicht!</b>":""}</p>`;
     if(solo()&&c.ev){ const e=SOLO_EV[c.ev.i];
-      h+=`<div class="dt-res"><div class="dt-verdict">${e.n}</div><div class="dt-note">${e.t} · Erschöpfung ${e.fat||"–"} · Ereignis-Detail Zeile <b>${c.ev.d}</b> (SM S. 17–19)</div>
-      ${c.ev.done?`<div class="dt-note">${c.ev.done}</div>`:`<div class="dt-row"><span class="k">Wurf mit</span>${["Erkunden","Wahrnehmung","Jagen"].map(x=>`<span class="dt-chip" data-sevsk="${x}">${x}</span>`).join("")}</div>
+      h+=`<div class="dt-res"><div class="dt-verdict">${e.n}</div><div class="dt-note">${e.t} · Erschöpfung ${e.fat||"–"}</div>${evDetail(c)}
+      ${c.ev.done?`<div class="dt-note">${c.ev.done}</div>`:`${evChips(c)}
       <div class="dt-row">${[["Straße",1],["normal",0],["schwieriges Gelände",-1]].map(x=>`<span class="dt-chip ${c.road===x[1]?"on":""}" data-sroad="${x[1]}">${x[0]}</span>`).join("")}</div>`}</div>`; }
     h+=`<div class="dt-row"><span class="k">Erschöpfung</span>${stepper("s_fat",s.fatigue)}<span class="dt-hint" style="margin:0">seit Aufbruch +${Math.max(0,s.fatigue-(c.startFat||0))}</span></div>`;
     h+=`<button class="dt-btn" data-send="reise">Reise beenden …</button>`;
@@ -3860,6 +3908,7 @@ function foeProt(i){ const s=SC(), f=s.sc.foes[i]; const fd=d12(); const sd=[]; 
 function sceneAfterRoll(R){
   const cfg=R.cfg, r=R.r, s=SC(), c=s.sc; if(!cfg.tag) return;
   if(cfg.tag==="march"){ DT.march=r.ok?3+r.icons:(c.season==="warm"?2:1); if(solo()&&c.hex){ c.hexLeft=Math.max(0,c.hexLeft-DT.march); } R.notes.push(`Nächstes Ereignis nach <b>${DT.march}</b> Hexfeld${DT.march===1?"":"ern"}.`); }
+  if(cfg.tag==="prot"&&solo()&&!r.ok){ if(!s.wounded){ s.wounded=true; s.woundDays=null; s.firstAid=false; R.notes.push("Als <b>Verwundet</b> eingetragen – Schwere nach dem Kampf im Reiter Zustand würfeln."); chron("wunde","Verwundet"); } else { s.aus=0; R.notes.push("<b>Zweite Wunde:</b> Ausdauer 0, sterbend!"); chron("wunde","Zweite Wunde – sterbend"); } }
   if(cfg.tag==="event"&&c.ev){ const e=SOLO_EV[c.ev.i]; let msg=[]; let fat=e.fat;
     if(r.ok){ if(e.ok==="short") msg.push("Reise 1 Tag kürzer"); if(e.ok==="nofat"){fat=0;msg.push("keine Erschöpfung");} if(e.ok==="hope"){const m=maxima(); s.hof=Math.min(m.hof,s.hof+1); msg.push("+1 Hoffnung");} }
     else { if(e.fail==="wound"){s.wounded=true;s.woundDays=null;msg.push("<b>Verwundet!</b> (Schwere im Reiter Sitzung)");} if(e.fail==="sh2"){s.schatten+=2;msg.push("+2 Schatten");} if(e.fail==="sh1"){s.schatten+=1;msg.push("+1 Schatten");} if(e.fail==="day"){fat+=1;msg.push("+1 Tag");} }
@@ -3899,7 +3948,7 @@ document.getElementById("fileIn").onchange=async e=>{
 const _save=save; save=function(){ _save.apply(this,arguments); if(PLAY) markDirty(); };
 
 /* ---------- Chronik ---------- */
-function chron(k,t){ if(!C()) return; S.chron=S.chron||[]; S.chronSess=S.chronSess||1; S.chron.push({d:Date.now(),s:S.chronSess,k,t}); if(S.chron.length>800) S.chron.shift(); save(); }
+function chron(k,t){ if(!C()) return; S.chron=S.chron||[]; S.chronSess=S.chronSess||1; S.chron.push({d:Date.now(),s:S.chronSess,k,t}); if(S.chron.length>800) S.chron.shift(); save(); if(window.HS_JHOOK){ try{ HS_JHOOK(k,t); }catch(e){ console.error(e); } } }
 const CH={open:false,note:""};
 const CHK={szene:"Szene",kampf:"Kampf",reise:"Reise",beratung:"Beratung",wunde:"Wunde",schatten:"Schatten",xp:"Erfahrung",phase:"Gefährtenphase",orakel:"Orakel",glueck:"Wendung",notiz:"Notiz",blick:"Saurons Blick"};
 function openChron(){ CH.open=true; paintChron(); }
@@ -3970,7 +4019,7 @@ function enhance(){
 }
 const _render=render;
 render=function(){ if(PLAY) step=STEPS.length-1; _render.apply(this,arguments); try{enhance();}catch(e){console.error(e);} };
-window.HS_DICE={chron,openChron,exportChron,foes,SC,PH,openPhase,prog,setPlay,DT,doRoll,openWith,skillCfg,attackCfg,protCfg,shadowCfg,sess};
+window.HS_DICE={chron,openChron,exportChron,foes,SC,PH,openPhase,prog,setPlay,DT,doRoll,openWith,skillCfg,attackCfg,protCfg,shadowCfg,sess,saveSess,paint,setScene};
 
 /* Heldenschmiede – Streicher-Abläufe (Testversion, nur Version III)
    Reise, Kampf und Beratung im Streicher-Modus als geführte Schritte wie in der Spielleiter-App.
@@ -4038,9 +4087,9 @@ function travel(s,c){
         if(c.dz) h+=`<div class="sf-warn"><b>Gefährliche Stelle (Stufe ${c.dzLvl}).</b> Dein Held hält an und stellt sich ${c.dzLvl} Ereignis${c.dzLvl>1?"sen":""}, bevor er weiterziehen kann – noch ${c.dz}.</div>`;
         if(!c.ev){ h+=`<div class="fx-box"><div class="fx-t">Reiseereignis auf Feld ${c.pos}</div><p class="dt-hint" style="margin:0 0 4px">Heldenwürfel im ${esc(s.hunt)} – ${s.hunt==="Grenzland"?"bevorzugt":s.hunt==="Dunkles Land"?"benachteiligt":"normal"}.</p><span class="dt-chip sf-go" data-sev="1">Ereignis auswürfeln</span></div>`; }
         else { const e=SOLO_EV[c.ev.i];
-          h+=`<div class="fx-box"><div class="fx-t">${e.n}</div><div class="dt-hint" style="margin:0 0 4px">${e.t} · Erschöpfung ${e.fat||"–"} · Ereignis-Detail Zeile <b>${c.ev.d}</b> (Streicher-Modus S. 17–19)</div>`;
+          h+=`<div class="fx-box"><div class="fx-t">${e.n}</div><div class="dt-hint" style="margin:0 0 4px">${e.t} · Erschöpfung ${e.fat||"–"}</div>${evDetail(c)}`;
           if(c.ev.done) h+=`<div class="dt-note">${c.ev.done}</div>`+btn("tnext",c.dz>1?"Nächstes Ereignis an dieser Stelle":(c.pos>=c.hex?"Weiter zur Ankunft":"Weiterreisen"),true);
-          else h+=`<div class="dt-row"><span class="k">Wurf mit</span>${["Erkunden","Wahrnehmung","Jagen"].map(x=>`<span class="dt-chip" data-sevsk="${x}">${x}</span>`).join("")}</div><div class="dt-row">${[["Straße",1],["normal",0],["schwieriges Gelände",-1]].map(x=>`<span class="dt-chip ${c.road===x[1]?"on":""}" data-sroad="${x[1]}">${x[0]}</span>`).join("")}</div><p class="dt-hint">Wie du dem Ereignis begegnest, erzählst du selbst – die Fertigkeit wählst du passend dazu.</p>`;
+          else h+=`${evChips(c)}<div class="dt-row">${[["Straße",1],["normal",0],["schwieriges Gelände",-1]].map(x=>`<span class="dt-chip ${c.road===x[1]?"on":""}" data-sroad="${x[1]}">${x[0]}</span>`).join("")}</div>${(smEvd(c.ev.i,c.ev.d)||{}).sk?`<p class="dt-hint">Die vorgeschlagene Fertigkeit ist markiert – passt eine andere besser zu deiner Erzählung, nimm sie.</p>`:""}`;
           h+=`</div>`; }
       } else {
         h+=`<div class="fx-box"><div class="fx-t">Marschprobe</div><p class="dt-hint" style="margin:0 0 4px">REISEN würfeln. Misslungen: Ereignis nach ${c.season==="warm"?"2 Feldern":"1 Feld"}. Gelungen: nach 3 Feldern, +1 je Erfolgssymbol. Reicht das bis zum Ziel (noch ${left}), endet die Reise ohne weiteres Ereignis.</p>`;
@@ -4068,7 +4117,7 @@ function tAdvance(s,c){
 
 /* ---------------- Kampf ---------------- */
 const KST=["Gegner und Überraschung","Auftaktsalven","Nahkampfrunden","Kampfende"];
-const RANGED=/Bogen|Speer|Wurf/i;
+const RANGED=/Bogen|Wurf|^Speer$|Kurzspeer/i;
 function foeResBox(c){ if(!DT.foeRes) return ""; const fr=DT.foeRes; let h=`<div class="dt-res"><div class="dt-note">${fr.txt}</div>`;
   if(fr.ok){ h+=`<div class="dt-verdict no">Getroffen: −${fr.applied} Ausdauer</div>`; if(fr.pierce) h+=`<div class="dt-note"><b>Durchbohrender Treffer!</b> SCHUTZ-Wurf gegen Verletzung ${fr.inj}:</div><button class="dt-btn" data-fprw="${fr.inj}">SCHUTZ-Wurf würfeln</button>`; }
   else h+=`<div class="dt-verdict ok">Abgewehrt</div>`; return h+`</div>`; }
